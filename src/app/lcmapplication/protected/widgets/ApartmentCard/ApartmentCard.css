@@ -1,0 +1,70 @@
+.apartment-card {
+    width: 150px;
+    height: fit-content;
+    border: 1px solid;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+  }
+  
+  .apartment-card:hover {
+    transform: scale(1.05);
+  }
+
+  .view-details-button{
+    display: flex;
+    justify-content: flex-end;
+    width: fit-content;
+    height: fit-content;
+    margin-top: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(17, 15, 15, 0.2);
+    margin-left: 55px;
+    
+
+  }
+  
+  .apartment-title {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .apartment-details {
+    margin-top: 8px;
+    font-size: 16px;
+    font-style: italic;
+  }
+  
+  .apartment-status {
+    margin-top: 10px;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    background: white;
+    color: green;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  
+
+  
+  /* Border color based on status */
+  .apartment-card.letting {
+    border-color: #1976d2; /* Blue */
+  }
+  
+  .apartment-card.under-construction {
+    border-color: #4caf50; /* Green */
+  }
+
+  
+  
+  

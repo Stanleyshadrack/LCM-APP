@@ -1,0 +1,175 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f6f8fa;
+  }
+  
+  .login-box {
+    background: #FFFFFF;
+    padding: 40px;
+    border-radius: 12px;
+    height: fit-content;
+    width: 574px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    text-align: center;
+  }
+
+  .logname {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    margin-bottom: 5px;
+    gap: space-between;
+    margin-top: 5px;
+  }
+
+  .name{
+width: fit-content;
+height: 32px;
+left: 85.88px;
+top: 0px;
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 27px;
+line-height: 120%;
+color: #00568D;
+  }
+  
+  
+  .logo {
+left: 0%;
+right: 42.18%;
+top: 12.5%;
+bottom: 12.62%;
+
+
+  }
+  
+  .header2 {
+    display: flex;
+    font-size: 20px;
+    flex-direction: column;
+    font-weight: 600;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 5px;
+  }
+  
+  form {
+    text-align: left;
+    margin-top: 20px;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  
+  .options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-size: 16px;
+  }
+  
+  .divider {
+    margin: 20px 0;
+    font-size: 14px;
+    color: #888;
+  }
+  
+  .google-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+  }
+  
+  .register {
+    display: flex;
+    justify-content: center;    /* Center the full text */
+    align-items: center;        /* Vertical alignment */
+    gap: 6px;                   /* Space between span and link */
+    font-size: 18px;
+    margin: 10px auto;
+  }
+  
+  .register span {
+    color: #555;                /* Soft gray */
+  }
+  
+  .register a {
+color: #42A5F5;             /* Bright blue */
+text-decoration: none;
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 30px;
+text-align: center;
+  }
+  
+  .register a:hover {
+    text-decoration: underline; /* Nice hover effect */
+  }
+
+
+  
+  
+  .name-fields {
+    display: flex;           /* makes the div children sit side-by-side */
+    gap: 10px;               /* space between the inputs */
+    margin-bottom: 15px;     /* spacing below the name fields */
+  }
+  
+  .name-fields div {
+    flex: 1;                 /* equal width for each field */
+  }
+  
+  .name-fields input {
+    width: 100%;
+   
+ 
+    font-size: 16px;
+
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  

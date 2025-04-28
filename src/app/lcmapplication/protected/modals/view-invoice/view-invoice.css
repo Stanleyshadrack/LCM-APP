@@ -1,0 +1,150 @@
+.invoice-page {
+    background: #f9fafb;
+    width: 100%;
+    height: fit-content;
+    border-radius: 1rem;
+  }
+
+
+
+  
+  .invoice-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    max-width: 850px;
+    margin: 2rem auto;
+    
+  }
+  
+  .invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 2rem;
+    
+  }
+
+  .reciever-details{
+    text-align: left;
+    justify-content: space-between;
+    height: 100%;
+    font-size: 0.9rem;
+    width: fit-content;
+  }
+
+  .company-details {
+    text-align: right;
+    font-size: 0.9rem;
+    width: fit-content;
+  }
+  
+  .invoice-header h1 {
+    display: flex;
+    font-size: 2rem;
+    width: fit-content;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+ 
+  
+  .company-logo {
+    height: 50px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .company-name {
+    font-weight: bold;
+    color: #2563eb;
+    
+  }
+  
+  .invoice-body {
+    background: #fff;
+    border-radius: 0.75rem;
+    flex-direction: row;
+    overflow: hidden;
+  }
+  
+  .invoice-meta {
+    display: grid;
+    grid-template-columns: 4fr 1fr; /* Two equal columns */
+    gap: 1rem; /* Wider gap between columns */
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  
+  .invoice-table-wrapper {
+    overflow-x: auto;
+  }
+  
+  .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+  }
+  
+  .invoice-table th,
+  .invoice-table td {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.75rem;
+    text-align: left;
+  }
+  
+  .invoice-table th {
+    background-color: #f9fafb;
+    font-weight: 600;
+  }
+  
+  .invoice-note {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    color: #666;
+  }
+  
+  .payment-info {
+    background-color: #f0f8ff;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  
+  .payment-info p {
+    margin: 0.25rem 0;
+    font-weight: 500;
+  }
+  
+  .highlight {
+    color: #2563eb;
+  }
+  
+  .send-button {
+    text-align: center;
+  }
+  
+  .send-button button {
+    background-color: #38bdf8;
+    color: white;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 9999px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .send-button button:hover {
+    background-color: #0ea5e9;
+  }
+  
+  .invoice-footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #888;
+  }
+  

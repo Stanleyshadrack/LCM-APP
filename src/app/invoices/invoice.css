@@ -1,0 +1,75 @@
+.invoices-page {
+    padding: 24px;
+    background: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .page-header h2 {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .page-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .search-input {
+    width: 220px;
+    border-radius: 6px;
+  }
+  
+  .add-tenant-button {
+    background-color: #42A5F5;
+    border-color: #42A5F5;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  
+  .add-tenant-button:hover {
+    background-color: #1e88e5;
+    border-color: #1e88e5;
+  }
+  
+  .status-tag {
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-weight: 600;
+  }
+  
+  .status-tag.sent {
+    background-color: #e0f7e9;
+    color: #2e7d32;
+  }
+  
+  .status-tag.pending {
+    background-color: #ffe0e0;
+    color: #d32f2f;
+  }
+  
+  .view-invoice-button {
+    color: #45A9EA;
+    font-weight: 600;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid #B7B7B7;
+    border-radius: 12px;
+  }
+  
+  .view-invoice-button:hover {
+    color: #1e88e5;
+  }
+  
+  .invoices-table .ant-table-thead > tr > th {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+  

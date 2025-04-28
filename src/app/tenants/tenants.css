@@ -1,0 +1,116 @@
+.tenants-container {
+  padding: 24px;
+  background: #f9f9f9;
+  min-height: 100vh;
+  
+}
+
+.tenant-dashboard {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+}
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 24px;
+  
+}
+
+.tenant-dashboard h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  background-color: #1e88e5;
+}
+
+
+
+.ant-table {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #e6f7ff;
+  font-weight: 600;
+  font-size: 14px;
+  color: #00568D;
+}
+
+.ant-table-tbody > tr > td {
+  font-size: 14px;
+}
+
+.custom-table-row:hover {
+  background-color: #e6f7ff !important;
+}
+
+.ant-pagination {
+  margin-top: 16px;
+  justify-content: center;
+}
+
+/* Action buttons */
+.ant-btn-link {
+  padding: 0;
+  color: #1890ff;
+}
+
+.ant-btn-link svg {
+  font-size: 18px;
+}
+
+/* Search and Add button styling */
+.search-input {
+  width: 220px;
+  border-radius: 6px;
+}
+
+.add-tenant-button {
+  background-color: #1890ff;
+  border-color: #1890ff;
+  color: white;
+}
+
+.add-tenant-button:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+----------------------------------------------
+
+
+
+.page-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+
+.add-tenant-button {
+  background-color: #42A5F5;
+  border-color: #42A5F5;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.add-tenant-button:hover {
+  background-color: #1e88e5;
+  border-color: #1e88e5;
+}
+

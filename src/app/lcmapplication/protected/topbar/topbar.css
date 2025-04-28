@@ -1,0 +1,65 @@
+.topbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 5px 20px; /* <<< padding should be real values, not "auto" */
+  background-color: #fff; /* Optional: Set a background */
+  border-bottom: 1px solid #e0e0e0; /* Optional: slight bottom border */
+  box-sizing: border-box;
+  margin-bottom: 2px;
+  margin-top: 5px;
+}
+
+
+.language-selector{
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.logout-button {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+.logout-button:hover{
+  transform: scale(1.03);
+  box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.user-id {
+  font-size: 12px;
+  color: #888;
+}
+
+.nameid{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-right: 5px;
+}
