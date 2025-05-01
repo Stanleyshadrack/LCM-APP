@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Table, Tag, Input, Button, Modal } from "antd";
 import "./invoice.css";
 import InvoicePage from "../lcmapplication/protected/modals/view-invoice/view-invoice";
@@ -14,7 +14,7 @@ interface Invoice {
   status: "SENT" | "PENDING";
 }
 
-const Invoices = () => {
+const Invoices: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
@@ -24,9 +24,9 @@ const Invoices = () => {
       key: "1",
       unitId: "A01",
       apartment: "Bima Heights",
-      rentAmount: "kes 8,000",
+      rentAmount: "KES 8,000",
       phoneNumber: "254742792965",
-      balanceDue: "kes 2,000.00",
+      balanceDue: "KES 2,000.00",
       date: "02/04/2024",
       status: "SENT",
     },
@@ -34,53 +34,73 @@ const Invoices = () => {
       key: "2",
       unitId: "A02",
       apartment: "LCM Apartments",
-      rentAmount: "kes 8,000",
+      rentAmount: "KES 8,000",
       phoneNumber: "254742792965",
-      balanceDue: "kes 2,000.00",
+      balanceDue: "KES 2,000.00",
       date: "02/04/2024",
       status: "PENDING",
     },
     {
       key: "3",
-      unitId: "A03",
-      apartment: "H&R Apartments",
-      rentAmount: "kes 8,000",
+      unitId: "A02",
+      apartment: "LCM Apartments",
+      rentAmount: "KES 8,000",
       phoneNumber: "254742792965",
-      balanceDue: "kes 2,000.00",
+      balanceDue: "KES 2,000.00",
       date: "02/04/2024",
       status: "PENDING",
     },
     {
       key: "4",
-      unitId: "A03",
-      apartment: "H&R Apartments",
-      rentAmount: "kes 8,000",
+      unitId: "A02",
+      apartment: "LCM Apartments",
+      rentAmount: "KES 8,000",
       phoneNumber: "254742792965",
-      balanceDue: "kes 2,000.00",
+      balanceDue: "KES 2,000.00",
       date: "02/04/2024",
-      status: "SENT",
+      status: "PENDING",
     },
     {
       key: "5",
-      unitId: "A03",
-      apartment: "H&R Apartments",
-      rentAmount: "kes 8,000",
+      unitId: "A02",
+      apartment: "LCM Apartments",
+      rentAmount: "KES 8,000",
       phoneNumber: "254742792965",
-      balanceDue: "kes 2,000.00",
+      balanceDue: "KES 2,000.00",
       date: "02/04/2024",
       status: "PENDING",
     },
     {
       key: "6",
-      unitId: "A03",
-      apartment: "H&R Apartments",
-      rentAmount: "kes 8,000",
+      unitId: "A02",
+      apartment: "LCM Apartments",
+      rentAmount: "KES 8,000",
       phoneNumber: "254742792965",
-      balanceDue: "kes 2,000.00",
+      balanceDue: "KES 2,000.00",
       date: "02/04/2024",
-      status: "SENT",
+      status: "PENDING",
     },
+    // ... More data
   ];
+
+  const openModal = (invoice: Invoice) => {
+    setSelectedInvoice(invoice);
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setSelectedInvoice(null);
+  };
+
+  const filteredInvoices = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    return invoices.filter(
+      (invoice) =>
+        invoice.apartment.toLowerCase().includes(term) ||
+        invoice.unitId.toLowerCase().includes(term)
+    );
+  }, [searchTerm, invoices]);
 
   const columns = [
     {
@@ -132,26 +152,11 @@ const Invoices = () => {
           className="view-invoice-button"
           onClick={() => openModal(record)}
         >
-          View Invoice
+          Generate Invoice
         </Button>
       ),
     },
   ];
-
-  const openModal = (invoice: Invoice) => {
-    setSelectedInvoice(invoice);
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setSelectedInvoice(null);
-  };
-
-  const filteredInvoices = invoices.filter((invoice) =>
-    invoice.apartment.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    invoice.unitId.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="invoices-page">
@@ -159,10 +164,11 @@ const Invoices = () => {
         <h2>INVOICES</h2>
         <div className="page-actions">
           <Input
-            placeholder="Search..."
+            placeholder="Search by unit or apartment"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
+            aria-label="Search invoices"
           />
           <Button type="primary" className="add-tenant-button">
             + Add Tenant
@@ -175,9 +181,11 @@ const Invoices = () => {
         dataSource={filteredInvoices}
         pagination={{ pageSize: 8 }}
         className="invoices-table"
+        rowKey="key"
       />
 
       <Modal
+        title={`Invoice Details`}
         open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
@@ -185,7 +193,7 @@ const Invoices = () => {
         centered
         destroyOnClose
       >
-        <InvoicePage invoice={selectedInvoice} />
+        {selectedInvoice && <InvoicePage invoice={selectedInvoice} />}
       </Modal>
     </div>
   );

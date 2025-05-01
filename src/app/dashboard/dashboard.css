@@ -1,32 +1,19 @@
+/* General container and layout */
 .dashboard-container {
   display: flex;
+  flex-direction: column;
   background-color: #f6f8fa;
-  min-height: 100%;
-  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .dashboard-content {
   width: 100%;
-  padding: 20px 40px;
-  height: fit-content;
+  padding: 20px;
+  box-sizing: border-box;
 }
-
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-
 
 .main-dashboard h2 {
   font-size: 20px;
@@ -34,40 +21,60 @@
   margin-bottom: 20px;
 }
 
+/* Stats grid (stat cards) */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));  /* Flexibility based on screen size */
   gap: 20px;
   margin-bottom: 30px;
 }
 
-.card {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    text-align: left;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.stat-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card:hover {
-    transform: scale(1.03);
-    box-shadow: 0 6px 10px rgba(0,0,0,0.1);
-  }
+.stat-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+}
 
-.card div {
-  font-size: 14px;
+.stat-icon {
+  font-size: 24px;
+  color: #42A5F5;
   margin-bottom: 10px;
 }
 
-.card h3 {
-  font-size: 22px;
-  font-weight: bold;
+.default-icon {
+  font-size: 24px;
+  color: #ccc;
+  margin-bottom: 10px;
 }
 
+.stat-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Payment section (tables for payment history and arrears) */
 .payment-section {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   margin-top: 20px;
 }
@@ -76,7 +83,13 @@
   background: #fff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payment-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
 }
 
 .payment-card h4 {
@@ -89,11 +102,6 @@
   width: 100%;
   border-collapse: collapse;
 }
-
-.payment-card:hover {
-    transform: scale(1.03);
-    box-shadow: 0 6px 10px rgba(0,0,0,0.1);
-  }
 
 .payment-card th,
 .payment-card td {
@@ -119,9 +127,80 @@
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.see-invoices-button:hover {
-  background-color: #42A5F5;
-  color: #fff;
+
+
+/* Media Queries for Responsiveness */
+
+/* For mobile devices (up to 600px) */
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .main-dashboard h2 {
+    font-size: 18px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr; /* Stack the cards vertically */
+  }
+
+  .stat-card {
+    padding: 15px;
+  }
+
+  .payment-section {
+    grid-template-columns: 1fr; /* Stack the payment sections */
+  }
+
+  .payment-card {
+    padding: 15px;
+  }
+
+  .see-invoices-button {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+  
+}
+
+
+
+/* For medium devices (601px to 960px) */
+@media (min-width: 601px) and (max-width: 960px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr); /* Two cards in a row */
+  }
+
+  .stat-card {
+    padding: 18px;
+  }
+
+  .payment-section {
+    grid-template-columns: repeat(2, 1fr); /* Two payment sections side by side */
+  }
+
+  .see-invoices-button {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+}
+
+/* For larger devices (960px and above) */
+@media (min-width: 961px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr); 
+  }
+
+  .payment-section {
+    grid-template-columns: repeat(2, 1fr); 
+  }
+
+  .see-invoices-button {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
 }

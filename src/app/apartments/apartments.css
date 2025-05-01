@@ -1,31 +1,35 @@
-.apartments-container {
-  display: flex;
-  min-height: 100vh;
-  padding-left: 220px; 
-  background-color: #f6f8fa;
+
+* {
+  box-sizing: border-box;
 }
 
 .apartments-content {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   width: 100%;
-  height: fit-content;
-  padding: 20px 20px;
-  margin-top: 0px;
-  overflow-y: none;
+  padding: 16px;
+  background-color: #f6f8fa;
+  height: auto;
+  overflow-y: hidden;
 }
+
 
 .apartments-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
+  flex-direction: row;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .search-input {
@@ -41,16 +45,16 @@
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 .add-tenant-button:hover {
   background-color: #1e88e5;
 }
-
 .apartments-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive */
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
   margin-top: 20px;
 }
 
@@ -64,8 +68,9 @@
   margin-bottom: 8px;
   font-weight: bold;
   background: #eee;
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-radius: 8px;
+  text-align: center;
 }
 
 .pagination {
@@ -73,6 +78,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -85,4 +91,28 @@
   border-color: #42A5F5;
 }
 
+/* Responsive Enhancements for Smaller Devices */
+@media (max-width: 768px) {
+  .apartments-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
+  .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .add-tenant-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .apartments-grid {
+    grid-template-columns: 1fr;
+  }
+}

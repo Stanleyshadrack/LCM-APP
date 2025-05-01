@@ -1,9 +1,11 @@
 .main-layout {
   display: flex;
-  height: fit-content;
+  min-height: 100vh;
   width: 100%;
+  flex-direction: row;
 }
 
+/* Sidebar */
 .sidebar {
   width: 220px;
   height: 100vh;
@@ -13,37 +15,65 @@
   left: 0;
   top: 0;
   padding: 20px 10px;
+  box-sizing: border-box;
 }
 
+/* Main content wrapper */
 .content-area {
-  margin-left: 220px; /* Push content beside sidebar */
+  margin-left: 220px;
   display: flex;
   flex-direction: column;
-  margin-right: 25px;
-  width:100%;
+  width: calc(100% - 220px);
   min-height: 100vh;
   background: var(--background);
-
+  box-sizing: border-box;
 }
 
+/* Topbar */
 .topbar {
-  width: 100%;
+  width: calc(100% - 220px);
   height: 70px;
   background: white;
+  position: fixed;
+  top: 0;
+  left: 220px;
+  z-index: 10;
   padding: 0 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  top: 0;
-  left: 220px; /* to not overlap sidebar */
-  z-index: 10;
   border-bottom: 1px solid #e0e0e0;
+  box-sizing: border-box;
 }
 
+/* Content below topbar */
 .page-content {
   flex-grow: 1;
   padding: 2rem;
-  overflow-y: auto; 
-  height: (100vh - 70px); 
+  overflow-y: none;
+  margin-top: 70px; /* Pushes below fixed topbar */
+  height: calc(100vh - 70px);
+  box-sizing: border-box;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .topbar {
+    width: 100%;
+    left: 0;
+    padding: 0 20px;
+  }
+
+  .content-area {
+    margin-left: 0;
+    width: 100%;
+  }
 }

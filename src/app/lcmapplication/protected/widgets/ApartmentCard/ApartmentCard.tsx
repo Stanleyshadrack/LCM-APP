@@ -3,12 +3,13 @@ import { Button, Modal } from "antd";
 import "./ApartmentCard.css";
 import ApartmentDetails from "../../modals/apartment-details/view-apartment";
 
+type ApartmentStatus = "Letting" | "Under construction";
 
 interface ApartmentCardProps {
   title: string;
   bedrooms: number;
   bathrooms: number;
-  status: "Letting" | "Under construction";
+  status: ApartmentStatus;
 }
 
 const ApartmentCard: React.FC<ApartmentCardProps> = ({
@@ -28,39 +29,49 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
   };
 
   return (
-    <div className={`apartment-card ${status === "Letting" ? "letting" : "under-construction"}`}>
-      <div className="apartment-title">{title}</div>
+    <div
+      className={`apartment-card ${
+        status === "Letting" ? "letting" : "under-construction"
+      }`}
+    >
+      <h3 className="apartment-title">{title}</h3>
 
       <div className="apartment-details">
-        <i>{bedrooms} {bedrooms === 1 ? 'Bedroom' : 'Bedrooms'}</i>&nbsp;
-        <i>{bathrooms} {bathrooms === 1 ? 'Bathroom' : 'Bathrooms'}</i>
+        <i>
+          {bedrooms} {bedrooms === 1 ? "Bedroom" : "Bedrooms"}
+        </i>
+        &nbsp;
+        <i>
+          {bathrooms} {bathrooms === 1 ? "Bathroom" : "Bathrooms"}
+        </i>
       </div>
 
       <div className="apartment-status">
         <span className="status-badge">{status}</span>
       </div>
 
-      
-        <Button
-          type="link"
-          onClick={showModal}
-          className="view-details-button"
-        >
-          View Details
-        </Button>
-     
-
-      {/* Modal inside ApartmentCard */}
-      <Modal
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-        width="fit-content"
-        centered
-        destroyOnClose
+      <Button
+        type="link"
+        onClick={showModal}
+        className="view-details-button"
+        aria-label={`View details for ${title}`}
       >
-        <ApartmentDetails />
-      </Modal>
+        View Details
+      </Button>
+
+      {/* Conditionally render modal to avoid unnecessary DOM load */}
+      {isModalVisible && (
+        <Modal
+          open={isModalVisible}
+          onCancel={handleCancel}
+          footer={null}
+          width="fit-content"
+          centered
+          destroyOnClose
+        >
+          <ApartmentDetails />
+        </Modal>
+      )}
     </div>
   );
 };

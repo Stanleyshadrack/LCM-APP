@@ -1,70 +1,79 @@
 .apartment-card {
-    width: 150px;
-    height: fit-content;
-    border: 1px solid;
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.3s ease;
-  }
-  
-  .apartment-card:hover {
-    transform: scale(1.05);
+  width: 100%;
+  max-width: 300px;
+  min-width: 200px;
+  height: fit-content;
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease;
+  box-sizing: border-box;
+  background: white;
+}
+
+.apartment-card:hover {
+  transform: scale(1.05);
+}
+
+.view-details-button {
+  align-self: flex-end;
+  margin-top: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(17, 15, 15, 0.2);
+}
+
+.apartment-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.apartment-details {
+  margin-top: 8px;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.apartment-status {
+  margin-top: 10px;
+}
+
+.status-badge {
+  display: inline-block;
+  background: white;
+  color: green;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Status border colors */
+.apartment-card.letting {
+  border-color: #1976d2;
+}
+
+.apartment-card.under-construction {
+  border-color: #4caf50;
+}
+
+/* 🔽 Mobile responsive layout */
+@media (max-width: 768px) {
+  .apartment-card {
+    width: 100%;
+    max-width: 100%;
   }
 
-  .view-details-button{
-    display: flex;
-    justify-content: flex-end;
-    width: fit-content;
-    height: fit-content;
-    margin-top: 15px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(17, 15, 15, 0.2);
-    margin-left: 55px;
-    
+  .view-details-button {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
 
-  }
-  
-  .apartment-title {
-    font-weight: bold;
-    font-size: 18px;
-  }
-  
+  .apartment-title,
   .apartment-details {
-    margin-top: 8px;
     font-size: 16px;
-    font-style: italic;
   }
-  
-  .apartment-status {
-    margin-top: 10px;
-  }
-  
-  .status-badge {
-    display: inline-block;
-    background: white;
-    color: green;
-    font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  }
-  
-  
-  
-
-  
-  /* Border color based on status */
-  .apartment-card.letting {
-    border-color: #1976d2; /* Blue */
-  }
-  
-  .apartment-card.under-construction {
-    border-color: #4caf50; /* Green */
-  }
-
-  
-  
-  
+}
