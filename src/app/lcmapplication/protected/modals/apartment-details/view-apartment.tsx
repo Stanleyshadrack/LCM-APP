@@ -136,7 +136,7 @@ const ApartmentDetails = () => {
         <div className="header">
           <div className="left">
             <h1>APARTMENT DETAILS</h1>
-            <h2>TILES APARTMENT</h2>
+            <h2>LCM APARTMENT</h2>
             <p>1 Bedrooms&nbsp;&nbsp;2 Bedroom&nbsp;&nbsp;Bedsitter</p>
           </div>
           <div className="right">

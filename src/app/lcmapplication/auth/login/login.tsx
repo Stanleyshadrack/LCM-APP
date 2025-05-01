@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import './login.css';
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons'; 
+import Link from 'next/link';
+
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,16 +14,16 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <div className='logname'>
+        <div className="logname">
           <img src="/lcmicon.SVG" alt="LCM Logo" className="logo" />
-          <div className='name'>L.C.M</div>
+          <div className="name">L.C.M</div>
         </div>
 
         <div className="header">
-          Welcome to <span className='header2'>Tenant Management System</span>
+          Welcome to <span className="header2">Tenant Management System</span>
         </div>
 
-        <p>Please Login your account.</p>
+        <p>Please Login to your account.</p>
 
         <form>
           <label>Email</label>
@@ -29,12 +32,13 @@ const Login = () => {
           <label>Password</label>
           <div className="password-input">
             <input
-              type={showPassword ? "text" : "password"}
+              className="password-field"
+              type={showPassword ? 'text' : 'password'}
               placeholder="********"
-
-              
             />
-            
+            <span className="toggle-icon" onClick={togglePassword}>
+              {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+            </span>
           </div>
 
           <div className="options">
@@ -56,7 +60,8 @@ const Login = () => {
 
         <div className="register">
           <span>New member here?</span>
-          <a href="#">Register Now</a>
+          <Link href="/lcmapplication/auth/signup">Register Now</Link>
+
         </div>
       </div>
     </div>

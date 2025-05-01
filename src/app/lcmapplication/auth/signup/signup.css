@@ -1,175 +1,153 @@
+/* General container */
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: #f6f8fa;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f6f8fa;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Login box */
+.login-box {
+  background: #FFFFFF;
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Logo + name */
+.logname {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+  gap: 10px;
+}
+
+.name {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  color: #00568D;
+}
+
+.logo {
+  width: 36px;
+  height: 36px;
+}
+
+/* Headers */
+.header2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #00568D;
+}
+
+.header {
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+/* Form styles */
+form {
+  text-align: left;
+  margin-top: 20px;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Password input wrapper */
+.password-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+}
+
+/* Name fields */
+.name-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Submit button */
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+/* Register section */
+.register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  margin: 12px auto;
+}
+
+.register span {
+  color: #555;
+}
+
+.register a {
+  color: #42A5F5;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.register a:hover {
+  text-decoration: underline;
+}
+
+/* Media Query for Tablets and Larger Screens */
+@media (min-width: 601px) {
   .login-box {
-    background: #FFFFFF;
     padding: 40px;
-    border-radius: 12px;
-    height: fit-content;
-    width: 574px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.05);
-    text-align: center;
+    max-width: 480px;
   }
 
-  .logname {
-    display: flex;
-    align-items: center;
-    justify-content: center; 
-    margin-bottom: 5px;
-    gap: space-between;
-    margin-top: 5px;
-  }
-
-  .name{
-width: fit-content;
-height: 32px;
-left: 85.88px;
-top: 0px;
-font-family: 'Poppins';
-font-style: normal;
-font-weight: 400;
-font-size: 27px;
-line-height: 120%;
-color: #00568D;
-  }
-  
-  
-  .logo {
-left: 0%;
-right: 42.18%;
-top: 12.5%;
-bottom: 12.62%;
-
-
-  }
-  
-  .header2 {
-    display: flex;
-    font-size: 20px;
-    flex-direction: column;
-    font-weight: 600;
-    margin-bottom: 10px;
-    align-items: center;
-  }
-  
-  .header {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    font-size: 16px;
-    font-weight: 400;
-    margin-bottom: 5px;
-  }
-  
-  form {
-    text-align: left;
-    margin-top: 20px;
-  }
-  
-  input[type="email"],
-  input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-
-  
-  .options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    margin-top: 10px;
-  }
-  
-  button[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #2196f3;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
-    margin-top: 20px;
-    font-size: 16px;
-  }
-  
-  .divider {
-    margin: 20px 0;
-    font-size: 14px;
-    color: #888;
-  }
-  
-  .google-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    padding: 10px;
-    cursor: pointer;
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: #fff;
-  }
-  
-  .register {
-    display: flex;
-    justify-content: center;    /* Center the full text */
-    align-items: center;        /* Vertical alignment */
-    gap: 6px;                   /* Space between span and link */
-    font-size: 18px;
-    margin: 10px auto;
-  }
-  
-  .register span {
-    color: #555;                /* Soft gray */
-  }
-  
-  .register a {
-color: #42A5F5;             /* Bright blue */
-text-decoration: none;
-font-family: 'Poppins';
-font-style: normal;
-font-weight: 400;
-font-size: 16px;
-line-height: 30px;
-text-align: center;
-  }
-  
-  .register a:hover {
-    text-decoration: underline; /* Nice hover effect */
-  }
-
-
-  
-  
   .name-fields {
-    display: flex;           /* makes the div children sit side-by-side */
-    gap: 10px;               /* space between the inputs */
-    margin-bottom: 15px;     /* spacing below the name fields */
+    flex-direction: row;
   }
-  
-  .name-fields div {
-    flex: 1;                 /* equal width for each field */
-  }
-  
-  .name-fields input {
-    width: 100%;
-   
- 
-    font-size: 16px;
-
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-  
+}

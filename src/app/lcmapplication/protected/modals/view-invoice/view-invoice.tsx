@@ -120,7 +120,7 @@ const InvoicePage: React.FC<InvoicePageProps> = ({ invoice }) => {
 
           {/* Important Note */}
           <div className="invoice-note">
-            📜 Greetings to Unit {invoice.unitId} Tenant, <br />
+            📜
             Please ensure payment is made by the <strong>7th of MAR 2025</strong> to avoid penalties.
           </div>
 

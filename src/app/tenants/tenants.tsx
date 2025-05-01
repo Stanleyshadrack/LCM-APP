@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Table, Button, Badge, Input, Space } from "antd";
+import { Table, Button, Badge, Input, Space, Modal } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import "./tenants.css";
+import CreateTenantForm from "../lcmapplication/forms/add-tenants/add-tenant";
 
 interface Tenant {
   key: string;
@@ -14,6 +15,16 @@ interface Tenant {
   status: "In Residence" | "Vacated";
 }
 
+interface TenantFormValues {
+  fullName: string;
+  email: string;
+  idNumber: string;
+  phoneNumber: string;
+  apartment: string; // This maps to unit
+  unit: string; // Can be the same field or separately used
+  status: "inResidence" | "vacated"; // Adjusted status to match the form status
+}
+
 const data: Tenant[] = [
   { key: "1", name: "John Doe", email: "johndoe@gmail.com", idNumber: "12345678", phoneNumber: "254742792965", unit: "B02", dateCreated: "02/04/2024", status: "In Residence" },
   { key: "2", name: "Jane Smith", email: "janesmith@gmail.com", idNumber: "87654321", phoneNumber: "254700123456", unit: "C01", dateCreated: "03/04/2024", status: "Vacated" },
@@ -24,6 +35,29 @@ const data: Tenant[] = [
 
 const TenantsTable: React.FC = () => {
   const [searchText, setSearchText] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentTenant, setCurrentTenant] = useState<TenantFormValues | null>(null);
+
+  const showModal = (tenant: Tenant | null = null) => {
+    if (tenant) {
+      // Map Tenant properties to the form values structure
+      const mappedTenant: TenantFormValues = {
+        fullName: tenant.name,
+        email: tenant.email,
+        idNumber: tenant.idNumber,
+        phoneNumber: tenant.phoneNumber,
+        apartment: tenant.unit, // Assuming unit is the apartment in the form
+        unit: tenant.unit, // You can separate this if needed
+        status: tenant.status === "In Residence" ? "inResidence" : "vacated", // Adjust the status
+      };
+      setCurrentTenant(mappedTenant);
+    } else {
+      setCurrentTenant(null); // For adding a new tenant, reset the form
+    }
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => setIsModalVisible(false);
 
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
@@ -43,9 +77,9 @@ const TenantsTable: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      render: () => (
+      render: (_: any, record: Tenant) => (
         <Space size="middle">
-          <Button icon={<EditOutlined />} type="link" />
+          <Button icon={<EditOutlined />} type="link" onClick={() => showModal(record)} />
           <Button icon={<DeleteOutlined />} type="link" danger />
         </Space>
       ),
@@ -58,7 +92,6 @@ const TenantsTable: React.FC = () => {
 
   return (
     <div className="tenants-container">
-    
       <div className="page-header">
         <h2>Tenants</h2>
         <div className="page-actions">
@@ -69,23 +102,38 @@ const TenantsTable: React.FC = () => {
             className="search-input"
             style={{ width: 250 }}
           />
-          <Button type="primary" className="add-tenant-button">
+          <Button type="primary" className="add-tenant-button" onClick={() => showModal()}>
             + Add Tenant
           </Button>
         </div>
       </div>
 
-      {/* Table */}
-      
-        <Table
-          columns={columns}
-          dataSource={filteredData}
-          pagination={{ pageSize: 8 }}
-          bordered
-          rowClassName={() => "custom-table-row"}
+      <Table
+        columns={columns}
+        dataSource={filteredData}
+        pagination={{ pageSize: 8 }}
+        bordered
+        rowClassName={() => "custom-table-row"}
+      />
+
+      <Modal
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+        destroyOnClose
+        width="fit-content"
+        height="fit-content"
+        style={{
+          maxWidth: '90%',
+          boxShadow: ' 0 5px 15px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <CreateTenantForm
+          title={currentTenant ? "Edit Tenant" : "Add Tenant"}
+          initialValues={currentTenant}
         />
-      </div>
-   
+      </Modal>
+    </div>
   );
 };
 
