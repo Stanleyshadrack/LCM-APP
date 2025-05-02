@@ -3,6 +3,7 @@ import { Table, Button, Badge, Input, Space, Modal } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import "./tenants.css";
 import CreateTenantForm from "../lcmapplication/forms/add-tenants/add-tenant";
+import DeleteTenantModal from "../lcmapplication/protected/modals/delete-tenant/delete-tenant";
 
 interface Tenant {
   key: string;
@@ -20,12 +21,12 @@ interface TenantFormValues {
   email: string;
   idNumber: string;
   phoneNumber: string;
-  apartment: string; // This maps to unit
-  unit: string; // Can be the same field or separately used
-  status: "inResidence" | "vacated"; // Adjusted status to match the form status
+  apartment: string;
+  unit: string;
+  status: "inResidence" | "vacated";
 }
 
-const data: Tenant[] = [
+const initialData: Tenant[] = [
   { key: "1", name: "John Doe", email: "johndoe@gmail.com", idNumber: "12345678", phoneNumber: "254742792965", unit: "B02", dateCreated: "02/04/2024", status: "In Residence" },
   { key: "2", name: "Jane Smith", email: "janesmith@gmail.com", idNumber: "87654321", phoneNumber: "254700123456", unit: "C01", dateCreated: "03/04/2024", status: "Vacated" },
   { key: "3", name: "Jake Park", email: "jakepark@gmail.com", idNumber: "11223344", phoneNumber: "254711223344", unit: "D01", dateCreated: "04/04/2024", status: "Vacated" },
@@ -35,29 +36,54 @@ const data: Tenant[] = [
 
 const TenantsTable: React.FC = () => {
   const [searchText, setSearchText] = useState("");
+  const [tenantData, setTenantData] = useState<Tenant[]>(initialData);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentTenant, setCurrentTenant] = useState<TenantFormValues | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [tenantToDelete, setTenantToDelete] = useState<Tenant | null>(null);
 
   const showModal = (tenant: Tenant | null = null) => {
     if (tenant) {
-      // Map Tenant properties to the form values structure
       const mappedTenant: TenantFormValues = {
         fullName: tenant.name,
         email: tenant.email,
         idNumber: tenant.idNumber,
         phoneNumber: tenant.phoneNumber,
-        apartment: tenant.unit, // Assuming unit is the apartment in the form
-        unit: tenant.unit, // You can separate this if needed
-        status: tenant.status === "In Residence" ? "inResidence" : "vacated", // Adjust the status
+        apartment: tenant.unit,
+        unit: tenant.unit,
+        status: tenant.status === "In Residence" ? "inResidence" : "vacated",
       };
       setCurrentTenant(mappedTenant);
     } else {
-      setCurrentTenant(null); // For adding a new tenant, reset the form
+      setCurrentTenant(null);
     }
     setIsModalVisible(true);
   };
 
   const handleCancel = () => setIsModalVisible(false);
+
+  const handleDeleteClick = (tenant: Tenant) => {
+    setTenantToDelete(tenant);
+    setDeleteModalOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteModalOpen(false);
+    setTenantToDelete(null);
+  };
+
+  const handleArchiveTenant = () => {
+    console.log(`Archived ${tenantToDelete?.name}`);
+    handleCancelDelete();
+  };
+
+  const handleDeleteTenant = () => {
+    if (tenantToDelete) {
+      setTenantData(prev => prev.filter(t => t.key !== tenantToDelete.key));
+      console.log(`Deleted ${tenantToDelete.name}`);
+    }
+    handleCancelDelete();
+  };
 
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
@@ -80,13 +106,13 @@ const TenantsTable: React.FC = () => {
       render: (_: any, record: Tenant) => (
         <Space size="middle">
           <Button icon={<EditOutlined />} type="link" onClick={() => showModal(record)} />
-          <Button icon={<DeleteOutlined />} type="link" danger />
+          <Button icon={<DeleteOutlined />} type="link" danger onClick={() => handleDeleteClick(record)} />
         </Space>
       ),
     },
   ];
 
-  const filteredData = data.filter((item) =>
+  const filteredData = tenantData.filter((item) =>
     item.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -122,17 +148,26 @@ const TenantsTable: React.FC = () => {
         footer={null}
         destroyOnClose
         width="fit-content"
-        height="fit-content"
         style={{
-          maxWidth: '90%',
-          boxShadow: ' 0 5px 15px rgba(0, 0, 0, 0.1)',
+          maxWidth: "90%",
+          boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)",
         }}
       >
         <CreateTenantForm
           title={currentTenant ? "Edit Tenant" : "Add Tenant"}
           initialValues={currentTenant}
-        />
+           onCancel={handleCancel }        />
       </Modal>
+
+      {tenantToDelete && (
+        <DeleteTenantModal
+          open={deleteModalOpen}
+          tenantName={tenantToDelete.name}
+          onArchive={handleArchiveTenant}
+          onDelete={handleDeleteTenant}
+          onCancel={handleCancelDelete}
+        />
+      )}
     </div>
   );
 };

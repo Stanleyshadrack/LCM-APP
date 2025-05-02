@@ -1,0 +1,49 @@
+.modalContent {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 0;
+   
+  }
+  
+  .icon {
+    display: flex;
+    justify-content: center;
+    color: #faad14; /* Warning yellow */
+    font-size: 24px;
+    margin-top: 4px;
+    align-content: center;
+  }
+  
+  .textContainer {
+    flex: 1;
+    text-align: center;
+  }
+
+  /* delete-tenant.css */
+.ant-modal-title {
+  text-align: center;
+}
+
+.centered-footer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+
+  
+  .textContainer p {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: #333;
+    
+  }
+  
+  .textContainer strong {
+    font-weight: 600;
+    color: #000;
+  }
+  

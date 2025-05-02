@@ -50,7 +50,7 @@
 .page-content {
   flex-grow: 1;
   padding: 2rem;
-  overflow-y: none;
+  overflow-y: auto;
   margin-top: 70px; /* Pushes below fixed topbar */
   height: calc(100vh - 70px);
   box-sizing: border-box;
@@ -76,4 +76,5 @@
     margin-left: 0;
     width: 100%;
   }
+  
 }

@@ -192,6 +192,7 @@ const ApartmentDetails = () => {
             Next
           </button>
         </div>
+        
       </div>
 
       {/* Footer */}

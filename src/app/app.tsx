@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './lcmapplication/auth/login/login';
 import Register from './lcmapplication/auth/signup/signup';
+import Login from './lcmapplication/auth/login/login';
 
 
 function App() {
