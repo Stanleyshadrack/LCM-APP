@@ -1,8 +1,8 @@
 import React from 'react';
-import StatCard from '../lcmapplication/protected/widgets/statCard/statcard';
 import './dashboard.css';
 import { MoneyCollectOutlined } from "@ant-design/icons";
 import Link from 'next/link';
+import StatCard from '@/app/lcmapplication/protected/widgets/statCard/statcard';
 
 const Dashboard = () => {
   return (

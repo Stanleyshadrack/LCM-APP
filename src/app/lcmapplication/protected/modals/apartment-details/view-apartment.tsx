@@ -9,14 +9,7 @@ const ApartmentDetails = () => {
     { unit: "B02", bedroom: "2", status: "Vacated" },
     { unit: "B03", bedroom: "Bedsitter", status: "Occupied" },
     { unit: "C06", bedroom: "Bedsitter", status: "Occupied" },
-    { unit: "F03", bedroom: "1", status: "Vacated" },
-    { unit: "A01", bedroom: "2", status: "Occupied" },
-    { unit: "A02", bedroom: "1", status: "Vacated" },
-    { unit: "A03", bedroom: "Bedsitter", status: "Occupied" },
-    { unit: "A04", bedroom: "2", status: "Occupied" },
-    { unit: "A05", bedroom: "1", status: "Vacated" },
-    { unit: "A06", bedroom: "Bedsitter", status: "Occupied" },
-    { unit: "A07", bedroom: "2", status: "Occupied" },
+    
     
   ];
 
