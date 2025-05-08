@@ -11,10 +11,11 @@ interface CreateTenantFormProps {
     apartment: string;
     unit: string;
     status: "inResidence" | "vacated";
-  } | null; // Allow null or undefined
+  } | null; 
+  onCancel: () => void;
 }
 
-const CreateTenantForm = ({ title, initialValues }: CreateTenantFormProps) => {
+const CreateTenantForm = ({ title, initialValues, onCancel }: CreateTenantFormProps) => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -52,16 +53,9 @@ const CreateTenantForm = ({ title, initialValues }: CreateTenantFormProps) => {
 
   // Handle cancel action (reset form)
   const handleCancel = () => {
-    setFormData({
-      fullName: "",
-      email: "",
-      idNumber: "",
-      phoneNumber: "",
-      apartment: "",
-      unit: "",
-      status: "inResidence",
-    });
+    onCancel(); // This now closes the modal
   };
+
 
   return (
     <form className="form-container" onSubmit={handleSubmit}>

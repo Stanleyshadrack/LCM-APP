@@ -170,9 +170,9 @@ const Invoices: React.FC = () => {
             className="search-input"
             aria-label="Search invoices"
           />
-          <Button type="primary" className="add-tenant-button">
+          {/* <Button type="primary" className="add-tenant-button">
             + Add Tenant
-          </Button>
+          </Button> */}
         </div>
       </div>
 
