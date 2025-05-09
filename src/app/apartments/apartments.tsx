@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import './apartments.css';
 import { Button } from "antd";
 import ApartmentCard from "../lcmapplication/protected/widgets/ApartmentCard/ApartmentCard";
+import AddTenantButton from "../lcmapplication/protected/widgets/addButton/AddTenantButton";
+import SearchInput from "../lcmapplication/protected/widgets/search/SearchInput";
 
 
 
@@ -61,14 +63,17 @@ const Apartments = () => {
       <div className="apartments-header">
         <h2>APARTMENTS</h2>
         <div className="header-actions">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="search-input"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <Button type="primary" className="add-tenant-button">+ Add Tenant</Button>
+        <SearchInput
+    value={searchTerm}
+    onChange={handleSearchChange}
+    placeholder="Search apartments..."
+  />
+  <AddTenantButton
+    onClick={() => {
+      
+    }}
+    label="+ Add Apartment"
+  />
         </div>
       </div>
 

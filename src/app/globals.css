@@ -1,6 +1,7 @@
 .main-layout {
   display: flex;
   min-height: 100vh;
+  justify-content: space-between;
   width: 100%;
   flex-direction: row;
 }
@@ -22,6 +23,8 @@
 .content-area {
   margin-left: 220px;
   display: flex;
+  justify-content: space-between;
+  align-content: center;
   flex-direction: column;
   width: calc(100% - 220px);
   min-height: 100vh;
@@ -30,7 +33,7 @@
 }
 
 /* Topbar */
-.topbar {
+/* .topbar {
   width: calc(100% - 220px);
   height: 70px;
   background: white;
@@ -44,7 +47,7 @@
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
   box-sizing: border-box;
-}
+} */
 
 /* Content below topbar */
 .page-content {
@@ -76,5 +79,16 @@
     margin-left: 0;
     width: 100%;
   }
+
+
+  [data-theme='dark'] {
+    background-color: #1f1f1f;
+    color: white;
+  }
+  
+  [data-theme='dark'] .ant-layout {
+    background: #141414;
+  }
+  
   
 }

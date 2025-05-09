@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from "react";
-import { Table, Tag, Input, Button, Modal } from "antd";
+import { Table, Tag, Button, Modal } from "antd";
 import "./invoice.css";
 import InvoicePage from "../lcmapplication/protected/modals/view-invoice/view-invoice";
+import SearchInput from "../lcmapplication/protected/widgets/search/SearchInput";
 
 interface Invoice {
   key: string;
@@ -40,47 +41,7 @@ const Invoices: React.FC = () => {
       date: "02/04/2024",
       status: "PENDING",
     },
-    {
-      key: "3",
-      unitId: "A02",
-      apartment: "LCM Apartments",
-      rentAmount: "KES 8,000",
-      phoneNumber: "254742792965",
-      balanceDue: "KES 2,000.00",
-      date: "02/04/2024",
-      status: "PENDING",
-    },
-    {
-      key: "4",
-      unitId: "A02",
-      apartment: "LCM Apartments",
-      rentAmount: "KES 8,000",
-      phoneNumber: "254742792965",
-      balanceDue: "KES 2,000.00",
-      date: "02/04/2024",
-      status: "PENDING",
-    },
-    {
-      key: "5",
-      unitId: "A02",
-      apartment: "LCM Apartments",
-      rentAmount: "KES 8,000",
-      phoneNumber: "254742792965",
-      balanceDue: "KES 2,000.00",
-      date: "02/04/2024",
-      status: "PENDING",
-    },
-    {
-      key: "6",
-      unitId: "A02",
-      apartment: "LCM Apartments",
-      rentAmount: "KES 8,000",
-      phoneNumber: "254742792965",
-      balanceDue: "KES 2,000.00",
-      date: "02/04/2024",
-      status: "PENDING",
-    },
-    // ... More data
+    // ... Add more invoices if needed
   ];
 
   const openModal = (invoice: Invoice) => {
@@ -93,6 +54,10 @@ const Invoices: React.FC = () => {
     setSelectedInvoice(null);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
   const filteredInvoices = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     return invoices.filter(
@@ -103,36 +68,12 @@ const Invoices: React.FC = () => {
   }, [searchTerm, invoices]);
 
   const columns = [
-    {
-      title: "Unit Id",
-      dataIndex: "unitId",
-      key: "unitId",
-    },
-    {
-      title: "Apartment",
-      dataIndex: "apartment",
-      key: "apartment",
-    },
-    {
-      title: "Rent Amount",
-      dataIndex: "rentAmount",
-      key: "rentAmount",
-    },
-    {
-      title: "Phone Number",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
-    },
-    {
-      title: "Balance Due",
-      dataIndex: "balanceDue",
-      key: "balanceDue",
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
+    { title: "Unit Id", dataIndex: "unitId", key: "unitId" },
+    { title: "Apartment", dataIndex: "apartment", key: "apartment" },
+    { title: "Rent Amount", dataIndex: "rentAmount", key: "rentAmount" },
+    { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
+    { title: "Balance Due", dataIndex: "balanceDue", key: "balanceDue" },
+    { title: "Date", dataIndex: "date", key: "date" },
     {
       title: "Status",
       dataIndex: "status",
@@ -163,16 +104,11 @@ const Invoices: React.FC = () => {
       <div className="page-header">
         <h2>INVOICES</h2>
         <div className="page-actions">
-          <Input
-            placeholder="Search by unit or apartment"
+          <SearchInput
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-            aria-label="Search invoices"
+            onChange={handleSearchChange}
+            placeholder="Search apartment or units..."
           />
-          {/* <Button type="primary" className="add-tenant-button">
-            + Add Tenant
-          </Button> */}
         </div>
       </div>
 
@@ -185,7 +121,7 @@ const Invoices: React.FC = () => {
       />
 
       <Modal
-        title={`Invoice Details`}
+        title="Invoice Details"
         open={isModalVisible}
         onCancel={handleCancel}
         footer={null}

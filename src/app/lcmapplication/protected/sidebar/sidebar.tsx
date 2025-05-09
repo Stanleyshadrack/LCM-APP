@@ -33,6 +33,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible }) => {
         <Link href="/payments" className={pathname === "/payments" ? "active" : ""}>
           Payment History
         </Link>
+        <Link href="/arrears" className={pathname === "/arrears" ? "active" : ""}>
+          Arrears
+        </Link>
+        <Link href="/meter-readings" className={pathname === "/meter-readings" ? "active" : ""}>
+          Meter Readings
+        </Link>
+        
       </nav>
     </div>
   );
