@@ -6,54 +6,47 @@ import ClientLayout from "./clientLayout";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { ConfigProvider, theme as antdTheme } from "antd"; // ⬅️ for AntD theming
-import { ThemeProvider, useTheme } from "./context/ThemeContext";
-
-
 // Fonts
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-const robotoMono = Roboto_Mono({ variable: "--font-roboto-mono", subsets: ["latin"] });
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
 
-function InnerLayout({ children }: { children: React.ReactNode }) {
-  const { theme } = useTheme();
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
+  subsets: ["latin"],
+});
 
-  return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
-      }}
-    >
-      {children}
-    </ConfigProvider>
-  );
-}
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // Ensure this runs only on client to avoid hydration mismatch
     setIsClient(true);
   }, []);
 
-  if (!isClient) return null;
+  if (!isClient) return null; // Prevent SSR mismatch
 
+  // Define routes that should NOT use ClientLayout
   const noLayoutRoutes = ["/login", "/signup", "/account-type"];
+
   const isNoLayout = noLayoutRoutes.includes(pathname);
 
   return (
     <html lang="en">
-      <head>
-        <title>lcm application</title>
-        <link rel="icon" href="/lcmicon.svg" type="image/svg+xml" />
-      </head>
-      <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
-        <ThemeProvider>
-          <InnerLayout>
-            {isNoLayout ? children : <ClientLayout>{children}</ClientLayout>}
-          </InnerLayout>
-        </ThemeProvider>
-      </body>
-    </html>
+    <head>
+      <title>lcm application</title>
+      <link rel="icon" href="/lcmicon.svg" type="image/svg+xml" />
+    </head>
+    <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
+      {isNoLayout ? children : <ClientLayout>{children}</ClientLayout>}
+    </body>
+  </html>
+  
   );
 }

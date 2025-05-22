@@ -1,12 +1,11 @@
 .topbar-content {
   width: calc(100% - 220px);
   height: 70px;
- 
   position: fixed;
   top: 0;
   left: 220px;
   z-index: 10;
-  padding: 0 40px;
+  padding: 0 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -82,6 +81,12 @@
   cursor: pointer;
   margin-right: 10px;
 }
+
+.topbar-content.collapsed {
+  width: calc(100% - 80px); /* assuming collapsed sidebar is 80px */
+  left: 80px;
+}
+
 
 /* 🔽 Responsive for tablets & mobile */
 @media (max-width: 768px) {

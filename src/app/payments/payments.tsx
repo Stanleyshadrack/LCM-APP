@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Table, Tag } from "antd";
+import { Table, Tag, Modal } from "antd";
 import "./payments.css";
 import AddTenantButton from "../lcmapplication/protected/widgets/addButton/AddTenantButton";
 import SearchInput from "../lcmapplication/protected/widgets/search/SearchInput";
+import AddPaymentForm from "../lcmapplication/forms/add-payment/addPayments";
+
 
 interface Payment {
   key: string;
@@ -17,6 +19,7 @@ interface Payment {
 
 const Payments = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const payments: Payment[] = [
     {
@@ -49,7 +52,6 @@ const Payments = () => {
       dateTime: "02/04/2024",
       arrears: "Owed",
     },
-    // Add more payments as needed...
   ];
 
   const columns = [
@@ -87,7 +89,7 @@ const Payments = () => {
             placeholder="Search apartment or unit..."
           />
           <AddTenantButton
-            onClick={() => console.log("Add Payment clicked")}
+            onClick={() => setIsModalOpen(true)}
             label="+ Add Payment"
           />
         </div>
@@ -100,6 +102,28 @@ const Payments = () => {
         className="payments-table"
         rowKey="key"
       />
+
+      {/* AntD Modal with form inside */}
+<Modal
+  title={null}
+  open={isModalOpen}
+  onCancel={() => setIsModalOpen(false)}
+  footer={null}
+  destroyOnClose
+  centered
+  style={{
+    padding: 0,
+    maxWidth: "100%",
+    height:"fit-comtent",
+    width: "auto",
+  }}
+ 
+  wrapClassName="custom-modal-wrapper"
+>
+  <AddPaymentForm />
+</Modal>
+
+
     </div>
   );
 };
