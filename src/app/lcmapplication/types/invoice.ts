@@ -13,4 +13,23 @@ export default interface Invoice {
     waterConsumption?: number;
     totalPayable?: string;
   }
+
+  
+
+
+export enum ApartmentStatus {
+  Letting = "Letting",
+  UnderConstruction = "Under construction",
+  SoldOut = "Sold out",
+}
+
+export interface Apartment {
+  id: number;
+  title: string;
+  unitTypes: string[];
+  status: ApartmentStatus;
+}
+
+
+
   

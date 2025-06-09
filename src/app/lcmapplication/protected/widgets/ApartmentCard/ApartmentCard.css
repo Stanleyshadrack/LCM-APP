@@ -1,56 +1,61 @@
 .apartment-card {
   width: 100%;
   max-width: 300px;
-  min-width: 200px;
-  height: fit-content;
-  border: 1px solid;
-  border-radius: 12px;
+  min-width: 240px;
   padding: 16px;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background-color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.3s ease;
-  box-sizing: border-box;
-  background: white;
+  gap: 12px;
 }
 
 .apartment-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-.view-details-button {
-  align-self: flex-end;
-  margin-top: 15px;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(17, 15, 15, 0.2);
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .apartment-title {
-  font-weight: bold;
   font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
 }
 
 .apartment-details {
-  margin-top: 8px;
-  font-size: 16px;
+  font-size: 15px;
+  color: #555;
   font-style: italic;
-}
-
-.apartment-status {
-  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
 }
 
 .status-badge {
-  display: inline-block;
-  background: white;
-  color: green;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  font-weight: 500;
+  font-size: 13px;
 }
 
-/* Status border colors */
+.unit-count-badge {
+  font-size: 13px;
+  font-weight: 500;
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 8px;
+  color: #666;
+}
+
+/* Status-specific border colors */
 .apartment-card.letting {
   border-color: #1976d2;
 }
@@ -59,21 +64,41 @@
   border-color: #4caf50;
 }
 
-/* 🔽 Mobile responsive layout */
+.apartment-card.sold-out {
+  border-color: #f44336;
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  gap: 12px;
+}
+
+.view-details-button {
+  padding: 4px 8px;
+  font-weight: 500;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(17, 15, 15, 0.2);
+  cursor: pointer;
+}
+
+.status-badge {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* Responsive: stack on small screens */
 @media (max-width: 768px) {
-  .apartment-card {
-    width: 100%;
-    max-width: 100%;
+  .card-footer {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .view-details-button {
     width: 100%;
-    justify-content: center;
-    margin-left: 0;
-  }
-
-  .apartment-title,
-  .apartment-details {
-    font-size: 16px;
+    text-align: center;
   }
 }
