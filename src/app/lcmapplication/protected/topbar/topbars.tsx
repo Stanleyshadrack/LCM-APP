@@ -6,9 +6,10 @@ import "./topbar.css";
 
 interface TopbarProps {
   toggleSidebar: () => void;
+  collapsed: boolean;
 }
 
-const Topbar: React.FC<TopbarProps> = ({ toggleSidebar }) => {
+const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
   const [profileImage, setProfileImage] = useState<string>("/profile.svg");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -28,7 +29,7 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar }) => {
   };
 
   return (
-    <div className="topbar-content">
+    <div className={`topbar-content ${collapsed ? "collapsed" : ""}`}>
       <button onClick={toggleSidebar} className="toggle-button">☰</button>
 
       <div className="user-info">

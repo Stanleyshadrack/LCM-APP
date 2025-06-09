@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Table, Button, Badge, Input, Space, Modal } from "antd";
+import { Table, Button, Badge, Space, Modal } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import "./tenants.css";
 import CreateTenantForm from "../lcmapplication/forms/add-tenants/add-tenant";
 import DeleteTenantModal from "../lcmapplication/protected/modals/delete-tenant/delete-tenant";
+import AddTenantButton from "../lcmapplication/protected/widgets/addButton/AddTenantButton";
+import SearchInput from "../lcmapplication/protected/widgets/search/SearchInput";
 
 interface Tenant {
   key: string;
@@ -85,6 +87,33 @@ const TenantsTable: React.FC = () => {
     handleCancelDelete();
   };
 
+  const handleSaveTenant = (values: TenantFormValues) => {
+    const newTenant: Tenant = {
+      key: currentTenant ? currentTenant.idNumber : Date.now().toString(),
+      name: values.fullName,
+      email: values.email,
+      idNumber: values.idNumber,
+      phoneNumber: values.phoneNumber,
+      unit: values.unit,
+      dateCreated: new Date().toLocaleDateString(),
+      status: values.status === "inResidence" ? "In Residence" : "Vacated",
+    };
+
+    setTenantData(prevData => {
+      if (currentTenant) {
+        // Edit mode
+        return prevData.map(t =>
+          t.idNumber === currentTenant.idNumber ? newTenant : t
+        );
+      } else {
+        // Add mode
+        return [...prevData, newTenant];
+      }
+    });
+
+    setIsModalVisible(false);
+  };
+
   const columns = [
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "Email", dataIndex: "email", key: "email" },
@@ -121,16 +150,15 @@ const TenantsTable: React.FC = () => {
       <div className="page-header">
         <h2>Tenants</h2>
         <div className="page-actions">
-          <Input
-            placeholder="Search by name..."
+          <SearchInput
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            className="search-input"
-            style={{ width: 250 }}
+            placeholder="Search tenants..."
           />
-          <Button type="primary" className="add-tenant-button" onClick={() => showModal()}>
-            + Add Tenant
-          </Button>
+          <AddTenantButton
+            onClick={() => showModal()}
+            label="+ Add Tenant"
+          />
         </div>
       </div>
 
@@ -142,7 +170,7 @@ const TenantsTable: React.FC = () => {
         rowClassName={() => "custom-table-row"}
       />
 
-      <Modal
+<Modal
         open={isModalVisible}
         onCancel={handleCancel}
         footer={null}

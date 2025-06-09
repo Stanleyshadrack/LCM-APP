@@ -1,7 +1,6 @@
-/* sidebar.css */
-
 .sidebar {
   width: 220px;
+  display: flex;
   height: 100vh;
   background-color: #ffffff;
   border-right: 1px solid #e0e0e0;
@@ -11,6 +10,8 @@
   left: 0;
   transition: transform 0.3s ease;
   z-index: 1000;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sidebar.hidden {
@@ -66,6 +67,36 @@
   transform: translateX(0);
 }
 
+
+.bottom-icon {
+  display: flex;
+  width: fit-content;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+/* .bottom-icon:hover {
+  background-color: #004577;
+} */
+
+
+.messaging-icon {
+  padding-top: 20px;
+  border-top: 1px solid #ccc;
+  text-align: center;
+}
+
+.messaging-icon:hover {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+
+
 /* Mobile styles */
 @media (max-width: 768px) {
   .sidebar {
@@ -76,3 +107,4 @@
     transform: translateX(0);
   }
 }
+

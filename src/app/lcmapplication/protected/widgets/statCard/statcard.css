@@ -1,50 +1,54 @@
 .stat-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    transition: transform 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-width: 140px;
-    flex: 1;
+  background: var(--card-bg, #ffffff);
+  color: var(--text-color, #111827);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 140px;
+  flex: 1;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.stat-icon {
+  font-size: 1.5rem;
+  color: var(--icon-color, #2563eb);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  color: var(--subtext-color, #6b7280);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+/* Dark mode */
+.dark-mode .stat-card {
+  --card-bg: #1f2937;
+  --text-color: #f3f4f6;
+  --icon-color: #fbbf24;
+  --subtext-color: #d1d5db;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 0.75rem;
+    font-size: 14px;
   }
-  
-  .stat-card:hover {
-    transform: translateY(-3px);
-  }
-  
-  .stat-card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #555;
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-  
-  .stat-icon {
-    font-size: 1.2rem;
-    color: #2563eb;
-  }
-  
+
   .stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-top: 0.5rem;
-    color: #111827;
+    font-size: 1.25rem;
   }
-  
-  /* Responsive Tweaks */
-  @media (max-width: 768px) {
-    .stat-card {
-      padding: 0.75rem;
-      font-size: 14px;
-    }
-  
-    .stat-value {
-      font-size: 1.25rem;
-    }
-  }
-  
+}

@@ -2,52 +2,51 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 16px;
-  background-color: #f6f8fa;
   width: 100%;
+  padding: 16px;
+  overflow-y: hidden;
   box-sizing: border-box;
+  background-color: #f6f8fa;
 }
 
-.tenant-dashboard {
-  width: 100%;
-  padding: 16px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+
 
 .page-header {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 24px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+ 
 }
 
 .page-header h2 {
   margin: 0;
   font-size: 20px;
+ 
+  
 }
 
 .page-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 12px;
+  align-items: center;
 }
 
 .search-input {
-  width: 100%;
+  flex: 1; 
+  min-width: 150px;
+  outline: none;
+   width: 100%;
   max-width: 250px;
   border-radius: 6px;
+  background-color: #00568D;
 }
 
 .add-tenant-button {
-  background-color: #42A5F5;
-  border-color: #42A5F5;
-  border-radius: 6px;
-  font-weight: 600;
-  color: white;
+  white-space: nowrap;
 }
 
 .add-tenant-button:hover {
@@ -92,35 +91,19 @@
   font-size: 18px;
 }
 
-/* 🔽 Responsive Adjustments */
 @media (max-width: 768px) {
-  .tenants-container {
-    padding: 12px;
-  }
-
   .page-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
   .page-actions {
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
   }
 
-  .search-input {
-    width: 100%;
-  }
-
+  .search-input,
   .add-tenant-button {
     width: 100%;
-  }
-
-  .ant-table {
-    font-size: 12px;
-  }
-
-  .ant-table th, .ant-table td {
-    padding: 8px;
   }
 }

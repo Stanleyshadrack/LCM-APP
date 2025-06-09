@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { Table, Tag, Input, Button } from "antd";
+import { Table, Tag, Modal } from "antd";
 import "./payments.css";
+import AddTenantButton from "../lcmapplication/protected/widgets/addButton/AddTenantButton";
+import SearchInput from "../lcmapplication/protected/widgets/search/SearchInput";
+import AddPaymentForm from "../lcmapplication/forms/add-payment/addPayments";
+
 
 interface Payment {
   key: string;
@@ -15,13 +19,14 @@ interface Payment {
 
 const Payments = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const payments: Payment[] = [
     {
       key: "1",
       unitId: "A01",
       apartment: "Bima Heights",
-      paidAmount: "kes 8,000",
+      paidAmount: "KES 8,000",
       phoneNumber: "254742792965",
       refCode: "TDI08N80BK",
       dateTime: "02/04/2024",
@@ -31,7 +36,7 @@ const Payments = () => {
       key: "2",
       unitId: "A02",
       apartment: "LCM Apartments",
-      paidAmount: "kes 8,000",
+      paidAmount: "KES 8,000",
       phoneNumber: "254742792965",
       refCode: "TDI08N80BK",
       dateTime: "02/04/2024",
@@ -41,46 +46,21 @@ const Payments = () => {
       key: "3",
       unitId: "A03",
       apartment: "H&R Apartments",
-      paidAmount: "kes 8,000",
+      paidAmount: "KES 8,000",
       phoneNumber: "254742792965",
       refCode: "TDI08N80BK",
       dateTime: "02/04/2024",
       arrears: "Owed",
     },
-    // Add more payments as needed...
   ];
 
   const columns = [
-    {
-      title: "Unit Id",
-      dataIndex: "unitId",
-      key: "unitId",
-    },
-    {
-      title: "Apartment",
-      dataIndex: "apartment",
-      key: "apartment",
-    },
-    {
-      title: "Paid Amount",
-      dataIndex: "paidAmount",
-      key: "paidAmount",
-    },
-    {
-      title: "Phone Number",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
-    },
-    {
-      title: "Ref Code",
-      dataIndex: "refCode",
-      key: "refCode",
-    },
-    {
-      title: "Date/Time",
-      dataIndex: "dateTime",
-      key: "dateTime",
-    },
+    { title: "Unit Id", dataIndex: "unitId", key: "unitId" },
+    { title: "Apartment", dataIndex: "apartment", key: "apartment" },
+    { title: "Paid Amount", dataIndex: "paidAmount", key: "paidAmount" },
+    { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
+    { title: "Ref Code", dataIndex: "refCode", key: "refCode" },
+    { title: "Date/Time", dataIndex: "dateTime", key: "dateTime" },
     {
       title: "Arrears",
       dataIndex: "arrears",
@@ -103,15 +83,15 @@ const Payments = () => {
       <div className="page-header">
         <h2>PAYMENTS HISTORY</h2>
         <div className="page-actions">
-          <Input
-            placeholder="Search..."
+          <SearchInput
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            placeholder="Search apartment or unit..."
           />
-          <Button type="primary" className="add-tenant-button">
-            + Add Tenant
-          </Button>
+          <AddTenantButton
+            onClick={() => setIsModalOpen(true)}
+            label="+ Add Payment"
+          />
         </div>
       </div>
 
@@ -120,7 +100,30 @@ const Payments = () => {
         dataSource={filteredPayments}
         pagination={{ pageSize: 8 }}
         className="payments-table"
+        rowKey="key"
       />
+
+      {/* AntD Modal with form inside */}
+<Modal
+  title={null}
+  open={isModalOpen}
+  onCancel={() => setIsModalOpen(false)}
+  footer={null}
+  destroyOnClose
+  centered
+  style={{
+    padding: 0,
+    maxWidth: "100%",
+    height:"fit-comtent",
+    width: "auto",
+  }}
+ 
+  wrapClassName="custom-modal-wrapper"
+>
+  <AddPaymentForm />
+</Modal>
+
+
     </div>
   );
 };

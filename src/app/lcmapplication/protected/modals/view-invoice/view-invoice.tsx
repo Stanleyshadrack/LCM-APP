@@ -71,17 +71,17 @@ const InvoicePage: React.FC<InvoicePageProps> = ({ invoice }) => {
                 </tr>
                 <tr>
                   <td>Current Meter Reading</td>
-                  <td>{invoice.waterReadingCurrent ?? "N/A"}</td>
+                  <td>{invoice.waterReadingCurrent ?? "30"}</td>
                   <td>-</td>
                 </tr>
                 <tr>
                   <td>Previous Meter Reading</td>
-                  <td>{invoice.waterReadingPrevious ?? "N/A"}</td>
+                  <td>{invoice.waterReadingPrevious ?? "29"}</td>
                   <td>-</td>
                 </tr>
                 <tr>
                   <td>Total Water Consumption</td>
-                  <td>{invoice.waterConsumption ?? "N/A"} unit(s)</td>
+                  <td>{invoice.waterConsumption ?? "14"} unit(s)</td>
                   <td>-</td>
                 </tr>
                 <tr>

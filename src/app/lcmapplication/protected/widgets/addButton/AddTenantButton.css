@@ -1,0 +1,27 @@
+.add-tenant-button {
+    white-space: nowrap;
+    background-color: #42A5F5;
+    color: white;
+    font-weight: 600;
+    align-content: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border: none;
+    height: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .add-tenant-button:hover {
+    background-color: #1e88e5 !important;
+    border-color: #1e88e5 !important;
+  }
+  
+  @media (max-width: 768px) {
+    .add-tenant-button {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+  

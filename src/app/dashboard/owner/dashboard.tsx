@@ -1,4 +1,5 @@
 import React from 'react';
+
 import './dashboard.css';
 import { MoneyCollectOutlined } from "@ant-design/icons";
 import Link from 'next/link';
@@ -6,7 +7,7 @@ import StatCard from '@/app/lcmapplication/protected/widgets/statCard/statcard';
 
 const Dashboard = () => {
   return (
-    <div className="dashboard-container">
+   
       <div className="dashboard-content">
         <div className="main-dashboard">
           <h2>DASHBOARD</h2>
@@ -91,7 +92,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </div>
+    
   );
 };
 

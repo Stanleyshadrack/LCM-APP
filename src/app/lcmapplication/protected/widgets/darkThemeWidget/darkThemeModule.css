@@ -1,0 +1,8 @@
+[data-theme='dark'] {
+    background-color: #1f1f1f;
+    color: white;
+  }
+  
+  [data-theme='dark'] .ant-layout {
+    background: #141414;
+  }  

@@ -1,0 +1,47 @@
+.add-payment-container {
+  max-width: 500px;
+  width: 100%;
+  margin: 40px auto;
+  padding: 24px;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 12px;
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
+  box-sizing: border-box;
+}
+
+.form-title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+}
+
+.payment-form .ant-form-item-label > label {
+  font-weight: 500;
+  color: #333;
+}
+
+.submit-btn {
+  width: 100%;
+  font-weight: 600;
+  height: 40px;
+  border-radius: 6px;
+}
+
+/* Mobile tweaks */
+@media screen and (max-width: 600px) {
+  .add-payment-container {
+    padding: 16px;
+    margin: 20px 12px;
+  }
+
+  .form-title {
+    font-size: 20px;
+  }
+
+  .submit-btn {
+    height: 38px;
+  }
+}
