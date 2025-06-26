@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
 import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { Dropdown, Menu } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+import { DownOutlined, MenuOutlined } from "@ant-design/icons"; // Hamburger icon
 import "./topbar.css";
 
 interface TopbarProps {
@@ -11,21 +11,17 @@ interface TopbarProps {
   collapsed: boolean;
 }
 
-const Topbar: React.FC<TopbarProps> = ({ toggleSidebar }) => {
+const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
   const [profileImage, setProfileImage] = useState<string>("/profile.svg");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
-  };
+  const handleImageClick = () => fileInputRef.current?.click();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-      };
+      reader.onloadend = () => setProfileImage(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
@@ -42,12 +38,14 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar }) => {
   );
 
   return (
-    <div className="topbar">
-      <button className="toggle-button" onClick={toggleSidebar}>
-        ☰
-      </button>
+    <div className={`topbar ${collapsed ? "collapsed" : ""}`}>
+      <div className="topbar-left">
+        <button className="toggle-button" onClick={toggleSidebar}>
+          <MenuOutlined />
+        </button>
+      </div>
 
-      <div className="user-section">
+      <div className="topbar-right">
         <input
           type="file"
           accept="image/*"

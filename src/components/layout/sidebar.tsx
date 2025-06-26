@@ -3,24 +3,34 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageOutlined, UserOutlined, TeamOutlined } from "@ant-design/icons";
-import { Modal, Tabs } from "antd";
-
+import { MessageOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 import "./sidebar.css";
 
 interface SidebarProps {
   isVisible: boolean;
-   isMobile?: boolean;
+  isMobile?: boolean;
+  onClose?: () => void;
 }
 
-const { TabPane } = Tabs;
-
-const Sidebar: React.FC<SidebarProps> = ({ isVisible }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isVisible, isMobile = false, onClose }) => {
   const pathname = usePathname();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const handleOverlayClick = () => {
+    if (onClose) onClose();
+  };
+
   return (
     <>
+      {/* Overlay for mobile with fade animation */}
+      {isMobile && (
+        <div
+          className={`sidebar-overlay ${isVisible ? "show" : "hidden"}`}
+          onClick={handleOverlayClick}
+        />
+      )}
+
       <div className={`sidebar ${isVisible ? "show" : "hidden"}`}>
         <div className="logo">
           <img src="/lcmicon.SVG" alt="LCM Logo" />
@@ -28,10 +38,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible }) => {
         </div>
 
         <nav className="nav-links">
-          <Link href="/meterReading" className={pathname === "/employee" ? "active": ""}>
-          Meter Reading
+          <Link href="/meterReading" className={pathname === "/meterReading" ? "active" : ""}>
+            Meter Reading
           </Link>
-          <Link href="/dashboard/owner" className={pathname === "/owner" ? "active" : ""}>
+          <Link href="/dashboard/owner" className={pathname === "/dashboard/owner" ? "active" : ""}>
             Dashboard
           </Link>
           <Link href="/apartments" className={pathname === "/apartments" ? "active" : ""}>
@@ -54,13 +64,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible }) => {
           </Link>
         </nav>
 
-        {/* Messaging Icon */}
         <div className="bottom-icon" onClick={() => setIsModalVisible(true)}>
           <MessageOutlined style={{ fontSize: "24px", color: "#1890ff", cursor: "pointer" }} />
         </div>
       </div>
 
-      {/* Messages Modal */}
       <Modal
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
@@ -69,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible }) => {
         width={800}
         closeIcon={null}
       >
-{/* {<MessagingInterface/>} */}
+        {/* {<MessagingInterface/>} */}
       </Modal>
     </>
   );

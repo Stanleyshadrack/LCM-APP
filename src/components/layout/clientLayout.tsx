@@ -10,7 +10,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const noLayoutRoutes = ["/", "/login", "/signup", "/account-type", "/forgot-password"];
   const isNoLayout = noLayoutRoutes.includes(pathname);
 
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -29,18 +29,17 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Sidebar isVisible={!collapsed} isMobile={isMobile} />
-
       <div
         className={`main-content ${collapsed ? "collapsed" : "expanded"}`}
         style={{
-          marginLeft: collapsed ? 0 : 220,
+          marginLeft: isMobile || collapsed ? 0 : 220,
           transition: "margin-left 0.3s ease",
           minHeight: "100vh",
           backgroundColor: "#f5f5f5",
         }}
       >
         <Topbar toggleSidebar={toggleSidebar} collapsed={collapsed} />
-        <main style={{ padding: "20px", paddingTop: "90px" }}>{children}</main>
+        <main style={{ paddingTop: "90px", padding: "20px" }}>{children}</main>
       </div>
     </>
   );
