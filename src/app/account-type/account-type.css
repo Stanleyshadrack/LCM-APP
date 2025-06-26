@@ -3,6 +3,7 @@
     background: #f9fafb;
     display: flex;
     flex-direction: column;
+  background: #f4f6f8 url("/layoutimage.png") center/cover no-repeat;
     align-items: center;
     padding: 2rem 1rem;
    

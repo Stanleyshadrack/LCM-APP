@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Table, Button, Badge, Space, Modal } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import "./tenants.css";
-import CreateTenantForm from "../lcmapplication/forms/add-tenants/add-tenant";
 import DeleteTenantModal from "../lcmapplication/protected/modals/delete-tenant/delete-tenant";
 import AddTenantButton from "../lcmapplication/protected/widgets/addButton/AddTenantButton";
 import SearchInput from "../lcmapplication/protected/widgets/search/SearchInput";
+import CreateTenantForm from "@/features/tenants/create-tenant-form";
 
 interface Tenant {
   key: string;

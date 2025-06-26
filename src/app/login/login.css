@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: #f6f8fa;
+  background: #f4f6f8 url("/layoutimage.png") center/cover no-repeat;
   padding: 20px;
   box-sizing: border-box;
 }
@@ -16,9 +16,10 @@
   border-radius: 12px;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
   text-align: center;
   box-sizing: border-box;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 /* Logo + name */
@@ -33,14 +34,8 @@
 .name {
   font-family: 'Poppins', sans-serif;
   font-size: 24px;
-  font-weight: 400;
+  font-weight: 500;
   color: #00568D;
-}
-
-.account-type-display{
-  display: flex;
-  justify-content: center;
-  margin-bottom: auto;
 }
 
 .logo {
@@ -48,23 +43,29 @@
   height: 40px;
 }
 
+.account-type-display {
+  display: flex;
+  justify-content: center;
+  font-size: 14px;
+  margin-top: 8px;
+  margin-bottom: 10px;
+  color: #444;
+}
+
 /* Headings */
 .header2 {
-  display: block;  
-  font-weight: bold;  
-  color: #00568D;  
-  width: 100%;
-  margin-top: 4px;  
+  font-weight: bold;
+  color: #00568D;
+  margin-top: 4px;
+  display: block;
 }
 
 .header {
-  display: flex;             
-  flex-direction: column;   
   font-size: 14px;
   font-weight: 400;
   margin-bottom: 10px;
-  color: #333;         
-  padding: 10px; 
+  color: #333;
+  padding: 10px;
 }
 
 /* Form */
@@ -84,7 +85,7 @@ input[type="email"],
   box-sizing: border-box;
 }
 
-/* Password visibility icon */
+/* Password visibility */
 .password-input {
   position: relative;
 }
@@ -94,10 +95,27 @@ input[type="email"],
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 20px;
+  font-size: 18px;
   color: #888;
   cursor: pointer;
 }
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+.success-message {
+  background-color: #e6ffed;
+  color: #047857;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
 
 /* Options like "remember me" and "forgot password" */
 .options {
@@ -119,27 +137,19 @@ button[type="submit"] {
   border-radius: 6px;
   margin-top: 20px;
   font-size: 16px;
+  transition: background 0.3s ease;
 }
 
-/* Divider text */
-.divider {
-  margin: 20px 0;
+button[type="submit"]:hover {
+  background-color: #1976d2;
+}
+
+/* Error message */
+.login-error {
+  color: red;
+  margin: 10px 0;
   font-size: 14px;
-  color: #888;
-}
-
-/* Google login button */
-.google-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  padding: 10px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
-  cursor: pointer;
+  animation: fadeIn 0.3s ease;
 }
 
 /* Register section */
@@ -168,28 +178,19 @@ button[type="submit"] {
   text-decoration: underline;
 }
 
-
-
-.login-error {
-  color: red;
-  margin: 10px 0;
-  font-size: 14px;
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-
-.login-link {
-  color: #1890ff;
-  font-weight: 500;
-  margin-left: 5px;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.login-link:hover {
-  color: #40a9ff;
-}
-
-/* Media query for small screens */
+/* Mobile responsiveness */
 @media (max-width: 480px) {
   .login-box {
     padding: 25px 15px;
@@ -211,6 +212,7 @@ button[type="submit"] {
     font-size: 14px;
   }
 
- 
-  
+  .account-type-display {
+    font-size: 13px;
+  }
 }

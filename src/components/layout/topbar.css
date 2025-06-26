@@ -1,0 +1,95 @@
+:root {
+  --sidebar-width: 220px;
+  --topbar-height: 70px;
+}
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width);
+  right: 0;
+  height: var(--topbar-height);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  z-index: 1000;
+  transition: left 0.3s ease;
+}
+
+.topbar.collapsed {
+  left: 0;
+}
+.toggle-button {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.nameid {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.username {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.user-id {
+  font-size: 12px;
+  color: #999;
+}
+
+.dropdown-icon {
+  font-size: 12px;
+  color: #999;
+}
+/* Responsive */
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: row;
+    padding: 0 10px;
+  }
+
+  .username {
+    font-size: 0.85rem;
+  }
+
+  .user-id {
+    font-size: 0.75rem;
+  }
+
+  .toggle-button {
+    margin-right: 10px;
+  }
+
+  .dropdown-icon {
+    display: none;
+  }
+}

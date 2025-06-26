@@ -7,10 +7,10 @@ import { MessageOutlined, UserOutlined, TeamOutlined } from "@ant-design/icons";
 import { Modal, Tabs } from "antd";
 
 import "./sidebar.css";
-import MessagingInterface from "../../chats/messages/messages";
 
 interface SidebarProps {
   isVisible: boolean;
+   isMobile?: boolean;
 }
 
 const { TabPane } = Tabs;
@@ -69,7 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible }) => {
         width={800}
         closeIcon={null}
       >
-{<MessagingInterface/>}
+{/* {<MessagingInterface/>} */}
       </Modal>
     </>
   );
