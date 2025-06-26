@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Input, DatePicker, Select, Button, Modal } from "antd";
+import { Table, Input, DatePicker, Select, Button, Modal, Tag } from "antd";
 import dayjs from "dayjs";
 import "./arrearsPage.css";
 
@@ -25,8 +25,8 @@ const ArrearsPage = () => {
       key: "1",
       unitId: "A01",
       apartment: "Bima Heights",
-      TotalPaid: "KES 1,000",
-      AmountDue: "KES 2,000",
+      TotalPaid: "1000",
+      AmountDue: "2000",
       Commited: "01/05/2024",
       Assigned: "John Doe",
       dateTime: "02/04/2024 10:30",
@@ -36,8 +36,8 @@ const ArrearsPage = () => {
       key: "2",
       unitId: "A02",
       apartment: "Wima Heights",
-      TotalPaid: "KES 11,500",
-      AmountDue: "KES 3,000",
+      TotalPaid: "11500",
+      AmountDue: "3000",
       Commited: "05/05/2025",
       Assigned: "Jane Smith",
       dateTime: "02/05/2025 14:45",
@@ -84,6 +84,11 @@ const ArrearsPage = () => {
     setIsModalVisible(false);
   };
 
+  const formatCurrency = (value?: string) => {
+    if (!value) return "KES 0";
+    return `KES ${Number(value).toLocaleString()}`;
+  };
+
   const filteredData = data.filter((item) => {
     const matchesSearch =
       item.apartment.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -99,8 +104,22 @@ const ArrearsPage = () => {
   const columns = [
     { title: "Unit Id", dataIndex: "unitId", key: "unitId" },
     { title: "Apartment", dataIndex: "apartment", key: "apartment" },
-    { title: "Total Paid", dataIndex: "TotalPaid", key: "TotalPaid" },
-    { title: "Amount Due", dataIndex: "AmountDue", key: "AmountDue" },
+    {
+      title: "Total Paid",
+      dataIndex: "TotalPaid",
+      key: "TotalPaid",
+      render: (text: string) => formatCurrency(text),
+    },
+    {
+      title: "Amount Due",
+      dataIndex: "AmountDue",
+      key: "AmountDue",
+      render: (text: string) => (
+        <Tag className={`arrears-tag ${Number(text) > 0 ? "owed" : "not-owed"}`}>
+          {formatCurrency(text)}
+        </Tag>
+      ),
+    },
     {
       title: "Committed Date",
       dataIndex: "Commited",
@@ -120,7 +139,7 @@ const ArrearsPage = () => {
       key: "Assigned",
       render: (_: string, record: Payment) => (
         <Select
-          value={record.Assigned}
+          value={record.Assigned || undefined}
           style={{ width: 150 }}
           onChange={(value) => handleAssignChange(record.key, value)}
         >
@@ -135,12 +154,17 @@ const ArrearsPage = () => {
       dataIndex: "Notes",
       key: "Notes",
       render: (_: string, record: Payment) => (
-        <Button type="link" onClick={() => showNotesModal(record)}>
+        <Button type="link" onClick={() => showNotesModal(record)} aria-label="Edit Notes">
           View/Edit
         </Button>
       ),
     },
-    { title: "Date/Time", dataIndex: "dateTime", key: "dateTime" },
+    {
+      title: "Date/Time",
+      dataIndex: "dateTime",
+      key: "dateTime",
+      render: (text: string) => dayjs(text, "DD/MM/YYYY HH:mm").format("DD MMM YYYY HH:mm"),
+    },
   ];
 
   return (
@@ -153,12 +177,14 @@ const ArrearsPage = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
+            aria-label="Search by unit or apartment"
           />
           <DatePicker
             format="DD/MM/YYYY"
             placeholder="Filter by date"
             onChange={(date) => setDateFilter(date)}
             className="search-input"
+            aria-label="Filter by date"
           />
         </div>
       </div>

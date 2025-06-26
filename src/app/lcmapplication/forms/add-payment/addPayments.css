@@ -1,28 +1,61 @@
+/* Container */
 .add-payment-container {
   max-width: 500px;
-  width: 100%;
+  width: 1000px;
   margin: 40px auto;
+   background-color: #fff;
   padding: 24px;
-  height: 100%;
-  background-color: #fff;
   border-radius: 12px;
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   box-sizing: border-box;
 }
 
+/* Add this to your main CSS file */
+.custom-modal-wrapper {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-modal-wrapper .ant-modal {
+  margin: 0;
+  top: auto;
+  padding: 0;
+  width: auto !important;
+  max-width: none;
+}
+
+.custom-modal-wrapper .ant-modal-content {
+  padding: 0;
+  background: transparent; /* Optional: allow form background to show */
+  box-shadow: none;
+}
+
+
+/* Title */
 .form-title {
   text-align: center;
   font-weight: 600;
   font-size: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   color: #1a1a1a;
 }
 
+/* Label styles */
 .payment-form .ant-form-item-label > label {
   font-weight: 500;
   color: #333;
 }
 
+/* Input fields */
+.payment-form .ant-input,
+.payment-form .ant-input-number,
+.payment-form .ant-picker,
+.payment-form .ant-select {
+  width: 100%;
+  border-radius: 6px;
+}
+
+/* Submit button */
 .submit-btn {
   width: 100%;
   font-weight: 600;
@@ -30,7 +63,7 @@
   border-radius: 6px;
 }
 
-/* Mobile tweaks */
+/* Mobile responsiveness */
 @media screen and (max-width: 600px) {
   .add-payment-container {
     padding: 16px;

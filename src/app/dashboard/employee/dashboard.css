@@ -1,66 +1,45 @@
-:root {
-  --padding-default: 16px;
-  --padding-small: 8px;
-  --card-radius: 10px;
-  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  --card-hover-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-  --primary-color: #42A5F5;
-  --light-bg: #f6f8fa;
-  --text-dark: #333;
-  --text-muted: #666;
-}
-
-/* Dashboard container */
-.dashboard-container {
-  padding: var(--padding-default);
-  box-sizing: border-box;
-}
-
-/* Dashboard content */
 .dashboard-content {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  padding: var(--padding-default);
-  background-color: var(--light-bg);
+  padding: 16px;
+  background-color: #f6f8fa;
   margin-top: auto;
   overflow-y: hidden;
   box-sizing: border-box;
 }
 
-/* Dashboard title */
 .main-dashboard h2 {
   font-size: clamp(18px, 2.5vw, 24px);
   font-weight: 600;
   margin-bottom: 20px;
 }
 
-/* Stats grid */
+/* Stats grid (stat cards) */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   margin-bottom: 30px;
+  flex-direction: row;
   transition: all 0.3s ease-in-out;
 }
 
-/* Stat card */
 .stat-card {
   background: #fff;
   padding: 20px;
-  border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   text-align: left;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .stat-card:hover {
   transform: scale(1.03);
-  box-shadow: var(--card-hover-shadow);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Stat icon styles */
 .stat-icon,
 .default-icon {
   font-size: 24px;
@@ -68,14 +47,13 @@
 }
 
 .stat-icon {
-  color: var(--primary-color);
+  color: #42A5F5;
 }
 
 .default-icon {
   color: #ccc;
 }
 
-/* Stat card details */
 .stat-details {
   display: flex;
   flex-direction: column;
@@ -83,16 +61,16 @@
 
 .stat-label {
   font-size: clamp(12px, 2vw, 14px);
-  color: var(--text-muted);
+  color: #666;
 }
 
 .stat-value {
   font-size: clamp(18px, 4vw, 22px);
   font-weight: bold;
-  color: var(--text-dark);
+  color: #333;
 }
 
-/* Payment section */
+/* Payment section (tables for payment history and arrears) */
 .payment-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -100,18 +78,17 @@
   margin-top: 20px;
 }
 
-/* Payment card */
 .payment-card {
   background: #fff;
   padding: 20px;
-  border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .payment-card:hover {
   transform: scale(1.03);
-  box-shadow: var(--card-hover-shadow);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
 }
 
 .payment-card h4 {
@@ -133,19 +110,17 @@
 }
 
 .payment-card th {
-  color: var(--text-muted);
+  color: #666;
 }
 
 .payment-card td {
-  color: var(--text-dark);
+  color: #333;
 }
-
-/* See invoices button */
 .see-invoices-button {
   margin-top: 10px;
   background-color: transparent;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
+  border: 1px solid #42A5F5;
+  color: #42A5F5;
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 14px;
@@ -153,18 +128,13 @@
   transition: all 0.2s ease;
 }
 
-.see-invoices-button:hover {
-  background-color: var(--primary-color);
-  color: #fff;
-}
-
 /* Responsive Media Queries */
 
-/* Very small devices (≤ 400px) */
+/* For very small devices (≤ 400px) */
 @media (max-width: 400px) {
   .dashboard-container,
   .dashboard-content {
-    padding: var(--padding-small);
+    padding: 8px;
   }
 
   .stat-card,
@@ -178,15 +148,16 @@
   }
 }
 
-/* Small devices (≤ 600px) */
+/* For small devices (≤ 600px) */
 @media (max-width: 600px) {
   .stats-grid,
   .payment-section {
     grid-template-columns: 1fr;
+    flex-direction: row;
   }
 }
 
-/* Medium devices (601px–960px) */
+/* For medium devices (601px–960px) */
 @media (min-width: 601px) and (max-width: 960px) {
   .stats-grid,
   .payment-section {
@@ -194,7 +165,7 @@
   }
 }
 
-/* Larger devices (≥ 961px) */
+/* For larger devices (≥ 961px) */
 @media (min-width: 961px) {
   .stats-grid {
     grid-template-columns: repeat(4, 1fr);

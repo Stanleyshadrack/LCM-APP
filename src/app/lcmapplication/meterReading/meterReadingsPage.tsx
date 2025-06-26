@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Table, Button, Space, Tooltip, message } from "antd";
-import AddMeterReadingDrawer from "../drawer/addMeterReadingDrawer";
+
 import { EditOutlined } from "@ant-design/icons";
+import AddMeterReadingDrawer from "@/components/drawer/addMeterReadingDrawer";
 
 const MeterReadingsPage = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);

@@ -5,15 +5,15 @@ import Sidebar from "./lcmapplication/protected/sidebar/sidebar";
 import Topbar from "./lcmapplication/protected/topbar/topbars";
 
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
-  const [collapsed, setCollapsed] = useState(false); // ✅ add this state
+  const [collapsed, setCollapsed] = useState(false);
 
   const toggleSidebar = () => {
-    setCollapsed((prev) => !prev); // ✅ toggle collapsed state
+    setCollapsed((prev) => !prev);
   };
 
   return (
-    <div className="main-layout" style={{ display: "flex" }}>
-      <Sidebar isVisible={!collapsed} /> {/* match logic to collapsed */}
+    <div className="main-layout" style={{ display: "flex", background: "#f5f5f5" }}>
+      <Sidebar isVisible={!collapsed} />
       <div
         className="content-area"
         style={{
@@ -23,7 +23,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         <Topbar toggleSidebar={toggleSidebar} collapsed={collapsed} />
-        <main style={{ paddingTop: "70px" }}>{children}</main>
+        <main style={{ paddingTop: "70px", padding: "20px" }}>{children}</main>
       </div>
     </div>
   );

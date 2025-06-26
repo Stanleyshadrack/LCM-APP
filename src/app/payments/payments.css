@@ -66,6 +66,18 @@
     font-weight: 600;
   }
 
+  .add-payment-form {
+  padding: 24px;
+  max-width: 500px;
+  margin: auto;
+}
+
+.add-payment-form h3 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+
 
   /* Optional: make table scrollable on very small screens */
 

@@ -28,6 +28,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible }) => {
         </div>
 
         <nav className="nav-links">
+          <Link href="/meterReading" className={pathname === "/employee" ? "active": ""}>
+          Meter Reading
+          </Link>
           <Link href="/dashboard/owner" className={pathname === "/owner" ? "active" : ""}>
             Dashboard
           </Link>

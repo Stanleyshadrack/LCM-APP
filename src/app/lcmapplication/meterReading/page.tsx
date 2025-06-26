@@ -1,7 +1,10 @@
 "use client";
 
-import MeterReadingsPage from "./lcmapplication/meterReading/meterReadingsPage";
+import MeterReadingsPage from "./meterReadingsPage";
+
 
 export default function ApartmentsPage() {
   return <MeterReadingsPage />;
 }
+
+
