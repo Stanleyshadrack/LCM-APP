@@ -11,7 +11,7 @@
 .sidebar {
   width: 220px;
   height: 100vh;
-  background-color: #ffffff;
+   background-color: #0ae05c;
   border-right: 1px solid #e0e0e0;
   position: fixed;
   top: 0;
@@ -29,6 +29,8 @@
   flex-grow: 1;
   background-color: #f5f5f5;
   min-height: 100vh;
+   margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
 }
 
 /* Topbar (if used as fixed) */
@@ -69,10 +71,17 @@
   }
 
   .content-area {
-    margin-left: 0 !important;
-    width: 100%;
-  }
 
+   
+
+     margin-left: 0 !important;
+    width: 100% !important;
+  }
+  .topbar {
+    left: 0 !important;
+    width: 100% !important;
+  }
+  
   .page-content {
     padding: 16px;
   }

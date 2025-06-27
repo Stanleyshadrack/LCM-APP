@@ -24,7 +24,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, isMobile = false, onClose 
 
   return (
     <>
-      {/* Overlay for mobile with fade animation */}
       {isMobile && (
         <div
           className={`sidebar-overlay ${isVisible ? "show" : "hidden"}`}
@@ -39,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, isMobile = false, onClose 
         </div>
 
         <nav className="nav-links">
-          <Link href="/meterReading" className={pathname === "/meterReading" ? "active" : ""}>
+          <Link href="/readings" className={pathname === "/readings" ? "active" : ""}>
             Meter Reading
           </Link>
           <Link href="/dashboard/owner" className={pathname === "/dashboard/owner" ? "active" : ""}>

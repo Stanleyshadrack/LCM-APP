@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Table, Button, Space, Tooltip, message } from "antd";
-
 import { EditOutlined } from "@ant-design/icons";
-import AddMeterReadingDrawer from "@/components/drawer/addMeterReadingDrawer";
+import "./readings.css";
+import AddMeterReadingDrawer from "../drawer/addMeterReadingDrawer";
 
-const MeterReadingsPage = () => {
+const Readings = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingReading, setEditingReading] = useState<any | null>(null);
   const [readings, setReadings] = useState<any[]>([]);
@@ -114,17 +114,7 @@ const MeterReadingsPage = () => {
             render: (text: string) =>
               text?.trim() ? (
                 <Tooltip title={text}>
-                  <span
-                    style={{
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      maxWidth: 150,
-                      display: "inline-block",
-                    }}
-                  >
-                    {text}
-                  </span>
+                  <span className="meter-ellipsis">{text}</span>
                 </Tooltip>
               ) : (
                 "-"
@@ -147,9 +137,13 @@ const MeterReadingsPage = () => {
   ];
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className="meter-readings-container">
       <Space style={{ marginBottom: 16 }}>
-        <Button type="primary" onClick={() => setDrawerOpen(true)}>
+        <Button
+          type="primary"
+          className="meter-add-button"
+          onClick={() => setDrawerOpen(true)}
+        >
           Add Meter Reading
         </Button>
       </Space>
@@ -175,4 +169,4 @@ const MeterReadingsPage = () => {
   );
 };
 
-export default MeterReadingsPage;
+export default Readings;

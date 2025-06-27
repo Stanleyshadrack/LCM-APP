@@ -1,10 +1,9 @@
 import { Inter, Roboto_Mono } from "next/font/google";
 import "@/styles/globals.css";
-import ClientLayout from "@/components/layout/clientLayout";
 import ClientProvider from "./context/ClientProvider";
 import ClientLayoutWrapper from "./context/ClientLayoutWrapper";
 
-// Load fonts
+
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const robotoMono = Roboto_Mono({ subsets: ["latin"], variable: "--font-roboto-mono" });
 

@@ -1,16 +1,29 @@
-/* Content wrapper */
+:root {
+  --sidebar-width: 220px;
+  --topbar-height: 70px;
+  --card-radius: 8px;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --card-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --primary-color: #15672f;
+  --light-bg: #f5f5f5;
+  --text-dark: #222;
+  --text-muted: #777;
+}
+
+/* Layout container */
 .content-area {
   display: flex;
   flex-direction: column;
   margin-left: var(--sidebar-width);
   width: calc(100% - var(--sidebar-width));
-  background-color: #f5f5f5;
+  background-color: var(--light-bg);
   min-height: 100vh;
+  transition: margin 0.3s ease;
 }
 
 /* Topbar */
 .topbar {
-  height: 70px;
+  height: var(--topbar-height);
   background: white;
   display: flex;
   justify-content: space-between;
@@ -22,22 +35,21 @@
   z-index: 10;
 }
 
-/* Dashboard content */
+/* Dashboard content wrapper */
 .dashboard-content {
-  padding: 20px;
-  background-color: var(--light-bg);
+  padding: 24px;
   flex-grow: 1;
   box-sizing: border-box;
+  background-color: var(--light-bg);
 }
 
-/* Dashboard title */
 .main-dashboard h2 {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
-/* Stats grid */
+/* Stats section */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -45,7 +57,6 @@
   margin-bottom: 30px;
 }
 
-/* Stat card */
 .stat-card {
   background: #fff;
   padding: 20px;
@@ -94,13 +105,13 @@
   margin-top: 20px;
 }
 
-/* Payment card */
 .payment-card {
   background: #fff;
   padding: 20px;
   border-radius: var(--card-radius);
   box-shadow: var(--card-shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow-x: auto;
 }
 
 .payment-card:hover {
@@ -118,6 +129,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  min-width: 320px;
 }
 
 .payment-card th,
@@ -134,7 +146,7 @@
   color: var(--text-dark);
 }
 
-/* Button */
+/* View Button */
 .see-invoices-button {
   margin-top: 12px;
   background-color: transparent;
@@ -152,7 +164,18 @@
   color: #fff;
 }
 
-/* Responsive */
+/* ========== Responsive ========== */
+@media (max-width: 1024px) {
+  .dashboard-content {
+    padding: 16px;
+  }
+
+  .see-invoices-button {
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar {
     position: relative;
@@ -167,17 +190,31 @@
     width: 100%;
   }
 
-  .dashboard-content {
-    padding: 16px;
-  }
-
   .stats-grid,
   .payment-section {
     grid-template-columns: 1fr;
   }
 
+  .payment-card table {
+    font-size: 13px;
+  }
+
   .see-invoices-button {
     font-size: 12px;
     padding: 5px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-dashboard h2 {
+    font-size: 20px;
+  }
+
+  .payment-card h4 {
+    font-size: 16px;
+  }
+
+  .see-invoices-button {
+    font-size: 11px;
   }
 }

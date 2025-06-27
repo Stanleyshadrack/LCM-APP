@@ -1,0 +1,72 @@
+/* Container styling */
+.meter-readings-container {
+  padding: 24px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Add button */
+.meter-add-button {
+  background-color: #1890ff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.meter-add-button:hover {
+  background-color: #40a9ff;
+  color: #fff;
+}
+
+/* Table adjustments */
+.ant-table-wrapper {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ant-table-thead > tr > th {
+  background-color: #fafafa;
+  font-weight: 600;
+  color: #333;
+}
+
+.ant-table-tbody > tr > td {
+  font-size: 14px;
+  color: #444;
+}
+
+/* Tooltip ellipsis cells */
+.meter-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+  display: inline-block;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .meter-readings-container {
+    padding: 16px;
+  }
+
+  .meter-add-button {
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .ant-table-wrapper {
+    padding: 12px;
+  }
+
+  .ant-table {
+    font-size: 12px;
+  }
+}
+
