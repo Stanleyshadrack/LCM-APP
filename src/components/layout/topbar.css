@@ -3,29 +3,27 @@
   --topbar-height: 70px;
 }
 
-/* ===== Topbar Styles ===== */
 .topbar {
   position: fixed;
   top: 0;
   left: var(--sidebar-width);
   right: 0;
   height: var(--topbar-height);
-  background: linear-gradient(90deg, #520393, #6a1fb7);
+  background: linear-gradient(90deg, #521083, #6f24a5);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
   z-index: 1000;
   transition: left 0.3s ease;
-  box-sizing: border-box;
 }
 
 .topbar.collapsed {
   left: 0;
 }
 
-/* ===== Left Side (Toggle Button) ===== */
 .topbar-left {
   display: flex;
   align-items: center;
@@ -36,108 +34,70 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #3a3838;
-  transition: transform 0.2s ease;
+  color: #333;
 }
 
-.toggle-button:hover {
-  transform: scale(1.1);
-}
-
-/* ===== Right Side (User Info) ===== */
 .topbar-right {
   display: flex;
   align-items: center;
 }
 
-/* Wrapper for user image + dropdown */
 .user-info {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* Profile Image */
 .profile {
   width: 42px;
   height: 42px;
   border-radius: 50%;
   object-fit: cover;
   cursor: pointer;
-  border: 2px solid #ffffff;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  background-color: #ffffff22;
+  border: 2px solid #fff;
+  transition: transform 0.2s ease;
 }
 
 .profile:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
 }
 
-/* Username + ID + Dropdown Icon (wrapped in dropdown) */
 .user-meta-dropdown {
   display: flex;
   align-items: center;
+  cursor: pointer;
   padding: 6px 12px;
   border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  background-color: rgba(255, 255, 255, 0.05);
+  transition: background 0.2s;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .user-meta-dropdown:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* Name & Role */
 .user-name-role {
   display: flex;
   flex-direction: column;
+  color: #333;
+  margin-right: 6px;
   line-height: 1.2;
-  margin-right: 8px;
-  color: #333;
-}
-
-/* Ant Design Dropdown Menu Customization */
-.ant-dropdown-menu {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
-  min-width: 160px;
-  padding: 6px 0;
-}
-
-/* Menu Items */
-.ant-dropdown-menu-item {
-  font-size: 14px;
-  padding: 10px 16px;
-  color: #333;
-  transition: background 0.2s ease;
-}
-
-.ant-dropdown-menu-item:hover {
-  background-color: #f5f5f5;
-  color: #000;
-}
-
-/* Optional: Active/focus state */
-.ant-dropdown-menu-item-active {
-  background-color: #ececec !important;
 }
 
 .username {
-  font-size: 14px;
   font-weight: 600;
+  font-size: 14px;
 }
 
 .user-id {
   font-size: 12px;
-  color: #333;
+  color: #918d8d;
 }
 
 .dropdown-icon {
   font-size: 14px;
   color: #333;
+  margin-left: 6px;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
@@ -146,23 +106,24 @@
   color: #333;
 }
 
-/* ===== Responsive Design ===== */
+
+/* Responsive */
 @media (max-width: 768px) {
   .topbar {
     left: 0 !important;
-    padding: 0 16px;
+    padding: 0 12px;
   }
 
   .toggle-button {
-    margin-right: 12px;
+    margin-right: 10px;
   }
 
   .username {
-    font-size: 13px;
+    font-size: 0.85rem;
   }
 
   .user-id {
-    font-size: 11px;
+    font-size: 0.75rem;
   }
 
   .dropdown-icon {

@@ -43,14 +43,12 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
 
   return (
     <div className={`topbar ${collapsed ? "collapsed" : ""}`}>
-      {/* Left side: Toggle Button */}
       <div className="topbar-left">
         <button className="toggle-button" onClick={toggleSidebar}>
           <MenuOutlined />
         </button>
       </div>
 
-      {/* Right side: Profile and Dropdown */}
       <div className="topbar-right">
         <input
           type="file"
@@ -61,7 +59,6 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
         />
 
         <div className="user-info">
-          {/* Profile Image (upload on click) */}
           <img
             src={profileImage}
             alt="User"
@@ -69,7 +66,6 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
             onClick={handleImageClick}
           />
 
-          {/* Name + Role trigger dropdown */}
           <Dropdown overlay={menu} trigger={["click"]}>
             <div className="user-meta-dropdown">
               <div className="user-name-role">
