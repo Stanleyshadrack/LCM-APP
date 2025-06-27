@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import Link from "next/link";
-import { Dropdown, Menu } from "antd";
+import { Dropdown, Menu, Modal } from "antd";
 import { DownOutlined, MenuOutlined } from "@ant-design/icons";
 import "./topbar.css";
 
@@ -13,6 +13,7 @@ interface TopbarProps {
 
 const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
   const [profileImage, setProfileImage] = useState<string>("/profile.svg");
+  const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageClick = () => {
@@ -30,10 +31,13 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
     }
   };
 
+  const showProfileModal = () => setIsProfileModalVisible(true);
+  const handleProfileCancel = () => setIsProfileModalVisible(false);
+
   const menu = (
     <Menu>
-      <Menu.Item key="profile">
-        <Link href="/profile">View Profile</Link>
+      <Menu.Item key="profile" onClick={showProfileModal}>
+        View Profile
       </Menu.Item>
       <Menu.Item key="logout">
         <Link href="/login">Log out</Link>
@@ -42,42 +46,65 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
   );
 
   return (
-    <div className={`topbar ${collapsed ? "collapsed" : ""}`}>
-      <div className="topbar-left">
-        <button className="toggle-button" onClick={toggleSidebar}>
-          <MenuOutlined />
-        </button>
-      </div>
+    <>
+      <div className={`topbar ${collapsed ? "collapsed" : ""}`}>
+        <div className="topbar-left">
+          <button className="toggle-button" onClick={toggleSidebar}>
+            <MenuOutlined />
+          </button>
+        </div>
 
-      <div className="topbar-right">
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          onChange={handleImageChange}
-          style={{ display: "none" }}
-        />
-
-        <div className="user-info">
-          <img
-            src={profileImage}
-            alt="User"
-            className="profile"
-            onClick={handleImageClick}
+        <div className="topbar-right">
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageChange}
+            style={{ display: "none" }}
           />
 
-          <Dropdown overlay={menu} trigger={["click"]}>
-            <div className="user-meta-dropdown">
-              <div className="user-name-role">
-                <div className="username">Peter</div>
-                <div className="user-id">Owner</div>
+          <div className="user-info">
+            <img
+              src={profileImage}
+              alt="User"
+              className="profile"
+              onClick={handleImageClick}
+            />
+
+            <Dropdown overlay={menu} trigger={["click"]}>
+              <div className="user-meta-dropdown">
+                <div className="user-name-role">
+                  <div className="username">Peter</div>
+                  <div className="user-id">Owner</div>
+                </div>
+                <DownOutlined className="dropdown-icon" />
               </div>
-              <DownOutlined className="dropdown-icon" />
-            </div>
-          </Dropdown>
+            </Dropdown>
+          </div>
         </div>
       </div>
-    </div>
+
+      <Modal
+        title="User Profile"
+        open={isProfileModalVisible}
+        onCancel={handleProfileCancel}
+        footer={[
+          <button key="edit" className="edit-button" onClick={() => alert("Edit logic here")}>
+            Edit User Details
+          </button>
+        ]}
+      >
+        <div className="profile-modal-content">
+          <img src={profileImage} alt="User" className="modal-profile-img" />
+          <div className="modal-user-details">
+            <p><strong>Name:</strong> Peter</p>
+            <p><strong>Role:</strong> Owner</p>
+            <p><strong>Email:</strong> peter@example.com</p>
+            <p><strong>Phone:</strong> +123456789</p>
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 

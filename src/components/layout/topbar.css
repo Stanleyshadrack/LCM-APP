@@ -9,7 +9,6 @@
   left: var(--sidebar-width);
   right: 0;
   height: var(--topbar-height);
-  background: linear-gradient(90deg, #521083, #6f24a5);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -105,6 +104,39 @@
   transform: rotate(180deg);
   color: #333;
 }
+
+.profile-modal-content {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.modal-profile-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+.modal-user-details p {
+  margin: 4px 0;
+  color: #444;
+}
+
+.edit-button {
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #0070f3;
+}
+
 
 
 /* Responsive */
