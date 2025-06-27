@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { Dropdown, Menu } from "antd";
-import { DownOutlined, MenuOutlined } from "@ant-design/icons"; // Hamburger icon
+import { DownOutlined, MenuOutlined } from "@ant-design/icons";
 import "./topbar.css";
 
 interface TopbarProps {
@@ -15,13 +15,17 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
   const [profileImage, setProfileImage] = useState<string>("/profile.svg");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageClick = () => fileInputRef.current?.click();
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => setProfileImage(reader.result as string);
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -39,12 +43,14 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
 
   return (
     <div className={`topbar ${collapsed ? "collapsed" : ""}`}>
+      {/* Left side: Toggle Button */}
       <div className="topbar-left">
         <button className="toggle-button" onClick={toggleSidebar}>
           <MenuOutlined />
         </button>
       </div>
 
+      {/* Right side: Profile and Dropdown */}
       <div className="topbar-right">
         <input
           type="file"
@@ -54,16 +60,26 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
           style={{ display: "none" }}
         />
 
-        <Dropdown overlay={menu} trigger={["click"]}>
-          <div className="user-info" onClick={handleImageClick}>
-            <img src={profileImage} alt="User" className="profile" />
-            <div className="nameid">
-              <div className="username">kamrul</div>
-              <div className="user-id">TID: 23545</div>
+        <div className="user-info">
+          {/* Profile Image (upload on click) */}
+          <img
+            src={profileImage}
+            alt="User"
+            className="profile"
+            onClick={handleImageClick}
+          />
+
+          {/* Name + Role trigger dropdown */}
+          <Dropdown overlay={menu} trigger={["click"]}>
+            <div className="user-meta-dropdown">
+              <div className="user-name-role">
+                <div className="username">Peter</div>
+                <div className="user-id">Owner</div>
+              </div>
+              <DownOutlined className="dropdown-icon" />
             </div>
-            <DownOutlined className="dropdown-icon" />
-          </div>
-        </Dropdown>
+          </Dropdown>
+        </div>
       </div>
     </div>
   );

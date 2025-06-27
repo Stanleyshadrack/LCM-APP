@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { MessageOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
 import "./sidebar.css";
+import MessagingInterface from "@/app/chats/messages/messages";
 
 interface SidebarProps {
   isVisible: boolean;
@@ -77,7 +78,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isVisible, isMobile = false, onClose 
         width={800}
         closeIcon={null}
       >
-        {/* {<MessagingInterface/>} */}
+        {<MessagingInterface/>}
       </Modal>
     </>
   );

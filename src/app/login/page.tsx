@@ -1,12 +1,10 @@
-
-"use client"
-
-import Login from "./login";
+import { Suspense } from 'react';
+import Login from './login';
 
 export default function LoginPage() {
   return (
-    <div>
-      <Login /> 
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Login />
+    </Suspense>
   );
 }
