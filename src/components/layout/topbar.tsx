@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { Dropdown, Menu, Modal } from "antd";
-import { DownOutlined, MenuOutlined } from "@ant-design/icons";
+import { DownOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import "./topbar.css";
 
 interface TopbarProps {
@@ -14,6 +14,7 @@ interface TopbarProps {
 const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
   const [profileImage, setProfileImage] = useState<string>("/profile.svg");
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageClick = () => {
@@ -31,8 +32,13 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
     }
   };
 
-  const showProfileModal = () => setIsProfileModalVisible(true);
+  const showProfileModal = () => {
+    setIsProfileModalVisible(true);
+    setMobileMenuOpen(false);
+  };
+
   const handleProfileCancel = () => setIsProfileModalVisible(false);
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
   const menu = (
     <Menu>
@@ -51,6 +57,10 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
         <div className="topbar-left">
           <button className="toggle-button" onClick={toggleSidebar}>
             <MenuOutlined />
+          </button>
+
+          <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
+            {mobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />}
           </button>
         </div>
 
@@ -83,6 +93,15 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
           </div>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className="topbar-mobile-menu">
+          <div onClick={showProfileModal}>View Profile</div>
+          <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+            Log Out
+          </Link>
+        </div>
+      )}
 
       <Modal
         title="User Profile"
