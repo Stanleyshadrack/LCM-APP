@@ -1,9 +1,13 @@
 .meter-readings-container {
-  background-color: #f7f9fb;
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 100%;
+  padding-top: 55px;
+  background-color: #f6f8fa;
+  margin-top: auto;
+  overflow-y: hidden;
+  box-sizing: border-box;
 }
 
 

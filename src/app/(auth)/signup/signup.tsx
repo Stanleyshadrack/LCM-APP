@@ -10,7 +10,12 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
+
   const router = useRouter();
 
   const togglePassword = () => setShowPassword((prev) => !prev);
@@ -20,12 +25,26 @@ const Register = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError("First and Second Passwords do not match!!");
+      setError("Passwords do not match!");
       return;
     }
 
+    if (!/^\+?[0-9\s\-()]{7,15}$/.test(phone)) {
+      setError("Please enter a valid phone number.");
+      return;
+    }
+
+    const userData = {
+      email,
+      password,
+      firstName,
+      lastName,
+      phone,
+    };
+
+    localStorage.setItem("signupData", JSON.stringify(userData));
     setError("");
-    router.push("../account-type");
+    router.push("/account-type");
   };
 
   return (
@@ -40,13 +59,24 @@ const Register = () => {
           Welcome to <span className="header2">Tenant Management System</span>
         </div>
 
-        <p>Enter your information below to continue</p>
-
-        <form onSubmit={handleNext}>
+        <form onSubmit={handleNext} autoComplete="off">
           <label>Email</label>
           <input
             type="email"
             placeholder="kamrul@gmail.com"
+            autoComplete="off"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <label>Phone Number</label>
+          <input
+            type="text"
+            placeholder="+254 712345678"
+            autoComplete="off"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             required
           />
 
@@ -56,6 +86,9 @@ const Register = () => {
               <input
                 type="text"
                 placeholder="Kamrul"
+                autoComplete="off"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 required
               />
             </div>
@@ -64,6 +97,9 @@ const Register = () => {
               <input
                 type="text"
                 placeholder="Hasan"
+                autoComplete="off"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 required
               />
             </div>
@@ -74,6 +110,7 @@ const Register = () => {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="********"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -88,12 +125,17 @@ const Register = () => {
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="********"
+              autoComplete="new-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
             <span className="toggle-icon" onClick={toggleConfirmPassword}>
-              {showConfirmPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+              {showConfirmPassword ? (
+                <EyeInvisibleOutlined />
+              ) : (
+                <EyeOutlined />
+              )}
             </span>
           </div>
 
