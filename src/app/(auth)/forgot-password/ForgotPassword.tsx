@@ -14,7 +14,7 @@ const ForgotPassword = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!contact) {
+    if (!contact.trim()) {
       setError('Email or phone number is required');
       return;
     }
@@ -76,6 +76,8 @@ const ForgotPassword = () => {
               placeholder="kamrul@gmail.com or 0712345678"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
+              autoComplete="off"
+              required
             />
             <button type="submit">Send Reset Link</button>
           </form>

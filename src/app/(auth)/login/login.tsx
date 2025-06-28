@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // 👁️ Toggle state
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,6 +88,13 @@ const LoginPage: React.FC = () => {
               onClick={() => setShowPassword((prev) => !prev)}
             >
               {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+            </span>
+          </div>
+
+          {/* Forgot Password link */}
+          <div className="forgot-link">
+            <span onClick={() => router.push("/forgot-password")}>
+              Forgot Password?
             </span>
           </div>
 

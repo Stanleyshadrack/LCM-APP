@@ -43,7 +43,7 @@ owner: [
     employee: [
       { path: "/employee/dashboard", label: "Dashboard" },
       { path: "/employee/tasks", label: "Tasks" },
-      { path: "/shared/meter-readings", label: "Meter Readings" },
+      { path: "/shared/meter-readings", label: "Meter Records" },
       { path: "/employee/readings", label: "Meter Readings" },
       { path: "/employee/support-ticket", label: "Support Tickets" },
     ],
