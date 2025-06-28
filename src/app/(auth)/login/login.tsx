@@ -1,30 +1,22 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
+import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import "./login.css";
 
-const LoginPage: React.FC = () => {
-  const searchParams = useSearchParams();
-  const accountTypeParam = searchParams.get("accountType");
+type UserRole = "owner" | "tenant" | "employee";
 
+const LoginPage: React.FC = () => {
   const router = useRouter();
   const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"owner" | "employee" | "tenant" | null>(null);
+  const [showPassword, setShowPassword] = useState(false); // 👁️ Toggle state
 
-  useEffect(() => {
-    if (!accountTypeParam) return;
-    const normalized = accountTypeParam === "landlord" ? "owner" : accountTypeParam;
-    if (["owner", "employee", "tenant"].includes(normalized)) {
-      setRole(normalized as "owner" | "employee" | "tenant");
-    }
-  }, [accountTypeParam]);
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -32,19 +24,30 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    if (!role) {
-      alert("No role selected.");
+    const hardcodedUsers: { email: string; password: string; role: UserRole }[] = [
+      { email: "owner@example.com", password: "owner123", role: "owner" },
+      { email: "tenant@example.com", password: "tenant123", role: "tenant" },
+      { email: "employee@example.com", password: "employee123", role: "employee" },
+    ];
+
+    const matchedUser = hardcodedUsers.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (!matchedUser) {
+      alert("Invalid email or password.");
       return;
     }
 
-    login(role);
+    const role: UserRole = matchedUser.role;
 
-    const routeMap = {
+    const routeMap: Record<UserRole, string> = {
       owner: "/owner/dashboard",
       tenant: "/tenant/dashboard",
       employee: "/employee/dashboard",
     };
 
+    login({ email: matchedUser.email, role });
     router.push(routeMap[role]);
   };
 
@@ -60,10 +63,6 @@ const LoginPage: React.FC = () => {
           Welcome to <span className="header2">Tenant Management System</span>
         </div>
 
-        <p className="account-type-display">
-          {role ? `Logging in as: ${role}` : "No role selected"}
-        </p>
-
         <form onSubmit={handleLogin}>
           <label>Email</label>
           <input
@@ -78,12 +77,18 @@ const LoginPage: React.FC = () => {
           <div className="password-input">
             <input
               className="password-field"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <span
+              className="toggle-icon"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+            </span>
           </div>
 
           <button type="submit">Log In</button>
