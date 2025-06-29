@@ -12,7 +12,7 @@ interface SidebarProps {
   isVisible: boolean;
   isMobile?: boolean;
   onClose?: () => void;
-  role: "owner" | "employee" | "tenant"; // Required for role-based links
+  role: "owner" | "employee" | "tenant"; 
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -33,17 +33,17 @@ owner: [
   { path: "/owner/dashboard", label: "Dashboard" },
   { path: "/owner/apartments", label: "Apartments" },
   { path: "/shared/tenants", label: "Tenants" },
-  { path: "/shared/meter-readings", label: "Meter Readings" },
+  { path: "/shared/waterMeterData", label: "Meter Readings" },
   { path: "/shared/invoices", label: "Invoices" },
   { path: "/owner/payments", label: "Payments" },
-  { path: "/owner/arrears", label: "Arrears" },
+  { path: "/shared/arrears", label: "Arrears" },
 ],
 
 
     employee: [
       { path: "/employee/dashboard", label: "Dashboard" },
       { path: "/employee/tasks", label: "Tasks" },
-      { path: "/shared/meter-readings", label: "Meter Records" },
+      { path: "/shared/waterMeterData", label: "Meter Records" },
       { path: "/employee/readings", label: "Meter Readings" },
       { path: "/employee/support-ticket", label: "Support Tickets" },
     ],

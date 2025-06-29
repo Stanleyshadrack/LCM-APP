@@ -1,7 +1,7 @@
 "use client";
 
 import TenantsTable from "./tenants";
-import "./tenants.css";
+
 
 
 

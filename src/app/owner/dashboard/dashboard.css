@@ -14,11 +14,12 @@
 .content-area {
   display: flex;
   flex-direction: column;
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
-  background-color: var(--light-bg);
   min-height: 100vh;
-  transition: margin 0.3s ease;
+  width: 100%;
+  padding: 16px;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  background-color: #f6f8fa;
 }
 
 /* Topbar */

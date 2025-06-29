@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Table, Input, Button, DatePicker } from "antd";
 import dayjs from "dayjs";
-import "./meter-readings.css";
+import "./waterMeterData.css";
 
 interface Payment {
   key: string;
