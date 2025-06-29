@@ -59,12 +59,13 @@ owner: [
 
   return (
     <>
-      {isMobile && (
-        <div
-          className={`sidebar-overlay ${isVisible ? "show" : "hidden"}`}
-          onClick={handleOverlayClick}
-        />
-      )}
+    {isMobile && (
+  <div
+    className={`sidebar-overlay ${isVisible ? "show" : "hidden"}`}
+    onClick={handleOverlayClick}
+  />
+)}
+
 
       <div className={`sidebar ${isVisible ? "show" : "hidden"}`}>
         <div className="logo">

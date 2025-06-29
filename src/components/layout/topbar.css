@@ -198,6 +198,7 @@
   .topbar {
     left: 0 !important;
     padding: 0 12px;
+    width: 100% !important;
   }
 
   .mobile-menu-toggle {
@@ -206,6 +207,9 @@
 
   .topbar-right {
     display: none;
+  }
+  .topbar.collapsed {
+    left: 0 !important;
   }
 
   .username {

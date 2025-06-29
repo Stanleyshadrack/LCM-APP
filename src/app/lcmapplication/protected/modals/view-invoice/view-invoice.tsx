@@ -5,10 +5,11 @@ import "./view-invoice.css";
 import Invoice from "@/app/lcmapplication/types/invoice";
 
 import SendButton from "../../widgets/button/SendButton";
-import InvoiceMeta from "@/components/invoice-components/invoiceMeta";
-import InvoiceNote from "@/components/invoice-components/InvoiceNote";
-import InvoiceTable from "@/components/invoice-components/invoiceTable";
-import PaymentInfo from "@/components/invoice-components/paymentInfo";
+import InvoiceMeta from "@/components/invoice/invoiceMeta";
+import InvoiceNote from "@/components/invoice/InvoiceNote";
+import InvoiceTable from "@/components/invoice/invoiceTable";
+import PaymentInfo from "@/components/invoice/paymentInfo";
+
 
 interface InvoicePageProps {
   invoice: Invoice | null;

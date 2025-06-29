@@ -9,6 +9,7 @@ import "./topbar.css";
 interface TopbarProps {
   toggleSidebar: () => void;
   collapsed: boolean;
+  isMobile: boolean;
 }
 
 const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {

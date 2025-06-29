@@ -14,6 +14,7 @@ const RoleBasedLayout = ({ children }: { children: React.ReactNode }) => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -23,17 +24,22 @@ const RoleBasedLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <Sidebar isVisible={!collapsed} isMobile={isMobile} role={user!.role} />
+      <Sidebar
+        isVisible={!collapsed}
+        isMobile={isMobile}
+        onClose={() => isMobile && setCollapsed(true)}
+        role={user!.role}
+      />
       <div
         className={`main-content ${collapsed ? "collapsed" : "expanded"}`}
         style={{
-          marginLeft: isMobile || collapsed ? 0 : 220,
+          marginLeft: isMobile ? 0 : collapsed ? 0 : 220,
           transition: "margin-left 0.3s ease",
           minHeight: "100vh",
           backgroundColor: "#f5f5f5",
         }}
       >
-        <Topbar toggleSidebar={toggleSidebar} collapsed={collapsed} />
+        <Topbar toggleSidebar={toggleSidebar} collapsed={collapsed} isMobile={isMobile} />
         <main style={{ paddingTop: "90px", padding: "20px" }}>{children}</main>
       </div>
     </>
