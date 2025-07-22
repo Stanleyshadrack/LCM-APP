@@ -12,7 +12,9 @@ const RoleBasedLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      setCollapsed(mobile); 
     };
 
     handleResize();
@@ -24,23 +26,42 @@ const RoleBasedLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
+      {isMobile && !collapsed && (
+        <div
+          className="mobile-overlay"
+          onClick={() => setCollapsed(true)}
+        ></div>
+      )}
+
       <Sidebar
         isVisible={!collapsed}
         isMobile={isMobile}
-        onClose={() => isMobile && setCollapsed(true)}
+        onClose={() => setCollapsed(true)}
         role={user!.role}
       />
+
       <div
         className={`main-content ${collapsed ? "collapsed" : "expanded"}`}
         style={{
-          marginLeft: isMobile ? 0 : collapsed ? 0 : 220,
+          marginLeft: isMobile || collapsed ? 0 : 220,
           transition: "margin-left 0.3s ease",
           minHeight: "100vh",
           backgroundColor: "#f5f5f5",
         }}
       >
-        <Topbar toggleSidebar={toggleSidebar} collapsed={collapsed} isMobile={isMobile} />
-        <main style={{ paddingTop: "90px", padding: "20px" }}>{children}</main>
+        <Topbar
+          toggleSidebar={toggleSidebar}
+          collapsed={collapsed}
+          isMobile={isMobile}
+        />
+        <main
+          style={{
+            paddingTop: isMobile ? "70px" : "90px",
+            padding: isMobile ? "10px 12px" : "20px",
+          }}
+        >
+          {children}
+        </main>
       </div>
     </>
   );

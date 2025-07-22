@@ -193,23 +193,25 @@
   }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .topbar {
     left: 0 !important;
     padding: 0 12px;
-    width: 100% !important;
+    width: 100%;
   }
 
   .mobile-menu-toggle {
     display: block;
   }
 
-  .topbar-right {
+  .user-meta-dropdown .dropdown-icon {
     display: none;
   }
-  .topbar.collapsed {
-    left: 0 !important;
+
+  .topbar-right {
+    display: flex !important; /* <-- always show profile */
+    align-items: center;
+    gap: 10px;
   }
 
   .username {
@@ -218,9 +220,5 @@
 
   .user-id {
     font-size: 0.75rem;
-  }
-
-  .dropdown-icon {
-    display: none;
   }
 }

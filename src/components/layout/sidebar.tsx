@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MessageOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
-import MessagingInterface from "@/app/chats/messages/messages";
+
 import "./sidebar.css";
 
 interface SidebarProps {
@@ -33,7 +33,7 @@ owner: [
   { path: "/owner/dashboard", label: "Dashboard" },
   { path: "/owner/apartments", label: "Apartments" },
   { path: "/shared/tenants", label: "Tenants" },
-  { path: "/shared/waterMeterData", label: "Meter Readings" },
+  { path: "/shared/meter-readings", label: "Meter Readings" },
   { path: "/shared/invoices", label: "Invoices" },
   { path: "/owner/payments", label: "Payments" },
   { path: "/shared/arrears", label: "Arrears" },
@@ -43,9 +43,10 @@ owner: [
     employee: [
       { path: "/employee/dashboard", label: "Dashboard" },
       { path: "/employee/tasks", label: "Tasks" },
-      { path: "/shared/waterMeterData", label: "Meter Records" },
+      { path: "/shared/meter-readings", label: "Meter Records" },
       { path: "/employee/readings", label: "Meter Readings" },
       { path: "/employee/support-ticket", label: "Support Tickets" },
+      {path: "/shared/messages", label: "Talk" }
     ],
     tenant: [
       { path: "/tenant/dashboard", label: "My Dashboard" },
@@ -92,16 +93,6 @@ owner: [
         </div>
       </div>
 
-      <Modal
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        title={null}
-        width={800}
-        closeIcon={null}
-      >
-        <MessagingInterface />
-      </Modal>
     </>
   );
 };

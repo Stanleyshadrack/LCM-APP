@@ -18,7 +18,7 @@
   left: 0;
   padding: 20px 10px;
   box-sizing: border-box;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
   z-index: 100;
 }
 
@@ -40,6 +40,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: left 0.3s ease;
   padding: 0 40px;
   border-bottom: 1px solid #e0e0e0;
   box-sizing: border-box;

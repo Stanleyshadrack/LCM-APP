@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import "./tasks.css";
+import {
+  Table,
+  Input,
+  Button,
+  Tag,
+} from "antd";
+import type { ColumnsType } from "antd/es/table";
+import type { Key } from "react";
 import {
   SearchOutlined,
   FilterOutlined,
@@ -9,13 +16,28 @@ import {
   ClockCircleOutlined,
   HourglassOutlined,
 } from "@ant-design/icons";
+import "./tasks.css";
 
-const initialTasks = [
-  { id: 1, title: "Inspect meter readings", status: "Pending", due: "Today" },
-  { id: 2, title: "Update arrears list", status: "In Progress", due: "Tomorrow" },
-  { id: 3, title: "Support ticket #453", status: "Completed", due: "Yesterday" },
-  { id: 4, title: "Reconcile payments", status: "Pending", due: "Friday" },
+interface Task {
+  key: number;
+  id: number;
+  title: string;
+  status: "Pending" | "In Progress" | "Completed";
+  due: string;
+}
+
+const initialTasks: Task[] = [
+  { id: 1, key: 1, title: "Inspect meter readings", status: "Pending", due: "Today" },
+  { id: 2, key: 2, title: "Update arrears list", status: "In Progress", due: "Tomorrow" },
+  { id: 3, key: 3, title: "Support ticket #453", status: "Completed", due: "Yesterday" },
+  { id: 4, key: 4, title: "Reconcile payments", status: "Pending", due: "Friday" },
 ];
+
+const statusColors: Record<Task["status"], string> = {
+  "Pending": "#f39c12",
+  "In Progress": "#3498db",
+  "Completed": "#2ecc71",
+};
 
 const TasksPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +45,37 @@ const TasksPage: React.FC = () => {
   const filteredTasks = initialTasks.filter((task) =>
     task.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const columns: ColumnsType<Task> = [
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      sorter: (a, b) => a.title.localeCompare(b.title),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      filters: [
+        { text: "Pending", value: "Pending" },
+        { text: "In Progress", value: "In Progress" },
+        { text: "Completed", value: "Completed" },
+      ],
+      onFilter: (value: Key | boolean, record) => record.status === value,
+      render: (status: Task["status"]) => (
+        <Tag color={statusColors[status]} style={{ color: "#fff" }}>
+          {status}
+        </Tag>
+      ),
+    },
+    {
+      title: "Due",
+      dataIndex: "due",
+      key: "due",
+      sorter: (a, b) => a.due.localeCompare(b.due),
+    },
+  ];
 
   return (
     <div className="tasks-page">
@@ -56,36 +109,20 @@ const TasksPage: React.FC = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <button className="filter-button">
-          <FilterOutlined />
+        <Button className="filter-button" icon={<FilterOutlined />}>
           Filter
-        </button>
+        </Button>
       </div>
 
       <div className="task-table">
-        <div className="task-table-header">
-          <span>Title</span>
-          <span>Status</span>
-          <span>Due</span>
-        </div>
-
-        {filteredTasks.map((task) => (
-          <div key={task.id} className={`task-row ${task.status.toLowerCase().replace(" ", "-")}`}>
-            <span>{task.title}</span>
-            <span className={`badge ${task.status.toLowerCase().replace(" ", "-")}`}>
-              {task.status}
-            </span>
-            <span>{task.due}</span>
-          </div>
-        ))}
-
-        {filteredTasks.length === 0 && (
-          <div className="no-tasks">No tasks found.</div>
-        )}
+        <Table
+          columns={columns}
+          dataSource={filteredTasks}
+          pagination={{ pageSize: 5 }}
+        />
       </div>
     </div>
   );
 };
 
 export default TasksPage;
-

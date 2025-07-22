@@ -1,12 +1,10 @@
 .tasks-page {
-padding-top: 55px;
+  padding-top: 70px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  padding-top: 55px;
   background-color: #f6f8fa;
-  margin-top: auto;
   overflow-y: hidden;
   box-sizing: border-box;
 }
@@ -74,7 +72,8 @@ padding-top: 55px;
   padding: 8px 12px;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
-  flex: 1;
+  flex-grow: 1;
+  min-width: 250px;
 }
 
 .search-bar input {
@@ -95,6 +94,8 @@ padding-top: 55px;
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .task-table {
@@ -164,14 +165,31 @@ padding-top: 55px;
 
 /* Responsive */
 @media (max-width: 768px) {
-  .task-table-header,
+  .task-table-header {
+    display: none;
+  }
+
   .task-row {
     grid-template-columns: 1fr;
     gap: 10px;
+    padding: 12px;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: white;
   }
 
   .task-search-filter {
     flex-direction: column;
   }
-}
 
+  .search-bar,
+  .filter-button {
+    width: 100%;
+  }
+
+  .tasks-page {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

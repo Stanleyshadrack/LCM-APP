@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useRef, useState } from "react";
 import Link from "next/link";
@@ -12,7 +12,7 @@ interface TopbarProps {
   isMobile: boolean;
 }
 
-const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
+const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed, isMobile }) => {
   const [profileImage, setProfileImage] = useState<string>("/profile.svg");
   const [isProfileModalVisible, setIsProfileModalVisible] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,13 +56,17 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed }) => {
     <>
       <div className={`topbar ${collapsed ? "collapsed" : ""}`}>
         <div className="topbar-left">
-          <button className="toggle-button" onClick={toggleSidebar}>
-            <MenuOutlined />
-          </button>
+          {!isMobile && (
+            <button className="toggle-button" onClick={toggleSidebar}>
+              <MenuOutlined />
+            </button>
+          )}
+        {isMobile && (
+  <button className="mobile-menu-toggle" onClick={toggleSidebar}>
+    {collapsed ? <MenuOutlined /> : <CloseOutlined />}
+  </button>
+)}
 
-          <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
-            {mobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />}
-          </button>
         </div>
 
         <div className="topbar-right">
