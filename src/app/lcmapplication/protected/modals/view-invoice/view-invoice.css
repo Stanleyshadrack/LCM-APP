@@ -8,6 +8,69 @@
   font-family: "Inter", sans-serif;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
 }
+.due-warning {
+  font-size: 15px;
+  padding: 10px;
+  border-left: 5px solid;
+  margin-top: 1rem;
+  border-radius: 4px;
+}
+
+.status-label {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.status-label.sent {
+  color: #ff9800; /* orange */
+}
+
+.status-label.pending {
+  color: #f57c00; /* darker orange */
+}
+
+.status-label.paid {
+  color: #4caf50; /* green */
+}
+
+.status-label.overdue {
+  color: #f44336; /* red */
+}
+
+.due-warning {
+  font-weight: 500;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.due-warning.pending {
+  background-color: #fff8e1;
+  color: #ff9800;
+  border: 1px solid #ffecb3;
+}
+
+.due-warning.overdue {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+
+.due-warning.pending {
+  background-color: #fffbe6;
+  border-color: #faad14;
+  color: #8c6d1f;
+}
+
+.due-warning.overdue {
+  background-color: #fff1f0;
+  border-color: #ff4d4f;
+  color: #a8071a;
+}
+
 
 
   

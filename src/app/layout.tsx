@@ -2,7 +2,7 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import ClientProvider from "./context/ClientProvider";
 import { AuthProvider } from "./context/AuthContext";
-import ClientLayoutWrapper from "./context/ClientLayoutWrapper"; 
+import ClientLayoutWrapper from "./context/ClientLayoutWrapper"; // ✅ use this
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const robotoMono = Roboto_Mono({ subsets: ["latin"], variable: "--font-roboto-mono" });

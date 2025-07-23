@@ -13,6 +13,35 @@
   gap: 12px;
 }
 
+.apartment-card.list-view {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  gap: 20px;
+}
+
+.apartment-card.list-view .card-header {
+  flex: 1;
+}
+
+.apartment-card.list-view .apartment-details {
+  flex: 2;
+  font-size: 14px;
+}
+
+.apartment-card.list-view .card-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+
 .apartment-card:hover {
   transform: scale(1.03);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);

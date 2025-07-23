@@ -9,6 +9,7 @@ interface ApartmentCardProps {
   unitTypes: string[];
   status: ApartmentStatus;
   address: string;
+  isList?: boolean;
 }
 
 const statusColorMap: Record<ApartmentStatus, string> = {
@@ -28,6 +29,7 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
   unitTypes,
   status,
   address,
+  isList = false,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -36,9 +38,14 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
 
   return (
     <>
-      <div className={`apartment-card ${statusColorMap[status]}`}>
+      <div className={`apartment-card ${statusColorMap[status]} ${isList ? "list-view" : ""}`}>
         <div className="card-header">
           <h3 className="apartment-title">{title}</h3>
+          {isList && (
+            <Tag color={statusTagColor[status]} className="status-badge">
+              {status}
+            </Tag>
+          )}
         </div>
 
         <div className="apartment-details">
@@ -55,6 +62,11 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
         </div>
 
         <div className="card-footer">
+          {!isList && (
+            <Tag color={statusTagColor[status]} className="status-badge">
+              {status}
+            </Tag>
+          )}
           <Button
             type="link"
             onClick={() => setIsModalVisible(true)}
@@ -63,10 +75,6 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
           >
             View Details
           </Button>
-
-          <Tag color={statusTagColor[status]} className="status-badge">
-            {status}
-          </Tag>
         </div>
       </div>
 
