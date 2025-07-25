@@ -86,11 +86,7 @@ owner: [
           ))}
         </nav>
 
-        <div className="bottom-icon" onClick={() => setIsModalVisible(true)}>
-          <MessageOutlined
-            style={{ fontSize: "24px", color: "#1890ff", cursor: "pointer" }}
-          />
-        </div>
+       
       </div>
 
     </>

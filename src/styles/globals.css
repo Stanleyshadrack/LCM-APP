@@ -5,6 +5,47 @@
   width: 100%;
   flex-direction: row;
 }
+/* global.css */
+
+/* Default style for all headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  color: #1f2937; /* dark grey/black */
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Specific sizes */
+h1 {
+  font-size: 2.25rem; /* ~36px */
+}
+
+h2 {
+  font-size: 1.875rem; /* ~30px */
+}
+
+h3 {
+  font-size: 1.5rem; /* ~24px */
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+h5 {
+  font-size: 1.125rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+.h7 {
+  letter-spacing: -0.5px;
+}
+
+
 
 /* Sidebar */
 .sidebar {
@@ -32,24 +73,7 @@
   box-sizing: border-box;
 }
 
-/* Topbar */
-/* .topbar {
-  width: calc(100% - 220px);
-  height: 70px;
-  background: white;
-  position: fixed;
-  top: 0;
-  left: 220px;
-  z-index: 10;
-  padding: 0 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #e0e0e0;
-  box-sizing: border-box;
-} */
 
-/* Content below topbar */
 .page-content {
   flex-grow: 1;
   padding: 2rem;

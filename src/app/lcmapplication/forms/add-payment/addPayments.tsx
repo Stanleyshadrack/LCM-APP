@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Form, Input, InputNumber, Button, Select, DatePicker } from "antd";
-import dayjs from "dayjs";
 import "./addPayments.css";
 
 const { Option } = Select;
@@ -14,6 +13,7 @@ interface AddPaymentFormProps {
     refCode: string;
     dateTime: string;
     arrears: "Owed" | "Not owed";
+    paymentMode: "M-Pesa" | "Bank" | "Cash";
   }) => void;
 }
 
@@ -43,6 +43,7 @@ const AddPaymentForm: React.FC<AddPaymentFormProps> = ({ onSuccess }) => {
       refCode: values.refCode,
       dateTime: values.date.format("DD/MM/YYYY"),
       arrears: values.arrears,
+      paymentMode: values.paymentMode,
     };
     onSuccess(paymentData);
     form.resetFields();
@@ -128,6 +129,18 @@ const AddPaymentForm: React.FC<AddPaymentFormProps> = ({ onSuccess }) => {
           rules={[{ required: true, message: "Please pick a date" }]}
         >
           <DatePicker className="full-width-input" />
+        </Form.Item>
+
+        <Form.Item
+          label="Payment Mode"
+          name="paymentMode"
+          rules={[{ required: true, message: "Please select payment mode" }]}
+        >
+          <Select placeholder="Select mode">
+            <Option value="M-Pesa">M-Pesa</Option>
+            <Option value="Bank">Bank</Option>
+            <Option value="Cash">Cash</Option>
+          </Select>
         </Form.Item>
 
         <Form.Item

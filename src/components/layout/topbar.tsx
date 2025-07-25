@@ -86,15 +86,30 @@ const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, collapsed, isMobile }) =
               onClick={handleImageClick}
             />
 
-            <Dropdown overlay={menu} trigger={["click"]}>
-              <div className="user-meta-dropdown">
-                <div className="user-name-role">
-                  <div className="username">Peter</div>
-                  <div className="user-id">Owner</div>
-                </div>
-                <DownOutlined className="dropdown-icon" />
-              </div>
-            </Dropdown>
+          <Dropdown
+  menu={{
+    items: [
+      {
+        key: "profile",
+        label: <span onClick={showProfileModal}>View Profile</span>,
+      },
+      {
+        key: "logout",
+        label: <Link href="/login">Log out</Link>,
+      },
+    ],
+  }}
+  trigger={["click"]}
+>
+  <div className="user-meta-dropdown">
+    <div className="user-name-role">
+      <div className="username">Peter</div>
+      <div className="user-id">Owner</div>
+    </div>
+    <DownOutlined className="dropdown-icon" />
+  </div>
+</Dropdown>
+
           </div>
         </div>
       </div>

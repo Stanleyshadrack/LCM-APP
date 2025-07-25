@@ -111,7 +111,7 @@ const OwnerDashboard = () => {
                 </tr>
               </tbody>
             </table>
-            <Link href="/owner/invoices">
+            <Link href="/shared/invoices">
               <button className="see-invoices-button">View All Invoices</button>
             </Link>
           </div>

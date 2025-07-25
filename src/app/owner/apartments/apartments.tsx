@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -28,6 +28,7 @@ import { ColumnsType } from "antd/es/table";
 import ApartmentDetails from "@/app/lcmapplication/protected/modals/apartment-details/view-apartment";
 
 const Apartments = () => {
+  const [hasMounted, setHasMounted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,10 +36,76 @@ const Apartments = () => {
   const [editMode, setEditMode] = useState(false);
   const [editingApartment, setEditingApartment] = useState<Apartment | null>(null);
   const [viewingApartment, setViewingApartment] = useState<Apartment | null>(null);
-  const [apartments, setApartments] = useState<Apartment[]>([]);
   const [isListView, setIsListView] = useState(false);
 
   const apartmentsPerPage = 8;
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  const [apartments, setApartments] = useState<Apartment[]>([
+    {
+      id: 1,
+      title: "Green Heights",
+      unitTypes: ["1BR", "2BR", "Studio"],
+      status: ApartmentStatus.Letting,
+    },
+    {
+      id: 2,
+      title: "Silver Towers",
+      unitTypes: ["2BR", "3BR"],
+      status: ApartmentStatus.UnderConstruction,
+    },
+    {
+      id: 3,
+      title: "Sunset Apartments",
+      unitTypes: ["Studio", "1BR"],
+      status: ApartmentStatus.Letting,
+    },
+    {
+      id: 4,
+      title: "Palm Residency",
+      unitTypes: ["2BR", "3BR", "4BR"],
+      status: ApartmentStatus.SoldOut,
+    },
+    {
+      id: 5,
+      title: "Royal Villas",
+      unitTypes: ["3BR", "4BR"],
+      status: ApartmentStatus.Letting,
+    },
+    {
+      id: 6,
+      title: "Ocean View",
+      unitTypes: ["1BR", "Studio"],
+      status: ApartmentStatus.SoldOut,
+    },
+    {
+      id: 7,
+      title: "Maple Grove",
+      unitTypes: ["2BR", "3BR"],
+      status: ApartmentStatus.Letting,
+    },
+    {
+      id: 8,
+      title: "Hilltop Haven",
+      unitTypes: ["Studio"],
+      status: ApartmentStatus.UnderConstruction,
+    },
+    {
+      id: 9,
+      title: "Westwood Heights",
+      unitTypes: ["1BR", "2BR"],
+      status: ApartmentStatus.Letting,
+    },
+    {
+      id: 10,
+      title: "Urban Oasis",
+      unitTypes: ["Studio", "1BR", "2BR"],
+      status: ApartmentStatus.Letting,
+    },
+  ]);
 
   const handleAddApartment = (data: {
     name: string;
@@ -177,11 +244,13 @@ const Apartments = () => {
     },
   ];
 
+  if (!hasMounted) return null;
+
   return (
     <div className="apartments-content">
       <div className="apartments-header">
         <h2>APARTMENTS</h2>
-        <div className="header-actions">
+        <div className="filters-inline">
           <SearchInput
             value={searchTerm}
             onChange={(e) => {
@@ -190,11 +259,14 @@ const Apartments = () => {
             }}
             placeholder="Search apartments..."
           />
-          <AddTenantButton onClick={() => {
-            setIsModalOpen(true);
-            setEditMode(false);
-            setEditingApartment(null);
-          }} label="+ Add Apartment" />
+          <AddTenantButton
+            onClick={() => {
+              setIsModalOpen(true);
+              setEditMode(false);
+              setEditingApartment(null);
+            }}
+            label="+ Add Apartment"
+          />
           <Tooltip title={isListView ? "Grid view" : "List view"}>
             <Button
               shape="circle"
@@ -232,7 +304,6 @@ const Apartments = () => {
         </div>
       )}
 
-      {/* Create/Edit Form */}
       <Modal
         open={isModalOpen}
         onCancel={() => {
@@ -243,23 +314,24 @@ const Apartments = () => {
         footer={null}
         destroyOnClose
       >
-        <CreateApartmentForm
-          onSubmit={handleAddApartment}
-          defaultValues={
-            editingApartment
-              ? {
-                  name: editingApartment.title,
-                  unitType: editingApartment.unitTypes,
-                  status: editingApartment.status,
-                  location: "Unknown",
-                  waterUnitCost: 250,
-                }
-              : undefined
-          }
-        />
+        {hasMounted && (
+          <CreateApartmentForm
+            onSubmit={handleAddApartment}
+            defaultValues={
+              editingApartment
+                ? {
+                    name: editingApartment.title,
+                    unitType: editingApartment.unitTypes,
+                    status: editingApartment.status,
+                    location: "Unknown",
+                    waterUnitCost: 250,
+                  }
+                : undefined
+            }
+          />
+        )}
       </Modal>
 
-      {/* ApartmentDetails modal */}
       <Modal
         open={isViewModalOpen}
         onCancel={() => setIsViewModalOpen(false)}
@@ -268,7 +340,7 @@ const Apartments = () => {
         width="fit-content"
         centered
       >
-        {viewingApartment && (
+        {hasMounted && viewingApartment && (
           <ApartmentDetails
             apartmentName={viewingApartment.title}
             unitTypes={viewingApartment.unitTypes}

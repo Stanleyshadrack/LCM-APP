@@ -58,7 +58,7 @@ const Invoices: React.FC = () => {
       apartment: "LCM Apartments",
       rentAmount: "KES 8,000",
       waterBill: "KES 200",
-      amountPaid: "KES 10,000",
+      amountPaid: "KES 7,000",
       amountPaidLastMonth: "KES 8,200",
       arrears: "KES 0",
       balanceDue: "KES 0",
