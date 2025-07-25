@@ -33,6 +33,12 @@
   margin-top: 0.5rem;
 }
 
+.default-icon {
+  color: #ccc;
+  font-size: 24px;
+}
+
+
 /* Dark mode */
 .dark-mode .stat-card {
   --card-bg: #1f2937;

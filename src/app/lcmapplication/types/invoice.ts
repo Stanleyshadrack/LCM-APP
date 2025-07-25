@@ -1,18 +1,28 @@
 export default interface Invoice {
-    key: string;
-    unitId: string;
-    apartment: string;
-    rentAmount: string;
-    phoneNumber: string;
-    balanceDue: string;
-    date: string;
-    status: "PENDING" | "SENT";
-    waterBill?: string;
-    waterReadingCurrent?: number;
-    waterReadingPrevious?: number;
-    waterConsumption?: number;
-    totalPayable?: string;
-  }
+  currentReading: string;
+  previousReading: string;
+  key: string;
+  unitId: string;
+  apartment: string;
+  rentAmount: string;
+  waterBill: string;
+  amountPaid: string;
+  amountPaidLastMonth: string;
+  arrears: string;
+  balanceDue: string;
+  phoneNumber: string;
+  date: string;
+  dueDate: string;
+  status: "PENDING" | "CLEARED" | "OVERDUE";
+  totalPayable?: string;
+  totalPaid?: string;
+  overpaid?: string;
+}
+
+
+
+
+
 
   
 
@@ -29,6 +39,7 @@ export interface Apartment {
   unitTypes: string[];
   status: ApartmentStatus;
 }
+
 
 
 

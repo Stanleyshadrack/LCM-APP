@@ -1,16 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Input, InputNumber, Button, Select, DatePicker } from "antd";
 import "./addPayments.css";
 
 const { Option } = Select;
 
-const AddPaymentForm: React.FC = () => {
+interface AddPaymentFormProps {
+  onSuccess: (payment: {
+    unitId: string;
+    apartment: string;
+    paidAmount: string;
+    phoneNumber: string;
+    refCode: string;
+    dateTime: string;
+    arrears: "Owed" | "Not owed";
+    paymentMode: "M-Pesa" | "Bank" | "Cash";
+  }) => void;
+}
+
+const apartmentUnits: Record<string, string[]> = {
+  "Bima Heights": ["A01", "A02", "A03", "A04"],
+  "LCM Apartments": ["L01", "L02", "L03"],
+  "H&R Apartments": ["H01", "H02", "H03"],
+  "Sunset Villas": ["S01", "S02"],
+  "Lakeview Residency": ["LV1", "LV2", "LV3", "LV4"],
+};
+
+const AddPaymentForm: React.FC<AddPaymentFormProps> = ({ onSuccess }) => {
   const [form] = Form.useForm();
+  const [unitOptions, setUnitOptions] = useState<string[]>([]);
+
+  const onApartmentChange = (value: string) => {
+    form.setFieldsValue({ unitId: undefined });
+    setUnitOptions(apartmentUnits[value] || []);
+  };
 
   const onFinish = (values: any) => {
-    console.log("Payment Submitted: ", values);
-    // Here you can POST to your backend
+    const paymentData = {
+      unitId: values.unitId,
+      apartment: values.apartment,
+      paidAmount: `KES ${values.amount}`,
+      phoneNumber: values.phone,
+      refCode: values.refCode,
+      dateTime: values.date.format("DD/MM/YYYY"),
+      arrears: values.arrears,
+      paymentMode: values.paymentMode,
+    };
+    onSuccess(paymentData);
     form.resetFields();
+    setUnitOptions([]);
   };
 
   return (
@@ -20,41 +57,60 @@ const AddPaymentForm: React.FC = () => {
         form={form}
         layout="vertical"
         onFinish={onFinish}
+        autoComplete="off"
         className="payment-form"
       >
         <Form.Item
-          label="Unit ID"
-          name="unitId"
-          rules={[{ required: true, message: "Please enter Unit ID" }]}
+          label="Apartment Name"
+          name="apartment"
+          rules={[{ required: true, message: "Please select an apartment" }]}
         >
-          <Input placeholder="e.g., A01" />
+          <Select placeholder="Select an apartment" onChange={onApartmentChange} allowClear>
+            {Object.keys(apartmentUnits).map((apt) => (
+              <Option key={apt} value={apt}>
+                {apt}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
-          label="Apartment Name"
-          name="apartment"
-          rules={[{ required: true, message: "Please enter apartment name" }]}
+          label="Unit ID"
+          name="unitId"
+          rules={[{ required: true, message: "Please select a unit" }]}
         >
-          <Input placeholder="e.g., Bima Heights" />
+          <Select
+            placeholder="Select a unit"
+            showSearch
+            optionFilterProp="children"
+            disabled={unitOptions.length === 0}
+          >
+            {unitOptions.map((unit) => (
+              <Option key={unit} value={unit}>
+                {unit}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
           label="Amount Paid"
           name="amount"
-          rules={[{ required: true, message: "Enter payment amount" }]}
+          rules={[{ required: true, message: "Please enter the amount" }]}
         >
-          <InputNumber
+          <InputNumber<number>
+            className="full-width-input"
             min={0}
-            style={{ width: "100%" }}
             placeholder="e.g., 8000"
-            formatter={value => `KES ${value}`}
+            formatter={(value) => `KES ${value}`}
+            parser={(value) => (value ? parseInt(value.replace(/[^\d]/g, ""), 10) : 0)}
           />
         </Form.Item>
 
         <Form.Item
           label="Phone Number"
           name="phone"
-          rules={[{ required: true, message: "Enter phone number" }]}
+          rules={[{ required: true, message: "Please enter phone number" }]}
         >
           <Input placeholder="e.g., 254742792965" />
         </Form.Item>
@@ -62,23 +118,35 @@ const AddPaymentForm: React.FC = () => {
         <Form.Item
           label="Reference Code"
           name="refCode"
-          rules={[{ required: true, message: "Enter reference code" }]}
+          rules={[{ required: true, message: "Please enter reference code" }]}
         >
           <Input placeholder="e.g., TDI08N80BK" />
         </Form.Item>
 
         <Form.Item
-          label="Date/Time"
+          label="Date"
           name="date"
-          rules={[{ required: true, message: "Pick a date" }]}
+          rules={[{ required: true, message: "Please pick a date" }]}
         >
-          <DatePicker style={{ width: "100%" }} />
+          <DatePicker className="full-width-input" />
+        </Form.Item>
+
+        <Form.Item
+          label="Payment Mode"
+          name="paymentMode"
+          rules={[{ required: true, message: "Please select payment mode" }]}
+        >
+          <Select placeholder="Select mode">
+            <Option value="M-Pesa">M-Pesa</Option>
+            <Option value="Bank">Bank</Option>
+            <Option value="Cash">Cash</Option>
+          </Select>
         </Form.Item>
 
         <Form.Item
           label="Arrears Status"
           name="arrears"
-          rules={[{ required: true, message: "Select arrears status" }]}
+          rules={[{ required: true, message: "Please select arrears status" }]}
         >
           <Select placeholder="Select status">
             <Option value="Not owed">Not owed</Option>
@@ -97,4 +165,3 @@ const AddPaymentForm: React.FC = () => {
 };
 
 export default AddPaymentForm;
-

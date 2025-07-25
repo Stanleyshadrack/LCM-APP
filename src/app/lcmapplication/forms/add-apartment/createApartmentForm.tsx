@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select, { MultiValue } from 'react-select';
 import { ApartmentStatus } from '../../types/invoice';
 import './CreateApartmentForm.css';
@@ -15,6 +15,13 @@ interface ApartmentFormData {
 
 interface CreateApartmentFormProps {
   onSubmit: (data: Omit<ApartmentFormData, 'unitType'> & { unitType: string[] }) => void;
+  defaultValues?: {
+    name: string;
+    unitType: string[];
+    status: ApartmentStatus;
+    location: string;
+    waterUnitCost: number;
+  };
 }
 
 const unitTypeOptions: UnitOption[] = [
@@ -28,40 +35,51 @@ const unitTypeOptions: UnitOption[] = [
 const initialFormState: ApartmentFormData = {
   name: '',
   unitType: [],
- status: 'Letting' as ApartmentStatus,
+ status: ApartmentStatus.Letting,
   location: '',
   waterUnitCost: 250,
 };
 
-const CreateApartmentForm: React.FC<CreateApartmentFormProps> = ({ onSubmit }) => {
-  const [formData, setFormData] = useState(initialFormState);
+const CreateApartmentForm: React.FC<CreateApartmentFormProps> = ({ onSubmit, defaultValues }) => {
+  const [formData, setFormData] = useState<ApartmentFormData>(initialFormState);
   const [errors, setErrors] = useState<Partial<Record<keyof ApartmentFormData, string>>>({});
   const [submitted, setSubmitted] = useState(false);
 
+  // Populate defaults when editing
+  useEffect(() => {
+    if (defaultValues) {
+      setFormData({
+        ...defaultValues,
+        unitType: defaultValues.unitType.map((val) => ({
+          value: val,
+          label: val,
+        })),
+      });
+    }
+  }, [defaultValues]);
+
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
-
     if (!formData.name.trim()) newErrors.name = 'Apartment name is required.';
     if (formData.unitType.length === 0) newErrors.unitType = 'Please select at least one unit type.';
     if (!formData.location.trim()) newErrors.location = 'Location is required.';
     if (formData.waterUnitCost <= 0) newErrors.waterUnitCost = 'Water cost must be greater than zero.';
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: name === 'waterUnitCost' ? Number(value) : value,
     }));
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleUnitTypeChange = (selected: MultiValue<UnitOption>) => {
-    setFormData(prev => ({ ...prev, unitType: selected as UnitOption[] }));
-    setErrors(prev => ({ ...prev, unitType: '' }));
+    setFormData((prev) => ({ ...prev, unitType: selected as UnitOption[] }));
+    setErrors((prev) => ({ ...prev, unitType: '' }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -70,17 +88,23 @@ const CreateApartmentForm: React.FC<CreateApartmentFormProps> = ({ onSubmit }) =
 
     const preparedData = {
       ...formData,
-      unitType: formData.unitType.map(u => u.value),
+      unitType: formData.unitType.map((u) => u.value),
     };
 
     onSubmit(preparedData);
     setSubmitted(true);
-    setFormData(initialFormState);
+
+    if (!defaultValues) {
+      setFormData(initialFormState); // Reset only on create
+    }
   };
 
   return (
     <div className="apartment-container">
-      <h2 className="form-title">Create New Apartment</h2>
+      <h2 className="form-title">
+        {defaultValues ? 'Edit Apartment' : 'Create New Apartment'}
+      </h2>
+
       <form onSubmit={handleSubmit} className="apartment-form" noValidate>
         {/* Apartment Name */}
         <label>
@@ -113,11 +137,7 @@ const CreateApartmentForm: React.FC<CreateApartmentFormProps> = ({ onSubmit }) =
         {/* Status */}
         <label>
           Status:
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleInputChange}
-          >
+          <select name="status" value={formData.status} onChange={handleInputChange}>
             <option value="Letting">Letting</option>
             <option value="Under construction">Under construction</option>
             <option value="Sold out">Sold out</option>
@@ -154,10 +174,14 @@ const CreateApartmentForm: React.FC<CreateApartmentFormProps> = ({ onSubmit }) =
           {errors.waterUnitCost && <span className="error-text">{errors.waterUnitCost}</span>}
         </label>
 
-        <button type="submit" className="submit-button">Create Apartment</button>
+        <button type="submit" className="submit-button">
+          {defaultValues ? 'Save Changes' : 'Create Apartment'}
+        </button>
       </form>
 
-      {submitted && <p className="success-message">Apartment created successfully!</p>}
+      {!defaultValues && submitted && (
+        <p className="success-message">Apartment created successfully!</p>
+      )}
     </div>
   );
 };
