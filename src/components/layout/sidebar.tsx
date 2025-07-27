@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MessageOutlined } from "@ant-design/icons";
-import { Modal } from "antd";
 
 import "./sidebar.css";
 
@@ -12,7 +11,7 @@ interface SidebarProps {
   isVisible: boolean;
   isMobile?: boolean;
   onClose?: () => void;
-  role: "owner" | "employee" | "tenant"; 
+  role: "owner" | "employee" | "tenant";
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -28,25 +27,23 @@ const Sidebar: React.FC<SidebarProps> = ({
     if (onClose) onClose();
   };
 
-  const roleLinks: Record<string, { path: string; label: string }[]> = {
-owner: [
-  { path: "/owner/dashboard", label: "Dashboard" },
-  { path: "/owner/apartments", label: "Apartments" },
-  { path: "/shared/tenants", label: "Tenants" },
-  { path: "/shared/meter-readings", label: "Meter Readings" },
-  { path: "/shared/invoices", label: "Invoices" },
-  { path: "/owner/payments", label: "Payments" },
-  { path: "/shared/arrears", label: "Arrears" },
-],
-
-
+  const roleLinks: Record<string, { path: string; label: string; icon?: React.ReactNode }[]> = {
+    owner: [
+      { path: "/owner/dashboard", label: "Dashboard" },
+      { path: "/owner/apartments", label: "Apartments" },
+      { path: "/shared/tenants", label: "Tenants" },
+      { path: "/shared/meter-readings", label: "Meter Readings" },
+      { path: "/shared/invoices", label: "Invoices" },
+      { path: "/owner/payments", label: "Payments" },
+      { path: "/shared/arrears", label: "Arrears" },
+    ],
     employee: [
       { path: "/employee/dashboard", label: "Dashboard" },
       { path: "/employee/tasks", label: "Tasks" },
       { path: "/shared/meter-readings", label: "Meter Records" },
       { path: "/employee/readings", label: "Meter Readings" },
       { path: "/employee/support-ticket", label: "Support Tickets" },
-      {path: "/shared/messages", label: "Talk" }
+      { path: "/shared/messages", label: "Talk", icon: <MessageOutlined /> },
     ],
     tenant: [
       { path: "/tenant/dashboard", label: "My Dashboard" },
@@ -60,13 +57,12 @@ owner: [
 
   return (
     <>
-    {isMobile && (
-  <div
-    className={`sidebar-overlay ${isVisible ? "show" : "hidden"}`}
-    onClick={handleOverlayClick}
-  />
-)}
-
+      {isMobile && (
+        <div
+          className={`sidebar-overlay ${isVisible ? "show" : "hidden"}`}
+          onClick={handleOverlayClick}
+        />
+      )}
 
       <div className={`sidebar ${isVisible ? "show" : "hidden"}`}>
         <div className="logo">
@@ -81,14 +77,12 @@ owner: [
               href={link.path}
               className={pathname === link.path ? "active" : ""}
             >
+              {link.icon && <span style={{ marginRight: 6 }}>{link.icon}</span>}
               {link.label}
             </Link>
           ))}
         </nav>
-
-       
       </div>
-
     </>
   );
 };

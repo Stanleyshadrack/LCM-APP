@@ -100,6 +100,8 @@ const TasksPage: React.FC = () => {
       </div>
 
       <div className="task-search-filter">
+
+        <div className="page-actions">
         <div className="search-bar">
           <SearchOutlined />
           <input
@@ -113,7 +115,7 @@ const TasksPage: React.FC = () => {
           Filter
         </Button>
       </div>
-
+</div>
       <div className="task-table">
         <Table
           columns={columns}

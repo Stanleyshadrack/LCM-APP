@@ -20,6 +20,15 @@ export default interface Invoice {
 }
 
 
+export type Message = {
+  sender: string;
+  text: string;
+  time: string;
+};
+
+export type ChatMap = Record<string, Message[]>;
+export type GroupMembersMap = Record<string, string[]>;
+
 
 
 
