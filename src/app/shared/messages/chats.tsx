@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './messages.module.css';
-import ChatSidebar from './chatSidebar';
 import ChatWindow from './ChatWindow';
 import Modals from './Modals';
-import { ChatMap, GroupMembersMap } from '@/app/lcmapplication/types/invoice';
-import { Message } from './chats';
+import ChartSidebar from './chatSidebar';
+
+export type Message = {
+  sender: string;
+  text: string;
+  time: string;
+};
+
+type ChatMap = Record<string, Message[]>;
+type GroupMembersMap = Record<string, string[]>;
 
 const allUsers = ['John Doe', 'Peter', 'Aika', 'Sarah', 'Michael'];
 
@@ -30,43 +37,34 @@ const initialGroupMembersMap: GroupMembersMap = {
   Alpha: ['John Doe', 'Sarah'],
 };
 
-const ChatUI: React.FC = () => {
+export default function ChatModal() {
   const [activeTab, setActiveTab] = useState<'people' | 'groups'>('people');
   const [selectedChat, setSelectedChat] = useState('Aika');
   const [message, setMessage] = useState('');
   const [personalChats, setPersonalChats] = useState<ChatMap>(initialPersonalChats);
   const [groupChats, setGroupChats] = useState<ChatMap>(initialGroupChats);
   const [groupMembersMap, setGroupMembersMap] = useState<GroupMembersMap>(initialGroupMembersMap);
+
   const [showModal, setShowModal] = useState(false);
   const [showAddMembersModal, setShowAddMembersModal] = useState(false);
+
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
   const [typingStatus, setTypingStatus] = useState<Record<string, boolean>>({});
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const currentChats = activeTab === 'people' ? personalChats : groupChats;
   const setCurrentChats = activeTab === 'people' ? setPersonalChats : setGroupChats;
 
-  // Handle chat deletion
-  const handleDeleteChat = (chatName: string) => {
-    setCurrentChats((prev) => {
-      const updated = { ...prev };
-      delete updated[chatName];
-      return updated;
-    });
-
-    if (selectedChat === chatName) {
-      const remaining = Object.keys(currentChats).filter((c) => c !== chatName);
-      setSelectedChat(remaining[0] || '');
-    }
-  };
-
-  // Scroll and reset unread count
+  // Scroll to bottom and reset unread count when chat changes
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    setUnreadCounts((prev) => ({ ...prev, [selectedChat]: 0 }));
+    if (selectedChat) {
+      setUnreadCounts((prev) => ({ ...prev, [selectedChat]: 0 }));
+    }
   }, [selectedChat, currentChats]);
 
-  // Send message
+  // Handle sending a message
   const handleSend = () => {
     if (!message.trim()) return;
 
@@ -85,47 +83,48 @@ const ChatUI: React.FC = () => {
     setTypingStatus((prev) => ({ ...prev, [selectedChat]: false }));
   };
 
-  // Simulated auto-reply
+  // Handle deleting a chat
+  const handleDeleteChat = (chatName: string) => {
+    setCurrentChats((prev) => {
+      const updated = { ...prev };
+      delete updated[chatName];
+      return updated;
+    });
+
+    if (selectedChat === chatName) {
+      const remainingChats = Object.keys(currentChats).filter((name) => name !== chatName);
+      setSelectedChat(remainingChats[0] || '');
+    }
+  };
+
+  // Simulate an auto-reply after 30s
   useEffect(() => {
-    const timeout = setTimeout(() => {
+    const timer = setTimeout(() => {
+      if (!selectedChat || !currentChats[selectedChat]) return;
+
       const incoming: Message = {
         sender: selectedChat,
         text: 'Auto reply!',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
-      const isActive = selectedChat;
-      const chats = activeTab === 'people' ? personalChats : groupChats;
-      const setChats = activeTab === 'people' ? setPersonalChats : setGroupChats;
-
-      setChats((prev) => ({
+      setCurrentChats((prev) => ({
         ...prev,
         [selectedChat]: [...(prev[selectedChat] || []), incoming],
       }));
 
-      if (isActive !== selectedChat) {
-        setUnreadCounts((prev) => ({
-          ...prev,
-          [selectedChat]: (prev[selectedChat] || 0) + 1,
-        }));
-      }
-    }, 60000);
+      setUnreadCounts((prev) => ({
+        ...prev,
+        [selectedChat]: selectedChat in prev ? prev[selectedChat] + 1 : 1,
+      }));
+    }, 30000);
 
-    return () => clearTimeout(timeout);
-  }, []); // Only on first mount
-
-  // Typing timeout
-  useEffect(() => {
-    if (!message) return;
-    const timer = setTimeout(() => {
-      setTypingStatus((prev) => ({ ...prev, [selectedChat]: false }));
-    }, 2000);
     return () => clearTimeout(timer);
-  }, [message, selectedChat]);
+  }, [selectedChat]);
 
   return (
     <div className={styles.chatContainer}>
-      <ChatSidebar
+      <ChartSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         selectedChat={selectedChat}
@@ -147,8 +146,9 @@ const ChatUI: React.FC = () => {
           setTypingStatus((prev) => ({ ...prev, [selectedChat]: !!val }));
         }}
         onSend={handleSend}
-        onAddMembers={() => setShowAddMembersModal(true)}
         isGroup={activeTab === 'groups'}
+        onAddMembers={() => setShowAddMembersModal(true)}
+        isTyping={typingStatus[selectedChat] || false}
         messagesEndRef={messagesEndRef}
       />
 
@@ -168,6 +168,4 @@ const ChatUI: React.FC = () => {
       />
     </div>
   );
-};
-
-export default ChatUI;
+}

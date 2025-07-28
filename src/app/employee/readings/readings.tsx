@@ -27,6 +27,7 @@ const Readings = () => {
       unitCost: 1200,
       name: "Unit A02",
     },
+    
   ];
 
   const handleNewReading = (newData: any) => {
@@ -152,7 +153,7 @@ const Readings = () => {
         <p className="meter-subtext">
           
         </p>
-
+<div className="actions-div ">
         <Space style={{ marginBottom: 16 }}>
           <Button
             type="primary"
@@ -162,6 +163,7 @@ const Readings = () => {
             Add Meter Reading
           </Button>
         </Space>
+        </div>
 
         <Table
           dataSource={readings}

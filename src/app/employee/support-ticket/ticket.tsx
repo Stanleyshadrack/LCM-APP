@@ -174,73 +174,78 @@ const Tickets = () => {
   ];
 
   return (
-    <div className="ticket-dashboard">
-      <div className="ticket-header">
-        <h2>Support Tickets</h2>
-        <Space>
-          <Input
-            prefix={<SearchOutlined />}
-            placeholder="Search subject..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="ticket-search"
-          />
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              setDrawerVisible(true);
-              form.resetFields();
-              setEditingTicket(null);
-            }}
-          >
-            New Ticket
-          </Button>
-        </Space>
-      </div>
+   <div className="ticket-dashboard">
+  <div className="ticket-header">
+    <h2>Support Tickets</h2>
+  </div>
 
-      <Table
-        dataSource={filteredTickets}
-        columns={columns}
-        rowKey={(record) => record.id}
-        pagination={{ pageSize: 5 }}
-        className="tickets-table"
-        locale={{ emptyText: "No tickets found." }}
-      />
+  {/* Right-aligned search + button */}
+  <div className="actions-div">
+    <Input
+      prefix={<SearchOutlined />}
+      placeholder="Search subject..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="ticket-search"
+    />
+    <Button
+      type="primary"
+      icon={<PlusOutlined />}
+      onClick={() => {
+        setDrawerVisible(true);
+        form.resetFields();
+        setEditingTicket(null);
+      }}
+    >
+      New Ticket
+    </Button>
+  </div>
 
-      <Drawer
-        title={editingTicket ? "Edit Ticket" : "Create New Ticket"}
-        open={drawerVisible}
-        onClose={handleDrawerClose}
-        width={420}
+  {/* Table */}
+  <Table
+    dataSource={filteredTickets}
+    columns={columns}
+    rowKey={(record) => record.id}
+    pagination={{ pageSize: 5 }}
+    className="tickets-table"
+    locale={{ emptyText: "No tickets found." }}
+  />
+
+  {/* Drawer */}
+  <Drawer
+    title={editingTicket ? "Edit Ticket" : "Create New Ticket"}
+    open={drawerVisible}
+    onClose={handleDrawerClose}
+    width={420}
+  >
+    <Form layout="vertical" form={form} onFinish={handleFormSubmit}>
+      <Form.Item
+        label="Subject"
+        name="subject"
+        rules={[{ required: true, message: "Please enter a subject" }]}
       >
-        <Form layout="vertical" form={form} onFinish={handleFormSubmit}>
-          <Form.Item
-            label="Subject"
-            name="subject"
-            rules={[{ required: true, message: "Please enter a subject" }]}
-          >
-            <Input placeholder="e.g. Light not working in lobby" />
-          </Form.Item>
+        <Input placeholder="e.g. Light not working in lobby" />
+      </Form.Item>
 
-          <Form.Item
-            label="Priority"
-            name="priority"
-            rules={[{ required: true, message: "Select a priority" }]}
-          >
-            <Select placeholder="Select priority">
-              <Select.Option value="High">High</Select.Option>
-              <Select.Option value="Medium">Medium</Select.Option>
-              <Select.Option value="Low">Low</Select.Option>
-            </Select>
-          </Form.Item>
+      <Form.Item
+        label="Priority"
+        name="priority"
+        rules={[{ required: true, message: "Select a priority" }]}
+      >
+        <Select placeholder="Select priority">
+          <Select.Option value="High">High</Select.Option>
+          <Select.Option value="Medium">Medium</Select.Option>
+          <Select.Option value="Low">Low</Select.Option>
+        </Select>
+      </Form.Item>
 
-          <Button type="primary" htmlType="submit" block>
-            {editingTicket ? "Update Ticket" : "Submit Ticket"}
-          </Button>
-        </Form>
-      </Drawer>
-    </div>
+      <Button type="primary" htmlType="submit" block>
+        {editingTicket ? "Update Ticket" : "Submit Ticket"}
+      </Button>
+    </Form>
+  </Drawer>
+</div>
+
   );
 };
 

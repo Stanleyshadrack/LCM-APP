@@ -54,6 +54,37 @@ const WaterMetersPage = () => {
       TotalAmount: "4000",
       dateTime: "02/05/2025 14:45",
     },
+
+     {
+      key: "4",
+      unitId: "A02",
+      apartment: "Wima Heights",
+      CurrentReading: "10",
+      PreviousReading: "8",
+      Consumption: "2000",
+      TotalAmount: "4000",
+      dateTime: "02/05/2025 14:45",
+    },
+     {
+      key: "5",
+      unitId: "A03",
+      apartment: "Wima Heights",
+      CurrentReading: "10",
+      PreviousReading: "8",
+      Consumption: "2000",
+      TotalAmount: "4000",
+      dateTime: "02/05/2025 14:45",
+    },
+     {
+      key: "6",
+      unitId: "B02",
+      apartment: "Wima Heights",
+      CurrentReading: "10",
+      PreviousReading: "8",
+      Consumption: "2000",
+      TotalAmount: "4000",
+      dateTime: "02/05/2025 14:45",
+    },
   ];
 
   const filteredPayments = payments.filter((payment) => {

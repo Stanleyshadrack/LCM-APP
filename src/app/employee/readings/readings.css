@@ -19,6 +19,19 @@
   margin-bottom: 8px;
 }
 
+.actions-div {
+  display: flex;
+  justify-content: flex-end;   /* Align to right */
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
+}
+
 .meter-subtext {
   color: #666;
   font-size: 0.95rem;
@@ -33,12 +46,13 @@
   padding: 10px 20px;
   border-radius: 6px;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .meter-add-button:hover {
-  background-color: #40a9ff;
-  color: white;
+  background-color: #1677d4;
 }
+
 
 /* Table visuals */
 .ant-table-wrapper {
