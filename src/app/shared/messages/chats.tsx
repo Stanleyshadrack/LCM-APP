@@ -4,7 +4,6 @@ import ChatWindow from './ChatWindow';
 import Modals from './Modals';
 import ChartSidebar from './chatSidebar';
 
-// Define the message structure
 export type Message = {
   sender: string;
   text: string;
@@ -57,12 +56,15 @@ export default function ChatModal() {
   const currentChats = activeTab === 'people' ? personalChats : groupChats;
   const setCurrentChats = activeTab === 'people' ? setPersonalChats : setGroupChats;
 
-  // Auto-scroll and reset unread count on chat change
+  // Scroll to bottom and reset unread count when chat changes
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    setUnreadCounts((prev) => ({ ...prev, [selectedChat]: 0 }));
+    if (selectedChat) {
+      setUnreadCounts((prev) => ({ ...prev, [selectedChat]: 0 }));
+    }
   }, [selectedChat, currentChats]);
 
+  // Handle sending a message
   const handleSend = () => {
     if (!message.trim()) return;
 
@@ -72,7 +74,7 @@ export default function ChatModal() {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
-    setCurrentChats((prev: ChatMap) => ({
+    setCurrentChats((prev) => ({
       ...prev,
       [selectedChat]: [...(prev[selectedChat] || []), newMsg],
     }));
@@ -81,9 +83,25 @@ export default function ChatModal() {
     setTypingStatus((prev) => ({ ...prev, [selectedChat]: false }));
   };
 
-  // Simulate incoming message
+  // Handle deleting a chat
+  const handleDeleteChat = (chatName: string) => {
+    setCurrentChats((prev) => {
+      const updated = { ...prev };
+      delete updated[chatName];
+      return updated;
+    });
+
+    if (selectedChat === chatName) {
+      const remainingChats = Object.keys(currentChats).filter((name) => name !== chatName);
+      setSelectedChat(remainingChats[0] || '');
+    }
+  };
+
+  // Simulate an auto-reply after 30s
   useEffect(() => {
     const timer = setTimeout(() => {
+      if (!selectedChat || !currentChats[selectedChat]) return;
+
       const incoming: Message = {
         sender: selectedChat,
         text: 'Auto reply!',
@@ -99,10 +117,10 @@ export default function ChatModal() {
         ...prev,
         [selectedChat]: selectedChat in prev ? prev[selectedChat] + 1 : 1,
       }));
-    }, 30000); // 30 seconds
+    }, 30000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [selectedChat]);
 
   return (
     <div className={styles.chatContainer}>
@@ -116,6 +134,7 @@ export default function ChatModal() {
         setShowModal={setShowModal}
         unreadCounts={unreadCounts}
         typingStatus={typingStatus}
+        onDeleteChat={handleDeleteChat}
       />
 
       <ChatWindow

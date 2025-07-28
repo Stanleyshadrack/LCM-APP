@@ -36,6 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       { path: "/shared/invoices", label: "Invoices" },
       { path: "/owner/payments", label: "Payments" },
       { path: "/shared/arrears", label: "Arrears" },
+       { path: "/shared/messages", label: "Talk", icon: <MessageOutlined /> },
     ],
     employee: [
       { path: "/employee/dashboard", label: "Dashboard" },
@@ -50,6 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       { path: "/tenant/my-readings", label: "My Meter Readings" },
       { path: "/tenant/my-payments", label: "My Payments" },
       { path: "/tenant/support", label: "Support" },
+       { path: "/shared/messages", label: "Talk", icon: <MessageOutlined /> },
     ],
   };
 

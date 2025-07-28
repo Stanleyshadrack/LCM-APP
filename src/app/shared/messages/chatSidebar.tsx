@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styles from './messages.module.css';
 import { Message } from '../../lcmapplication/types/invoice';
+import { MessageOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 
 interface ChatSidebarProps {
   activeTab: 'people' | 'groups';
@@ -12,6 +14,7 @@ interface ChatSidebarProps {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   unreadCounts: Record<string, number>;
   typingStatus: Record<string, boolean>;
+  onDeleteChat: (chatName: string) => void;
 }
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
@@ -24,8 +27,11 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   setShowModal,
   unreadCounts,
   typingStatus,
+  onDeleteChat,
 }) => {
+  const currentUser = 'John Doe'; // Replace this with dynamic user if available
   const [searchTerm, setSearchTerm] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 
   const displayList =
     activeTab === 'people'
@@ -36,13 +42,20 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
           name.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
+  const handleDelete = (name: string) => {
+    const confirm = window.confirm(`Are you sure you want to delete chat with ${name}?`);
+    if (confirm) onDeleteChat(name);
+  };
+
   return (
     <div className={styles.chatSidebar}>
+      {/* Own Profile */}
       <div className={styles.chatUserProfile}>
-        <div className={styles.avatarLarge}>{selectedChat[0]}</div>
-        <div className={styles.chatUsername}>{selectedChat}</div>
+        <div className={styles.avatarLarge}>{currentUser[0]}</div>
+        <div className={styles.chatUsername}>{currentUser}</div>
       </div>
 
+      {/* Tabs */}
       <div className={styles.tabs}>
         <button
           className={activeTab === 'people' ? styles.active : ''}
@@ -58,12 +71,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </button>
       </div>
 
-      <div className={styles.chatActions}>
-        <button onClick={() => setShowModal(true)}>
-          + {activeTab === 'people' ? 'New Chat' : 'New Group'}
-        </button>
-      </div>
-
+      {/* Search */}
       <div className={styles.searchBox}>
         <input
           type="text"
@@ -73,31 +81,63 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         />
       </div>
 
-      <div className={styles.chatList}>
-        {displayList.map((name) => (
-          <div
-            key={name}
-            className={`${styles.chatItem} ${
-              selectedChat === name ? styles.selected : ''
-            }`}
-            onClick={() => setSelectedChat(name)}
-          >
-            <div className={styles.avatar}>{name[0]}</div>
-            <div className={styles.chatInfo}>
-              <div className={styles.name}>
-                {name}
-                {unreadCounts[name] > 0 && (
-                  <span className={styles.unreadBadge}>{unreadCounts[name]}</span>
+      {/* Chat List */}
+      <div className={styles.chatListWrapper}>
+        <div className={styles.chatList}>
+          {displayList.map((name) => (
+            <div
+              key={name}
+              className={`${styles.chatItem} ${
+                selectedChat === name ? styles.selected : ''
+              }`}
+              onClick={() => setSelectedChat(name)}
+            >
+              <div className={styles.avatar}>{name[0]}</div>
+              <div className={styles.chatInfo}>
+                <div className={styles.name}>
+                  {name}
+                  {unreadCounts[name] > 0 && (
+                    <span className={styles.unreadBadge}>{unreadCounts[name]}</span>
+                  )}
+                </div>
+                <div className={styles.preview}>
+                  {typingStatus[name]
+                    ? <em>Typing...</em>
+                    : currentChats[name]?.slice(-1)[0]?.text || 'No messages yet'}
+                </div>
+              </div>
+              <div
+                className={styles.moreWrapper}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDropdownOpen(dropdownOpen === name ? null : name);
+                }}
+              >
+                <span className={styles.moreIcon}>⋯</span>
+                {dropdownOpen === name && (
+                  <div className={styles.dropdownMenu}>
+                    <div onClick={() => { handleDelete(name); setDropdownOpen(null); }}>🗑 Delete</div>
+                    <div onClick={() => { alert('Archived!'); setDropdownOpen(null); }}>📥 Archive</div>
+                    <div onClick={() => { alert('Pinned!'); setDropdownOpen(null); }}>📌 Pin</div>
+                  </div>
                 )}
               </div>
-              <div className={styles.preview}>
-                {typingStatus[name]
-                  ? <em>Typing...</em>
-                  : currentChats[name]?.slice(-1)[0]?.text || 'No messages yet'}
-              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Floating New Chat Button */}
+        <Tooltip
+          title={activeTab === 'people' ? 'New Chat' : 'New Group'}
+          placement="left"
+        >
+          <button
+            className={styles.floatingNewChatBtnOverList}
+            onClick={() => setShowModal(true)}
+          >
+            {activeTab === 'people' ? <MessageOutlined /> : <UsergroupAddOutlined />}
+          </button>
+        </Tooltip>
       </div>
     </div>
   );

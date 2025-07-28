@@ -1,4 +1,3 @@
-// shared/messages/chats.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './messages.module.css';
 import ChatSidebar from './chatSidebar';
@@ -47,6 +46,20 @@ const ChatUI: React.FC = () => {
   const currentChats = activeTab === 'people' ? personalChats : groupChats;
   const setCurrentChats = activeTab === 'people' ? setPersonalChats : setGroupChats;
 
+  // Handle chat deletion
+  const handleDeleteChat = (chatName: string) => {
+    setCurrentChats((prev) => {
+      const updated = { ...prev };
+      delete updated[chatName];
+      return updated;
+    });
+
+    if (selectedChat === chatName) {
+      const remaining = Object.keys(currentChats).filter((c) => c !== chatName);
+      setSelectedChat(remaining[0] || '');
+    }
+  };
+
   // Scroll and reset unread count
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -56,6 +69,7 @@ const ChatUI: React.FC = () => {
   // Send message
   const handleSend = () => {
     if (!message.trim()) return;
+
     const newMsg: Message = {
       sender: 'me',
       text: message,
@@ -71,7 +85,7 @@ const ChatUI: React.FC = () => {
     setTypingStatus((prev) => ({ ...prev, [selectedChat]: false }));
   };
 
-  // Simulated auto-reply (only increment unread if it's NOT active chat)
+  // Simulated auto-reply
   useEffect(() => {
     const timeout = setTimeout(() => {
       const incoming: Message = {
@@ -98,7 +112,7 @@ const ChatUI: React.FC = () => {
     }, 60000);
 
     return () => clearTimeout(timeout);
-  }, []);
+  }, []); // Only on first mount
 
   // Typing timeout
   useEffect(() => {
@@ -121,6 +135,7 @@ const ChatUI: React.FC = () => {
         setShowModal={setShowModal}
         unreadCounts={unreadCounts}
         typingStatus={typingStatus}
+        onDeleteChat={handleDeleteChat}
       />
 
       <ChatWindow

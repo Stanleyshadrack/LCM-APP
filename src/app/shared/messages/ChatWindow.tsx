@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import styles from './messages.module.css';
 import { Message } from '../../lcmapplication/types/invoice';
+import { SendOutlined } from '@ant-design/icons';
 
 interface ChatWindowProps {
   selectedChat: string;
@@ -62,7 +63,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && onSend()}
         />
-        <button onClick={onSend}>Send</button>
+        <button onClick={onSend}><SendOutlined /></button>
       </div>
 
       {isGroup && (

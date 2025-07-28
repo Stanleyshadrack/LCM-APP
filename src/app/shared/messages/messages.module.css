@@ -2,7 +2,9 @@
 .chatContainer {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 90vh;
+  margin-top: 50px;
+overflow: hidden;
   width: 100%;
   background: #fff;
   overflow: hidden;
@@ -72,8 +74,93 @@
 /* Search Bar */
 .searchBox {
   padding: 12px 20px;
+  width: fit-content;
   border-bottom: 1px solid #e5e5e5;
 }
+.deleteButton {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: auto;
+  align-self: flex-start;
+  transition: color 0.2s ease;
+}
+
+.deleteButton:hover {
+  color: red;
+}
+
+.moreWrapper {
+  position: relative;
+  margin-left: auto;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.moreIcon {
+  font-size: 18px;
+  color: #888;
+  user-select: none;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 26px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  min-width: 120px;
+}
+
+.dropdownMenu div {
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dropdownMenu div:hover {
+  background-color: #f0f0f0;
+}
+
+.chatListWrapper {
+  position: relative;
+  height: 100%;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-bottom: 60px; /* allow space for floating button */
+}
+
+.floatingNewChatBtnOverList {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background-color: #2a72d6;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+}
+
+.floatingNewChatBtnOverList:hover {
+  background-color: #1a5bb8;
+}
+
+
+
 
 .searchBox input {
   width: 100%;
@@ -176,6 +263,7 @@
   display: flex;
   flex-direction: column;
   background: #f9fbff;
+  overflow: hidden;
 }
 
 .chatTitle {
