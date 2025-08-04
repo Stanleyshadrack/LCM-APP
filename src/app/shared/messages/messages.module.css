@@ -11,6 +11,21 @@ overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.statusDotOnline {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  background: #4caf50;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+.presenceStatus {
+  font-size: 0.75rem;
+  color: gray;
+}
+
 /* Sidebar */
 .chatSidebar {
   width: 300px;
@@ -22,10 +37,17 @@ overflow: hidden;
 
 .chatUserProfile {
   display: flex;
+   gap: 12px;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e5e5e5;
+ padding: 18px 24px;
+    border-bottom: 1px solid #e0e0e0;
 }
+
+
+ 
+ 
+ 
+
 
 .avatarLarge {
   width: 48px;

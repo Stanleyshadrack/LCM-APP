@@ -1,0 +1,110 @@
+.container {
+  padding: 2rem;
+  max-width: 700px;
+  margin: 2rem auto;
+  font-family: "Segoe UI", sans-serif;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  font-size: 1.8rem;
+  text-align: center;
+  color: #1f1f1f;
+  margin-bottom: 1.5rem;
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  animation: fadeInUp 0.3s ease forwards;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: background 0.3s ease;
+}
+
+.listItem:hover {
+  background: #fafafa;
+}
+
+.label {
+  font-weight: 500;
+  color: #262626;
+  font-size: 1rem;
+}
+
+.details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  font-size: 1.1rem;
+}
+
+.amount {
+  font-weight: 600;
+  color: #389e0d;
+}
+
+.pending {
+  font-weight: 600;
+  color: #cf1322;
+}
+
+.groupTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #8c8c8c;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  border-left: 4px solid #1890ff;
+  padding-left: 0.75rem;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .label {
+    font-size: 0.95rem;
+  }
+
+  .details {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.3rem;
+  }
+
+  .listItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

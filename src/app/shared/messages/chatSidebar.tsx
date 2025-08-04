@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
-import styles from './messages.module.css';
-import { Message } from '../../lcmapplication/types/invoice';
-import { MessageOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import React, { useState } from "react";
+import styles from "./messages.module.css";
+import { Message } from "../../lcmapplication/types/invoice";
+import { MessageOutlined, UsergroupAddOutlined } from "@ant-design/icons";
+import { Tooltip } from "antd";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 interface ChatSidebarProps {
-  activeTab: 'people' | 'groups';
-  setActiveTab: (tab: 'people' | 'groups') => void;
+  activeTab: "people" | "groups";
+  setActiveTab: (tab: "people" | "groups") => void;
   selectedChat: string;
   setSelectedChat: (name: string) => void;
   currentChats: Record<string, Message[]>;
@@ -15,6 +19,7 @@ interface ChatSidebarProps {
   unreadCounts: Record<string, number>;
   typingStatus: Record<string, boolean>;
   onDeleteChat: (chatName: string) => void;
+  onlineUsers?: string[];
 }
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
@@ -28,13 +33,14 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   unreadCounts,
   typingStatus,
   onDeleteChat,
+  onlineUsers = [],
 }) => {
-  const currentUser = 'John Doe'; // Replace this with dynamic user if available
-  const [searchTerm, setSearchTerm] = useState('');
+  const currentUser = "John Doe"; // Replace with auth if needed
+  const [searchTerm, setSearchTerm] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 
   const displayList =
-    activeTab === 'people'
+    activeTab === "people"
       ? allUsers.filter((name) =>
           name.toLowerCase().includes(searchTerm.toLowerCase())
         )
@@ -47,6 +53,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     if (confirm) onDeleteChat(name);
   };
 
+  const isUserOnline = (name: string) => onlineUsers?.includes(name);
+
   return (
     <div className={styles.chatSidebar}>
       {/* Own Profile */}
@@ -58,14 +66,14 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
       {/* Tabs */}
       <div className={styles.tabs}>
         <button
-          className={activeTab === 'people' ? styles.active : ''}
-          onClick={() => setActiveTab('people')}
+          className={activeTab === "people" ? styles.active : ""}
+          onClick={() => setActiveTab("people")}
         >
           People
         </button>
         <button
-          className={activeTab === 'groups' ? styles.active : ''}
-          onClick={() => setActiveTab('groups')}
+          className={activeTab === "groups" ? styles.active : ""}
+          onClick={() => setActiveTab("groups")}
         >
           Groups
         </button>
@@ -87,12 +95,14 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
           {displayList.map((name) => (
             <div
               key={name}
-              className={`${styles.chatItem} ${
-                selectedChat === name ? styles.selected : ''
-              }`}
+              className={`${styles.chatItem} ${selectedChat === name ? styles.selected : ""}`}
               onClick={() => setSelectedChat(name)}
             >
-              <div className={styles.avatar}>{name[0]}</div>
+              <div className={styles.avatar}>
+                {name[0]}
+                {isUserOnline(name) && <span className={styles.statusDotOnline} />}
+              </div>
+
               <div className={styles.chatInfo}>
                 <div className={styles.name}>
                   {name}
@@ -100,12 +110,24 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                     <span className={styles.unreadBadge}>{unreadCounts[name]}</span>
                   )}
                 </div>
+
                 <div className={styles.preview}>
-                  {typingStatus[name]
-                    ? <em>Typing...</em>
-                    : currentChats[name]?.slice(-1)[0]?.text || 'No messages yet'}
+                  {typingStatus[name] ? (
+                    <em>Typing...</em>
+                  ) : (
+                    currentChats[name]?.slice(-1)[0]?.text || "No messages yet"
+                  )}
+                </div>
+
+                <div className={styles.presenceStatus}>
+                  {isUserOnline(name)
+                    ? "Active now"
+                    : currentChats[name]?.length
+                      ? `Last seen ${dayjs().to(dayjs().subtract(5, "minutes"))}` // Placeholder
+                      : ""}
                 </div>
               </div>
+
               <div
                 className={styles.moreWrapper}
                 onClick={(e) => {
@@ -117,8 +139,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 {dropdownOpen === name && (
                   <div className={styles.dropdownMenu}>
                     <div onClick={() => { handleDelete(name); setDropdownOpen(null); }}>🗑 Delete</div>
-                    <div onClick={() => { alert('Archived!'); setDropdownOpen(null); }}>📥 Archive</div>
-                    <div onClick={() => { alert('Pinned!'); setDropdownOpen(null); }}>📌 Pin</div>
+                    <div onClick={() => { alert("Archived!"); setDropdownOpen(null); }}>📥 Archive</div>
+                    <div onClick={() => { alert("Pinned!"); setDropdownOpen(null); }}>📌 Pin</div>
                   </div>
                 )}
               </div>
@@ -127,15 +149,12 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </div>
 
         {/* Floating New Chat Button */}
-        <Tooltip
-          title={activeTab === 'people' ? 'New Chat' : 'New Group'}
-          placement="left"
-        >
+        <Tooltip title={activeTab === "people" ? "New Chat" : "New Group"} placement="left">
           <button
             className={styles.floatingNewChatBtnOverList}
             onClick={() => setShowModal(true)}
           >
-            {activeTab === 'people' ? <MessageOutlined /> : <UsergroupAddOutlined />}
+            {activeTab === "people" ? <MessageOutlined /> : <UsergroupAddOutlined />}
           </button>
         </Tooltip>
       </div>

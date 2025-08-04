@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./signup.css";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
@@ -15,22 +15,33 @@ const Register = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
   const togglePassword = () => setShowPassword((prev) => !prev);
   const toggleConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
+      setLoading(false);
       return;
     }
 
     if (!/^\+?[0-9\s\-()]{7,15}$/.test(phone)) {
       setError("Please enter a valid phone number.");
+      setLoading(false);
       return;
     }
 
@@ -44,11 +55,13 @@ const Register = () => {
 
     localStorage.setItem("signupData", JSON.stringify(userData));
     setError("");
-    router.push("/account-type");
+    setTimeout(() => {
+      router.push("/account-type");
+    }, 1000); // mimic animation
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container fade-in">
       <div className="login-box">
         <div className="logname">
           <img src="/lcmicon.SVG" alt="LCM Logo" className="logo" />
@@ -64,7 +77,6 @@ const Register = () => {
           <input
             type="email"
             placeholder="kamrul@gmail.com"
-            autoComplete="off"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -74,7 +86,6 @@ const Register = () => {
           <input
             type="text"
             placeholder="+254 712345678"
-            autoComplete="off"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             required
@@ -86,7 +97,6 @@ const Register = () => {
               <input
                 type="text"
                 placeholder="Kamrul"
-                autoComplete="off"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
@@ -97,7 +107,6 @@ const Register = () => {
               <input
                 type="text"
                 placeholder="Hasan"
-                autoComplete="off"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
@@ -110,7 +119,6 @@ const Register = () => {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="********"
-              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -125,7 +133,6 @@ const Register = () => {
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="********"
-              autoComplete="new-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
@@ -141,7 +148,9 @@ const Register = () => {
 
           {error && <div className="error-message">{error}</div>}
 
-          <button type="submit">NEXT</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Loading..." : "NEXT"}
+          </button>
         </form>
 
         <div className="register">
@@ -149,7 +158,6 @@ const Register = () => {
           <span
             className="login-link"
             onClick={() => router.push("/login")}
-            style={{ cursor: "pointer", color: "#1890ff" }}
           >
             Log In
           </span>

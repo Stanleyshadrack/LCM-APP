@@ -15,6 +15,10 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +27,8 @@ const LoginPage: React.FC = () => {
       alert("Please enter email and password");
       return;
     }
+
+    setLoading(true);
 
     const hardcodedUsers: { email: string; password: string; role: UserRole }[] = [
       { email: "owner@example.com", password: "owner123", role: "owner" },
@@ -34,25 +40,51 @@ const LoginPage: React.FC = () => {
       (user) => user.email === email && user.password === password
     );
 
-    if (!matchedUser) {
-      alert("Invalid email or password.");
-      return;
-    }
+   if (!matchedUser) {
+  setErrorMessage("Invalid email or password.");
+  setLoading(false);
+
+  // Auto-clear the error message after 3 seconds
+  setTimeout(() => {
+    setErrorMessage("");
+  }, 3000);
+
+  return;
+}
+
+
 
     const role: UserRole = matchedUser.role;
-
-    const routeMap: Record<UserRole, string> = {
-      owner: "/owner/dashboard",
-      tenant: "/tenant/dashboard",
-      employee: "/employee/dashboard",
-    };
-
     login({ email: matchedUser.email, role });
-    router.push(routeMap[role]);
+
+    // Show success message, then redirect
+    setTimeout(() => {
+      setLoginSuccess(true);
+      setLoading(false);
+
+      setTimeout(() => {
+        router.push(`/${role}/dashboard`);
+      }, 2000); // 2s delay before navigating
+    }, 1000);
   };
 
   return (
     <div className="login-container">
+      {(loading || loginSuccess) && (
+        <div className="loading-overlay">
+          <div className="spinner-wrapper">
+            <img
+              src="/lcmicon.SVG"
+              alt="LCM Logo"
+              className={`lcm-loader ${loginSuccess ? "pulse" : "spin"}`}
+            />
+            <p className={loginSuccess ? "success-text" : "loading-text"}>
+              {loginSuccess ? "Login successful!" : "Logging in..."}
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="login-box">
         <div className="logname">
           <img src="/lcmicon.SVG" alt="LCM Logo" className="logo" />
@@ -91,12 +123,12 @@ const LoginPage: React.FC = () => {
             </span>
           </div>
 
-          {/* Forgot Password link */}
           <div className="forgot-link">
             <span onClick={() => router.push("/forgot-password")}>
               Forgot Password?
             </span>
           </div>
+{errorMessage && <div className="error-message">{errorMessage}</div>}
 
           <button type="submit">Log In</button>
         </form>
