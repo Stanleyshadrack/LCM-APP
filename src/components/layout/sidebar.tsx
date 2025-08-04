@@ -3,7 +3,24 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageOutlined } from "@ant-design/icons";
+
+// Ant Design Icons
+import {
+  MessageOutlined,
+  HomeOutlined,
+  ApartmentOutlined,
+  TeamOutlined,
+  DashboardOutlined,
+  FileTextOutlined,
+  DollarCircleOutlined,
+  AlertOutlined,
+  CheckCircleOutlined,
+  ReadOutlined,
+  FundProjectionScreenOutlined,
+  ScheduleOutlined,
+  FileDoneOutlined,
+  BarChartOutlined,
+} from "@ant-design/icons";
 
 import "./sidebar.css";
 
@@ -29,29 +46,29 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const roleLinks: Record<string, { path: string; label: string; icon?: React.ReactNode }[]> = {
     owner: [
-      { path: "/owner/dashboard", label: "Dashboard" },
-      { path: "/owner/apartments", label: "Apartments" },
-      { path: "/shared/tenants", label: "Tenants" },
-      { path: "/shared/meter-readings", label: "Meter Readings" },
-      { path: "/shared/invoices", label: "Invoices" },
-      { path: "/owner/payments", label: "Payments" },
-      { path: "/shared/arrears", label: "Arrears" },
-       { path: "/shared/messages", label: "Talk", icon: <MessageOutlined /> },
+      { path: "/owner/dashboard", label: "Dashboard", icon: <DashboardOutlined /> },
+      { path: "/owner/apartments", label: "Apartments", icon: <ApartmentOutlined /> },
+      { path: "/shared/tenants", label: "Tenants", icon: <TeamOutlined /> },
+      { path: "/shared/meter-readings", label: "Meter Readings", icon: <ReadOutlined /> },
+      { path: "/shared/invoices", label: "Invoices", icon: <FileTextOutlined /> },
+      { path: "/owner/payments", label: "Payments", icon: <DollarCircleOutlined /> },
+      { path: "/shared/arrears", label: "Arrears", icon: <AlertOutlined /> },
+      { path: "/shared/messages", label: "Talk", icon: <MessageOutlined /> },
     ],
     employee: [
-      { path: "/employee/dashboard", label: "Dashboard" },
-      { path: "/employee/tasks", label: "Tasks" },
-      { path: "/shared/meter-readings", label: "Meter Records" },
-      { path: "/employee/readings", label: "Meter Readings" },
-      { path: "/employee/support-ticket", label: "Support Tickets" },
+      { path: "/employee/dashboard", label: "Dashboard", icon: <DashboardOutlined /> },
+      { path: "/employee/tasks", label: "Tasks", icon: <CheckCircleOutlined /> },
+      { path: "/shared/meter-readings", label: "Meter Records", icon: <ReadOutlined /> },
+      { path: "/employee/readings", label: "Meter Readings", icon: <FundProjectionScreenOutlined /> },
+      { path: "/employee/support-ticket", label: "Support Tickets", icon: <FileDoneOutlined /> },
       { path: "/shared/messages", label: "Talk", icon: <MessageOutlined /> },
     ],
     tenant: [
-      { path: "/tenant/dashboard", label: "My Dashboard" },
-      { path: "/tenant/my-readings", label: "My Meter Readings" },
-      { path: "/tenant/my-payments", label: "My Payments" },
-      { path: "/tenant/support", label: "Support" },
-       { path: "/shared/messages", label: "Talk", icon: <MessageOutlined /> },
+      { path: "/tenant/dashboard", label: "My Dashboard", icon: <DashboardOutlined /> },
+      { path: "/tenant/meter-readings", label: "My Meter Readings", icon: <ReadOutlined /> },
+      { path: "/tenant/balance-overview", label: "Balance Overview", icon: <BarChartOutlined /> },
+      { path: "/tenant/ticketRaise", label: "Raise Complaint", icon: <FileDoneOutlined /> },
+      { path: "/shared/messages", label: "Talk", icon: <MessageOutlined /> },
     ],
   };
 
@@ -79,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               href={link.path}
               className={pathname === link.path ? "active" : ""}
             >
-              {link.icon && <span style={{ marginRight: 6 }}>{link.icon}</span>}
+              <span style={{ marginRight: 8 }}>{link.icon}</span>
               {link.label}
             </Link>
           ))}

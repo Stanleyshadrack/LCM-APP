@@ -196,6 +196,91 @@ button[type="submit"]:hover {
   text-decoration: underline;
   color: #0056b3;
 }
+/* Overlay for loading/success */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* LCM spinner animation */
+.lcm-loader {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+.pulse {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.error-message {
+  color: #d32f2f;
+  padding: 10px 12px;
+  
+  font-size: 14px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+
+.loading-text {
+  font-size: 16px;
+  color: #333;
+}
+
+.success-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2e7d32;
+  animation: fadeIn 0.6s ease-in;
+}
+
+/* Animations */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 
 /* Animations */
