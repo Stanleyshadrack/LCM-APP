@@ -50,7 +50,10 @@ const Invoices: React.FC = () => {
       dueDate: globalDueDate || "2025-07-10",
       status: "CLEARED",
       currentReading: "",
-      previousReading: ""
+      previousReading: "",
+      waterReadingCurrent: "",
+      waterReadingPrevious: "",
+      waterConsumption: ""
     },
     {
       key: "2",
@@ -67,7 +70,10 @@ const Invoices: React.FC = () => {
       dueDate: globalDueDate || "2025-06-10",
       status: "PENDING",
       currentReading: "",
-      previousReading: ""
+      previousReading: "",
+      waterReadingCurrent: "",
+      waterReadingPrevious: "",
+      waterConsumption: ""
     },
   ];
 

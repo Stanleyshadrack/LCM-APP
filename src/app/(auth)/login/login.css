@@ -7,6 +7,7 @@
   background: #f4f6f8 url("/layoutimage.png") center/cover no-repeat;
   padding: 20px;
   box-sizing: border-box;
+  flex-direction: column;
 }
 
 /* Login box */
@@ -14,12 +15,44 @@
   background: #fff;
   padding: 30px 20px;
   border-radius: 12px;
+  height: fit-content;
   width: 100%;
   max-width: 400px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
   text-align: center;
-  box-sizing: border-box;
   animation: fadeIn 0.5s ease-in-out;
+  box-sizing: border-box;
+}
+
+
+
+.copy {
+  font-size: 14px;
+  color: #777;
+}
+
+/* Register Section Styles */
+.register {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+}
+
+.register span {
+  margin-right: 6px;
+}
+
+.register .login-link {
+  color: #1890ff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.register .login-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
 }
 
 /* Logo + name */
@@ -83,6 +116,14 @@ input[type="email"],
   border: 1px solid #ccc;
   font-size: 14px;
   box-sizing: border-box;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+input[type="email"]:focus,
+.password-field:focus {
+  border-color: #2196f3;
+  box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+  outline: none;
 }
 
 /* Password visibility */
@@ -100,23 +141,6 @@ input[type="email"],
   cursor: pointer;
 }
 
-.subtitle {
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 1.2rem;
-  text-align: center;
-}
-
-.success-message {
-  background-color: #e6ffed;
-  color: #047857;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-
 /* Options like "remember me" and "forgot password" */
 .options {
   display: flex;
@@ -124,6 +148,25 @@ input[type="email"],
   align-items: center;
   font-size: 13px;
   margin-top: 10px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Forgot password */
+.forgot-link {
+  font-size: 13px;
+  color: #1890ff;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+  color: #0056b3;
 }
 
 /* Submit button */
@@ -144,59 +187,25 @@ button[type="submit"]:hover {
   background-color: #1976d2;
 }
 
-/* Error message */
-.login-error {
-  color: red;
-  margin: 10px 0;
+/* Error + Success */
+.error-message {
+  color: #d32f2f;
+  padding: 10px 12px;
   font-size: 14px;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.3s ease-in;
+  text-align: center;
 }
 
-/* Register section */
-.register {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
+.success-message,
+.success-text {
   font-size: 16px;
-  margin-top: 20px;
+  font-weight: bold;
+  color: #2e7d32;
+  animation: fadeIn 0.6s ease-in;
+  text-align: center;
 }
 
-.register span {
-  color: #555;
-}
-
-.register a {
-  color: #42A5F5;
-  text-decoration: none;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-}
-
-.register a:hover {
-  text-decoration: underline;
-}
-
-.forgot-link {
-  text-align: right;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  font-size: 13px;
-}
-
-.forgot-link span {
-  color: #1890ff;
-  cursor: pointer;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.forgot-link span:hover {
-  text-decoration: underline;
-  color: #0056b3;
-}
-/* Overlay for loading/success */
+/* Loading Overlay */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -211,7 +220,6 @@ button[type="submit"]:hover {
   flex-direction: column;
 }
 
-/* LCM spinner animation */
 .lcm-loader {
   width: 60px;
   height: 60px;
@@ -225,74 +233,57 @@ button[type="submit"]:hover {
 .pulse {
   animation: pulse 1.2s ease-in-out infinite;
 }
-.error-message {
-  color: #d32f2f;
-  padding: 10px 12px;
-  
-  font-size: 14px;
-  animation: fadeIn 0.3s ease-in;
-}
-
 
 .loading-text {
   font-size: 16px;
   color: #333;
 }
 
-.success-text {
-  font-size: 18px;
-  font-weight: bold;
-  color: #2e7d32;
-  animation: fadeIn 0.6s ease-in;
+/* Footer */
+.loginFooter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: #555;
 }
+
+.footerLinks {
+  margin-top: 6px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.linkBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: #4f46e5;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.linkBtn:hover { text-decoration: underline; }
 
 /* Animations */
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.85;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.85;
-  }
+  0% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.85; }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Mobile responsiveness */
@@ -300,24 +291,8 @@ button[type="submit"]:hover {
   .login-box {
     padding: 25px 15px;
   }
-
-  .name {
-    font-size: 20px;
-  }
-
-  .header2 {
-    font-size: 16px;
-  }
-
-  .register {
-    font-size: 14px;
-  }
-
-  .register a {
-    font-size: 14px;
-  }
-
-  .account-type-display {
-    font-size: 13px;
-  }
+  .name { font-size: 20px; }
+  .header2 { font-size: 16px; }
+  .register, .register a { font-size: 14px; }
+  .account-type-display { font-size: 13px; }
 }

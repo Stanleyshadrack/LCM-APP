@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import "./login.css";
+import Footer from "@/components/footer/Footer";
 
 type UserRole = "owner" | "tenant" | "employee";
 
@@ -19,12 +20,12 @@ const LoginPage: React.FC = () => {
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Please enter email and password");
+      setErrorMessage("Please enter email and password");
+      setTimeout(() => setErrorMessage(""), 3000);
       return;
     }
 
@@ -40,19 +41,12 @@ const LoginPage: React.FC = () => {
       (user) => user.email === email && user.password === password
     );
 
-   if (!matchedUser) {
-  setErrorMessage("Invalid email or password.");
-  setLoading(false);
-
-  // Auto-clear the error message after 3 seconds
-  setTimeout(() => {
-    setErrorMessage("");
-  }, 3000);
-
-  return;
-}
-
-
+    if (!matchedUser) {
+      setErrorMessage("Invalid email or password.");
+      setLoading(false);
+      setTimeout(() => setErrorMessage(""), 3000);
+      return;
+    }
 
     const role: UserRole = matchedUser.role;
     login({ email: matchedUser.email, role });
@@ -64,7 +58,7 @@ const LoginPage: React.FC = () => {
 
       setTimeout(() => {
         router.push(`/${role}/dashboard`);
-      }, 2000); // 2s delay before navigating
+      }, 1000);
     }, 1000);
   };
 
@@ -72,16 +66,14 @@ const LoginPage: React.FC = () => {
     <div className="login-container">
       {(loading || loginSuccess) && (
         <div className="loading-overlay">
-          <div className="spinner-wrapper">
-            <img
-              src="/lcmicon.SVG"
-              alt="LCM Logo"
-              className={`lcm-loader ${loginSuccess ? "pulse" : "spin"}`}
-            />
-            <p className={loginSuccess ? "success-text" : "loading-text"}>
-              {loginSuccess ? "Login successful!" : "Logging in..."}
-            </p>
-          </div>
+          <img
+            src="/lcmicon.SVG"
+            alt="LCM Logo"
+            className={`lcm-loader ${loginSuccess ? "pulse" : "spin"}`}
+          />
+          <p className={loginSuccess ? "success-text" : "loading-text"}>
+            {loginSuccess ? "Login successful!" : "Logging in..."}
+          </p>
         </div>
       )}
 
@@ -117,18 +109,28 @@ const LoginPage: React.FC = () => {
             />
             <span
               className="toggle-icon"
+              role="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword((prev) => !prev)}
             >
               {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
             </span>
           </div>
 
-          <div className="forgot-link">
-            <span onClick={() => router.push("/forgot-password")}>
+          <div className="options">
+            <div className="remember">
+              <input type="checkbox" id="remember" />
+              <label htmlFor="remember">Remember me</label>
+            </div>
+            <div
+              className="forgot-link"
+              onClick={() => router.push("/forgot-password")}
+            >
               Forgot Password?
-            </span>
+            </div>
           </div>
-{errorMessage && <div className="error-message">{errorMessage}</div>}
+
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
 
           <button type="submit">Log In</button>
         </form>
@@ -143,7 +145,10 @@ const LoginPage: React.FC = () => {
             Sign Up
           </span>
         </div>
+        <Footer />
       </div>
+
+      
     </div>
   );
 };

@@ -18,6 +18,11 @@
   box-shadow: var(--card-shadow);
 }
 
+.footer{
+  display: flex;
+  margin-top: 45px;
+}
+
 .chart-container h4 {
   font-size: 18px;
   font-weight: 600;

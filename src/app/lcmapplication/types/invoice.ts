@@ -1,4 +1,7 @@
 export default interface Invoice {
+  waterReadingCurrent: string;
+  waterReadingPrevious: string;
+  waterConsumption: string;
   currentReading: string;
   previousReading: string;
   key: string;

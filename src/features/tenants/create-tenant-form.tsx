@@ -13,9 +13,18 @@ interface CreateTenantFormProps {
     status: "inResidence" | "vacated";
   } | null; 
   onCancel: () => void;
+  onSubmit: (formData: {
+    fullName: string;
+    email: string;
+    idNumber: string;
+    phoneNumber: string;
+    apartment: string;
+    unit: string;
+    status: "inResidence" | "vacated";
+  }) => void; // ✅ new prop
 }
 
-const CreateTenantForm = ({ title, initialValues, onCancel }: CreateTenantFormProps) => {
+const CreateTenantForm = ({ title, initialValues, onCancel, onSubmit }: CreateTenantFormProps) => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -23,7 +32,7 @@ const CreateTenantForm = ({ title, initialValues, onCancel }: CreateTenantFormPr
     phoneNumber: "",
     apartment: "",
     unit: "",
-    status: "inResidence",
+    status: "inResidence" as "inResidence" | "vacated",
   });
 
   // If initialValues is provided (for editing), populate the form fields
@@ -48,14 +57,21 @@ const CreateTenantForm = ({ title, initialValues, onCancel }: CreateTenantFormPr
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form Data:", formData);
-    alert("Tenant submitted! (Check console)");
-  };
 
-  // Handle cancel action (reset form)
-  const handleCancel = () => {
-    onCancel(); // This now closes the modal
-  };
+    // ✅ Call parent handler
+    onSubmit(formData);
 
+    // Optionally reset form
+    setFormData({
+      fullName: "",
+      email: "",
+      idNumber: "",
+      phoneNumber: "",
+      apartment: "",
+      unit: "",
+      status: "inResidence",
+    });
+  };
 
   return (
     <form className="form-container" onSubmit={handleSubmit}>
@@ -168,7 +184,7 @@ const CreateTenantForm = ({ title, initialValues, onCancel }: CreateTenantFormPr
       </div>
 
       <div className="form-buttons">
-        <button type="button" className="cancel-button" onClick={handleCancel}>
+        <button type="button" className="cancel-button" onClick={onCancel}>
           Cancel
         </button>
         <button type="submit" className="submit-button">

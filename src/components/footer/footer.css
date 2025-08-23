@@ -1,0 +1,74 @@
+
+
+.footerContent {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  
+  
+}
+
+.footerLinks {
+  display: flex;
+  gap: 20px;
+}
+
+.footerLinks a {
+  color: #1890ff; /* same as login-link */
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
+}
+
+.footerLinks a:hover {
+  color: #0056b3; /* darker blue on hover */
+  text-decoration: underline;
+}
+
+
+.copy {
+  font-size: 14px;
+  color: #777;
+}
+
+/* Register Section */
+.register {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+}
+
+.register span {
+  margin-right: 6px;
+}
+
+.register .login-link {
+  color: #1890ff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.register .login-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .footerContent {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .register {
+    font-size: 13px;
+  }
+}

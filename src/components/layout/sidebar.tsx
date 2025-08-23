@@ -3,11 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-// Ant Design Icons
 import {
   MessageOutlined,
-  HomeOutlined,
   ApartmentOutlined,
   TeamOutlined,
   DashboardOutlined,
@@ -17,7 +14,6 @@ import {
   CheckCircleOutlined,
   ReadOutlined,
   FundProjectionScreenOutlined,
-  ScheduleOutlined,
   FileDoneOutlined,
   BarChartOutlined,
 } from "@ant-design/icons";
@@ -38,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   role,
 }) => {
   const pathname = usePathname();
-  const [isModalVisible, setIsModalVisible] = useState(false);
+
 
   const handleOverlayClick = () => {
     if (onClose) onClose();

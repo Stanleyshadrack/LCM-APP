@@ -1,4 +1,3 @@
-// src/auth/ProtectedRoute.tsx
 "use client";
 
 import React from "react";

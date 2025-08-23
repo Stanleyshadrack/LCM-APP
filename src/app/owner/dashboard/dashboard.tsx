@@ -20,6 +20,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Footer from "@/components/footer/Footer";
 
 const OwnerDashboard = () => {
   const chartData = [
@@ -130,6 +131,8 @@ const OwnerDashboard = () => {
           </ResponsiveContainer>
         </div>
       </div>
+      <div className="footer"><Footer /></div>
+      
     </div>
   );
 };
