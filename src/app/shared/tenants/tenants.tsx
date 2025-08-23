@@ -8,7 +8,6 @@ import {
   Space,
   Modal,
   Select,
-  Upload,
 } from "antd";
 import {
   DeleteOutlined,
@@ -16,15 +15,18 @@ import {
   FileTextOutlined,
 } from "@ant-design/icons";
 import type { UploadFile } from "antd/es/upload/interface";
-import "./tenants.css";
 
 import CreateTenantForm from "@/features/tenants/create-tenant-form";
 import DeleteTenantModal from "@/app/lcmapplication/protected/modals/delete-tenant/delete-tenant";
 import AddTenantButton from "@/app/lcmapplication/protected/widgets/addButton/AddTenantButton";
 import SearchInput from "@/app/lcmapplication/protected/widgets/search/SearchInput";
+import { Apartmentos } from "@/app/lcmapplication/types/invoice";
+
+import "./tenants.css";
 
 const { Option } = Select;
 
+/* -------------------- Types -------------------- */
 interface Tenant {
   key: string;
   name: string;
@@ -51,6 +53,7 @@ interface TenantFormValues {
   dateVacated?: string;
 }
 
+/* -------------------- Initial Data -------------------- */
 const initialData: Tenant[] = [
   {
     key: "1",
@@ -104,30 +107,65 @@ const initialData: Tenant[] = [
   },
 ];
 
+/* -------------------- Component -------------------- */
 const TenantsTable: React.FC = () => {
   const [searchText, setSearchText] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "in" | "vacated">(
-    "all"
-  );
+  const [statusFilter, setStatusFilter] = useState<"all" | "in" | "vacated">("all");
   const [tenantData, setTenantData] = useState<Tenant[]>(initialData);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentTenant, setCurrentTenant] = useState<TenantFormValues | null>(
-    null
-  );
+  const [currentTenant, setCurrentTenant] = useState<TenantFormValues | null>(null);
+
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [tenantToDelete, setTenantToDelete] = useState<Tenant | null>(null);
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  // inside TenantsTable
+  /* -------------------- Apartments -------------------- */
+  const apartments: Apartmentos[] = [
+    {
+      name: "Apartment A",
+      units: ["Unit 1", "Unit 2"].map((u) => ({
+        id: u,
+        name: u,
+        occupied: false,
+      })),
+    },
+    {
+      name: "Apartment B",
+      units: ["Unit 3", "Unit 4"].map((u) => ({
+        id: u,
+        name: u,
+        occupied: false,
+      })),
+    },
+  ];
 
-// ✅ Handle add or edit tenant submission
-const handleSubmit = (formValues: TenantFormValues) => {
+  /* -------------------- Handlers -------------------- */
+ const handleSubmit = (formValues: TenantFormValues) => {
+  if (formValues.status === "inResidence") {
+    const isOccupied = tenantData.some(
+      (tenant) =>
+        tenant.apartment === formValues.apartment &&
+        tenant.unit === formValues.unit &&
+        tenant.status === "In Residence" &&
+        tenant.email !== currentTenant?.email // allow editing same tenant
+    );
+
+    if (isOccupied) {
+      Modal.error({
+        title: "Unit Already Occupied",
+        content: `The unit ${formValues.unit} in ${formValues.apartment} is already occupied by another tenant.`,
+      });
+      return; // stop submit
+    }
+  }
+
   if (currentTenant) {
     // Edit existing tenant
     setTenantData((prev) =>
       prev.map((tenant) =>
-        tenant.email === currentTenant.email // or tenant.key if you want
+        tenant.email === currentTenant.email
           ? {
               ...tenant,
               name: formValues.fullName,
@@ -136,9 +174,11 @@ const handleSubmit = (formValues: TenantFormValues) => {
               phoneNumber: formValues.phoneNumber,
               apartment: formValues.apartment,
               unit: formValues.unit,
-              status: formValues.status === "inResidence" ? "In Residence" : "Vacated",
+              status:
+                formValues.status === "inResidence" ? "In Residence" : "Vacated",
               tenancyAgreement: formValues.tenancyAgreement,
-              dateVacated: formValues.status === "vacated" ? formValues.dateVacated : undefined,
+              dateVacated:
+                formValues.status === "vacated" ? formValues.dateVacated : undefined,
             }
           : tenant
       )
@@ -146,23 +186,24 @@ const handleSubmit = (formValues: TenantFormValues) => {
   } else {
     // Add new tenant
     const newTenant: Tenant = {
-      key: String(Date.now()), // simple unique key
+      key: String(Date.now()),
       name: formValues.fullName,
       email: formValues.email,
       idNumber: formValues.idNumber,
       phoneNumber: formValues.phoneNumber,
       apartment: formValues.apartment,
       unit: formValues.unit,
-      status: formValues.status === "inResidence" ? "In Residence" : "Vacated",
+      status:
+        formValues.status === "inResidence" ? "In Residence" : "Vacated",
       dateCreated: new Date().toLocaleDateString(),
       tenancyAgreement: formValues.tenancyAgreement || undefined,
-      dateVacated: formValues.status === "vacated" ? formValues.dateVacated : undefined,
+      dateVacated:
+        formValues.status === "vacated" ? formValues.dateVacated : undefined,
     };
 
     setTenantData((prev) => [...prev, newTenant]);
   }
 
-  // Close modal after submit
   setIsModalVisible(false);
   setCurrentTenant(null);
   setFileList([]);
@@ -218,10 +259,9 @@ const handleSubmit = (formValues: TenantFormValues) => {
     setDeleteModalOpen(false);
   };
 
+  /* -------------------- Filters -------------------- */
   const filteredData = tenantData.filter((item) => {
-    const searchMatch = item.name
-      .toLowerCase()
-      .includes(searchText.toLowerCase());
+    const searchMatch = item.name.toLowerCase().includes(searchText.toLowerCase());
     const statusMatch =
       statusFilter === "all" ||
       (statusFilter === "in" && item.status === "In Residence") ||
@@ -229,14 +269,9 @@ const handleSubmit = (formValues: TenantFormValues) => {
     return searchMatch && statusMatch;
   });
 
+  /* -------------------- Columns -------------------- */
   const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      ellipsis: true,
-      sorter: (a: Tenant, b: Tenant) => a.name.localeCompare(b.name),
-    },
+    { title: "Name", dataIndex: "name", key: "name", ellipsis: true, sorter: (a: Tenant, b: Tenant) => a.name.localeCompare(b.name) },
     { title: "Email", dataIndex: "email", key: "email", ellipsis: true },
     { title: "Phone", dataIndex: "phoneNumber", key: "phoneNumber", ellipsis: true },
     { title: "Apartment", dataIndex: "apartment", key: "apartment" },
@@ -248,56 +283,38 @@ const handleSubmit = (formValues: TenantFormValues) => {
       key: "tenancyAgreement",
       render: (text: string) =>
         text ? (
-          <a href={`/agreements/${text}`} target="_blank" rel="noopener noreferrer">
+          <a href={`/leasing-agreement/${text}`} target="_blank" rel="noopener noreferrer">
             <FileTextOutlined /> {text}
           </a>
         ) : (
           "N/A"
         ),
     },
-    {
-      title: "Date Vacated",
-      dataIndex: "dateVacated",
-      key: "dateVacated",
-      render: (date: string) => date || "—",
-    },
+    { title: "Date Vacated", dataIndex: "dateVacated", key: "dateVacated", render: (date: string) => date || "—" },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => (
-        <Badge
-          color={status === "In Residence" ? "green" : "orange"}
-          text={status}
-        />
-      ),
+      render: (status: string) => <Badge color={status === "In Residence" ? "green" : "orange"} text={status} />,
     },
     {
       title: "Actions",
       key: "action",
       render: (_: any, record: Tenant) => (
         <Space>
-          <Button
-            icon={<EditOutlined />}
-            type="link"
-            onClick={() => showModal(record)}
-          />
-          <Button
-            icon={<DeleteOutlined />}
-            type="link"
-            danger
-            onClick={() => handleDeleteClick(record)}
-          />
+          <Button icon={<EditOutlined />} type="link" onClick={() => showModal(record)} />
+          <Button icon={<DeleteOutlined />} type="link" danger onClick={() => handleDeleteClick(record)} />
         </Space>
       ),
     },
   ];
 
+  /* -------------------- Render -------------------- */
   return (
     <div className="tenants-container">
       <div className="page-header">
         <h2>Tenants</h2>
-        <div className="filters-inline">
+       <div className="filters-inline">
           <SearchInput
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -324,7 +341,7 @@ const handleSubmit = (formValues: TenantFormValues) => {
         rowClassName={() => "custom-table-row"}
       />
 
-      {/* Modal with Upload */}
+      {/* Create/Edit Modal */}
       <Modal
         open={isModalVisible}
         onCancel={handleCancel}
@@ -333,15 +350,16 @@ const handleSubmit = (formValues: TenantFormValues) => {
         width="fit-content"
         style={{ maxWidth: "90%" }}
       >
-     <CreateTenantForm
-  title={currentTenant ? "Edit Tenant" : "Add Tenant"}
-  initialValues={currentTenant}
-  onCancel={handleCancel}
-  onSubmit={handleSubmit}   // ✅ use the new handler
-/>
-
+        <CreateTenantForm
+          title={currentTenant ? "Edit Tenant" : "Add Tenant"}
+          initialValues={currentTenant}
+          onCancel={handleCancel}
+          onSubmit={handleSubmit}
+          apartments={apartments}
+        />
       </Modal>
 
+      {/* Delete Modal */}
       {tenantToDelete && (
         <DeleteTenantModal
           open={deleteModalOpen}

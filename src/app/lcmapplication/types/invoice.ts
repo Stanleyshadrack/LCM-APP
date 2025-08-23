@@ -34,6 +34,18 @@ export type GroupMembersMap = Record<string, string[]>;
 
 
 
+export type Unit = {
+  id: string;
+  name: string;
+  occupied: boolean; // required everywhere
+};
+
+export type Apartmentos = {
+  name: string;
+  units: Unit[];
+};
+
+
 
 
   

@@ -13,6 +13,7 @@ const publicRoutes = [
   "/forgot-password",
   "/terms",
   "/privacy",
+  "/leasing-agreement"
 ];
 
 export default function ClientLayoutWrapper({
