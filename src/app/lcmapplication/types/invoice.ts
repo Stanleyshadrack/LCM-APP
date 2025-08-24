@@ -37,7 +37,7 @@ export type GroupMembersMap = Record<string, string[]>;
 export type Unit = {
   id: string;
   name: string;
-  occupied: boolean; // required everywhere
+  occupied: boolean; 
 };
 
 export type Apartmentos = {
@@ -57,11 +57,22 @@ export enum ApartmentStatus {
   SoldOut = "Sold out",
 }
 
+
+
+export interface ApartmentUnits {
+  unit: string;     // unit identifier like "B01"
+  unitType: string; // "1BR", "Studio", etc.
+  status: string;   
+}
+
 export interface Apartment {
   id: number;
   title: string;
   unitTypes: string[];
+  units: ApartmentUnits[];
   status: ApartmentStatus;
+ address?: string;
+  imageUrl?: string | null;
 }
 
 

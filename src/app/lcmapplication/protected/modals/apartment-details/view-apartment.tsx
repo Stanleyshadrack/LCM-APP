@@ -29,6 +29,7 @@ interface ApartmentDetailsProps {
   apartmentName: string;
   unitTypes: string[];
   address: string;
+  
 }
 
 const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
@@ -36,12 +37,9 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
   unitTypes,
   address,
 }) => {
-  const [units, setUnits] = useState([
-    { unit: "B01", bedroom: "1 Bedroom", status: "Occupied" },
-    { unit: "B02", bedroom: "2 Bedrooms", status: "Vacated" },
-    { unit: "B03", bedroom: "Studio", status: "Occupied" },
-    { unit: "C06", bedroom: "Studio", status: "Occupied" },
-  ]);
+  const [units, setUnits] = useState<
+    { unit: string; bedroom: string; status: string }[]
+  >([]);
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
@@ -93,15 +91,13 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
     setUnits([...units, values]);
     message.success(`Unit ${values.unit} added`);
     setIsAddModalVisible(false);
-    setCurrentPage(totalPages);
+    setCurrentPage(totalPages + 1); // Go to last page
   };
 
   const onEditUnitFinish = (values: { bedroom: string; status: string }) => {
     if (!editingUnit) return;
     setUnits((prev) =>
-      prev.map((u) =>
-        u.unit === editingUnit.unit ? { ...u, ...values } : u
-      )
+      prev.map((u) => (u.unit === editingUnit.unit ? { ...u, ...values } : u))
     );
     message.success(`Unit ${editingUnit.unit} updated`);
     setIsEditModalVisible(false);
@@ -266,16 +262,15 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
               },
             ]}
           >
-            <Input placeholder="e.g. B04" />
+            <Input placeholder="e.g. B01" />
           </Form.Item>
 
           <Form.Item
             label="Unit Type"
             name="bedroom"
             rules={[{ required: true, message: "Please select unit type!" }]}
-            initialValue="Studio"
           >
-            <Select>
+            <Select placeholder="Select unit type">
               <Option value="Studio">Studio</Option>
               <Option value="1 Bedroom">1 Bedroom</Option>
               <Option value="2 Bedrooms">2 Bedrooms</Option>
@@ -286,9 +281,8 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
             label="Status"
             name="status"
             rules={[{ required: true, message: "Please select status!" }]}
-            initialValue="Vacated"
           >
-            <Select>
+            <Select placeholder="Select status">
               <Option value="Occupied">Occupied</Option>
               <Option value="Vacated">Vacated</Option>
             </Select>

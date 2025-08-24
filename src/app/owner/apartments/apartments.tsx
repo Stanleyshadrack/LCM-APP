@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -8,6 +9,7 @@ import {
   Tag,
   Popconfirm,
   Space,
+  notification,
 } from "antd";
 import {
   AppstoreOutlined,
@@ -44,98 +46,104 @@ const Apartments = () => {
     setHasMounted(true);
   }, []);
 
-  const [apartments, setApartments] = useState<Apartment[]>([
-    {
-      id: 1,
-      title: "Green Heights",
-      unitTypes: ["1BR", "2BR", "Studio"],
-      status: ApartmentStatus.Letting,
-    },
-    {
-      id: 2,
-      title: "Silver Towers",
-      unitTypes: ["2BR", "3BR"],
-      status: ApartmentStatus.UnderConstruction,
-    },
-    {
-      id: 3,
-      title: "Sunset Apartments",
-      unitTypes: ["Studio", "1BR"],
-      status: ApartmentStatus.Letting,
-    },
-    {
-      id: 4,
-      title: "Palm Residency",
-      unitTypes: ["2BR", "3BR", "4BR"],
-      status: ApartmentStatus.SoldOut,
-    },
-    {
-      id: 5,
-      title: "Royal Villas",
-      unitTypes: ["3BR", "4BR"],
-      status: ApartmentStatus.Letting,
-    },
-    {
-      id: 6,
-      title: "Ocean View",
-      unitTypes: ["1BR", "Studio"],
-      status: ApartmentStatus.SoldOut,
-    },
-    {
-      id: 7,
-      title: "Maple Grove",
-      unitTypes: ["2BR", "3BR"],
-      status: ApartmentStatus.Letting,
-    },
-    {
-      id: 8,
-      title: "Hilltop Haven",
-      unitTypes: ["Studio"],
-      status: ApartmentStatus.UnderConstruction,
-    },
-    {
-      id: 9,
-      title: "Westwood Heights",
-      unitTypes: ["1BR", "2BR"],
-      status: ApartmentStatus.Letting,
-    },
-    {
-      id: 10,
-      title: "Urban Oasis",
-      unitTypes: ["Studio", "1BR", "2BR"],
-      status: ApartmentStatus.Letting,
-    },
-  ]);
+const [apartments, setApartments] = useState<Apartment[]>([
+  {
+    id: 1,
+    title: "Green Heights",
+    units: [
+      { unit: "B01", unitType: "1BR", status: "Occupied" },
+      { unit: "B02", unitType: "2BR", status: "Vacated" },
+      { unit: "B03", unitType: "Studio", status: "Occupied" },
+    ],
+    unitTypes: ["1BR","2BR","Studio"],
+    status: ApartmentStatus.Letting,
+    address: "Kilimani, Nairobi",
+  },
+  {
+    id: 2,
+    title: "Silver Towers",
+    units: [
+      { unit: "C01", unitType: "2BR", status: "Occupied" },
+      { unit: "C02", unitType: "3BR", status: "Vacated" },
+    ],
+    unitTypes: ["2BR","3BR"],
+    status: ApartmentStatus.UnderConstruction,
+    address: "Westlands, Nairobi",
+  },
+  {
+    id: 3,
+    title: "Sunset Apartments",
+    units: [
+      { unit: "D01", unitType: "Studio", status: "Vacated" },
+      { unit: "D02", unitType: "1BR", status: "Occupied" },
+    ],
+    unitTypes: ["Studio","1BR"],
+    status: ApartmentStatus.Letting,
+    address: "Kilimani, Nairobi",
+  },
+  // ...continue for the rest
+]);
 
-  const handleAddApartment = (data: {
-    name: string;
-    unitType: string[];
-    status: ApartmentStatus;
-    location: string;
-    waterUnitCost: number;
-  }) => {
-    if (editMode && editingApartment) {
-      setApartments((prev) =>
-        prev.map((apt) =>
-          apt.id === editingApartment.id
-            ? { ...apt, title: data.name, unitTypes: data.unitType, status: data.status }
-            : apt
-        )
-      );
-    } else {
-      const newApartment: Apartment = {
-        id: apartments.length + 1,
+
+
+ const handleAddApartment = (data: {
+  name: string;
+  unitType: string[];
+  status: ApartmentStatus;
+  location: string;
+  waterUnitCost: number;
+}) => {
+  const createUnits = (types: string[]) =>
+    types.map((type, index) => ({
+      unit: `${type}-${index + 1}`, // generate a simple unit ID
+      unitType: type,
+      status: "Vacated", // default status
+    }));
+
+  if (editMode && editingApartment) {
+    setApartments((prev) =>
+      prev.map((a) =>
+        a.id === editingApartment.id
+          ? {
+              ...a,
+              title: data.name,
+              unitTypes: data.unitType,
+              units: createUnits(data.unitType),
+              status: data.status,
+            }
+          : a
+      )
+    );
+    notification.success({
+      message: "Apartment Updated",
+      description: `${data.name} was updated successfully.`,
+      placement: "topRight",
+    });
+  } else {
+    const newId = Math.max(0, ...apartments.map((a) => a.id)) + 1;
+    setApartments((prev) => [
+      ...prev,
+      {
+        id: newId,
         title: data.name,
         unitTypes: data.unitType,
+        units: createUnits(data.unitType),
         status: data.status,
-      };
-      setApartments((prev) => [...prev, newApartment]);
-    }
+        address: data.location,
+      },
+    ]);
+    notification.success({
+      message: "Apartment Added",
+      description: `${data.name} was added successfully.`,
+      placement: "topRight",
+    });
+  }
 
-    setIsModalOpen(false);
-    setEditMode(false);
-    setEditingApartment(null);
-  };
+  setIsModalOpen(false);
+  setEditMode(false);
+  setEditingApartment(null);
+};
+
 
   const filteredApartments = apartments.filter((apt) =>
     apt.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -157,9 +165,7 @@ const Apartments = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: number) => {
-    setApartments((prev) => prev.filter((apt) => apt.id !== id));
-  };
+  const handleDelete = (id: number) => setApartments((prev) => prev.filter((a) => a.id !== id));
 
   const columns: ColumnsType<Apartment> = [
     {
@@ -167,23 +173,14 @@ const Apartments = () => {
       dataIndex: "title",
       key: "title",
       sorter: (a, b) => a.title.localeCompare(b.title),
-      render: (text: string) => (
-        <span>
-          <HomeOutlined style={{ marginRight: 8, color: "#1890ff" }} />
-          {text}
-        </span>
-      ),
+      render: (text) => <span><HomeOutlined style={{ marginRight: 8, color: "#1890ff" }} />{text}</span>
     },
     {
       title: "Units",
       dataIndex: "unitTypes",
       key: "unitTypes",
       sorter: (a, b) => a.unitTypes.length - b.unitTypes.length,
-      render: (unitTypes: string[]) => (
-        <Tooltip title={unitTypes.join(", ")}>
-          <span>{unitTypes.length} Unit(s)</span>
-        </Tooltip>
-      ),
+      render: (unitTypes: string[]) => <span>{unitTypes.length} Unit(s)</span>,
     },
     {
       title: "Status",
@@ -194,18 +191,9 @@ const Apartments = () => {
         { text: "Under construction", value: "Under construction" },
         { text: "Sold out", value: "Sold out" },
       ],
-      onFilter: (value, record) =>
-        typeof value === "string" ? record.status === value : false,
+      onFilter: (value, record) => typeof value === "string" ? record.status === value : false,
       render: (status: ApartmentStatus) => (
-        <Tag
-          color={
-            status === "Letting"
-              ? "blue"
-              : status === "Under construction"
-              ? "green"
-              : "red"
-          }
-        >
+        <Tag color={status === "Letting" ? "blue" : status === "Under construction" ? "green" : "red"}>
           {status}
         </Tag>
       ),
@@ -216,18 +204,10 @@ const Apartments = () => {
       render: (_, record) => (
         <Space size="middle">
           <Tooltip title="View">
-            <Button
-              type="link"
-              icon={<EyeOutlined />}
-              onClick={() => handleView(record)}
-            />
+            <Button type="link" icon={<EyeOutlined />} onClick={() => handleView(record)} />
           </Tooltip>
           <Tooltip title="Edit">
-            <Button
-              type="link"
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record)}
-            />
+            <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} />
           </Tooltip>
           <Tooltip title="Delete">
             <Popconfirm
@@ -253,18 +233,11 @@ const Apartments = () => {
         <div className="filters-inline">
           <SearchInput
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
+            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
             placeholder="Search apartments..."
           />
           <AddTenantButton
-            onClick={() => {
-              setIsModalOpen(true);
-              setEditMode(false);
-              setEditingApartment(null);
-            }}
+            onClick={() => { setIsModalOpen(true); setEditMode(false); setEditingApartment(null); }}
             label="+ Add Apartment"
           />
           <Tooltip title={isListView ? "Grid view" : "List view"}>
@@ -282,23 +255,33 @@ const Apartments = () => {
           dataSource={currentApartments}
           columns={columns}
           rowKey="id"
-          pagination={{
-            current: currentPage,
-            pageSize: apartmentsPerPage,
-            total: filteredApartments.length,
-            onChange: (page) => setCurrentPage(page),
-          }}
+          pagination={{ current: currentPage, pageSize: apartmentsPerPage, total: filteredApartments.length, onChange: setCurrentPage }}
           className="apartments-table"
         />
       ) : (
         <div className="apartments-grid">
-          {currentApartments.map(({ id, title, unitTypes, status }) => (
+          {currentApartments.map((apt) => (
             <ApartmentCard
-              key={id}
-              title={title}
-              unitTypes={unitTypes}
-              status={status}
-              address=""
+              key={apt.id}
+              title={apt.title}
+              units={apt.units}
+              status={apt.status}
+              address={apt.address || "Unknown"}
+              actions={
+                <div className="apartment-card-actions">
+                  <Tooltip title="View Details">
+                    <Button
+                      type="link"
+                      icon={<EyeOutlined />}
+                      onClick={() => { setViewingApartment({ ...apt, address: apt.address || "Unknown" }); setIsViewModalOpen(true); }}
+                      aria-label={`View details for ${apt.title}`}
+                    />
+                  </Tooltip>
+
+                 
+
+                </div>
+              }
             />
           ))}
         </div>
@@ -306,28 +289,20 @@ const Apartments = () => {
 
       <Modal
         open={isModalOpen}
-        onCancel={() => {
-          setIsModalOpen(false);
-          setEditMode(false);
-          setEditingApartment(null);
-        }}
+        onCancel={() => { setIsModalOpen(false); setEditMode(false); setEditingApartment(null); }}
         footer={null}
         destroyOnClose
       >
         {hasMounted && (
           <CreateApartmentForm
             onSubmit={handleAddApartment}
-            defaultValues={
-              editingApartment
-                ? {
-                    name: editingApartment.title,
-                    unitType: editingApartment.unitTypes,
-                    status: editingApartment.status,
-                    location: "Unknown",
-                    waterUnitCost: 250,
-                  }
-                : undefined
-            }
+            defaultValues={editingApartment ? {
+              name: editingApartment.title,
+              unitType: editingApartment.unitTypes,
+              status: editingApartment.status,
+              location: editingApartment.address || "Unknown",
+              waterUnitCost: 250,
+            } : undefined}
           />
         )}
       </Modal>
@@ -340,11 +315,11 @@ const Apartments = () => {
         width="fit-content"
         centered
       >
-        {hasMounted && viewingApartment && (
+        {viewingApartment && (
           <ApartmentDetails
             apartmentName={viewingApartment.title}
             unitTypes={viewingApartment.unitTypes}
-            address="Kilimani, Nairobi"
+            address={viewingApartment.address || "Unknown"}
           />
         )}
       </Modal>
