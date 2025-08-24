@@ -1,19 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Table,
-  Button,
-  Badge,
-  Space,
-  Modal,
-  Select,
-} from "antd";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  FileTextOutlined,
-} from "@ant-design/icons";
+import { Table, Button, Badge, Space, Modal, Select } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import type { UploadFile } from "antd/es/upload/interface";
 
 import CreateTenantForm from "@/features/tenants/create-tenant-form";
@@ -37,7 +26,7 @@ interface Tenant {
   unit: string;
   dateCreated: string;
   status: "In Residence" | "Vacated";
-  tenancyAgreement?: string;
+  tenancyAgreement?: File | string;
   dateVacated?: string;
 }
 
@@ -49,8 +38,8 @@ interface TenantFormValues {
   apartment: string;
   unit: string;
   status: "inResidence" | "vacated";
-  tenancyAgreement?: string;
   dateVacated?: string;
+  leaseAgreement?: File | null; // 👈 only this for uploads
 }
 
 /* -------------------- Initial Data -------------------- */
@@ -80,31 +69,6 @@ const initialData: Tenant[] = [
     tenancyAgreement: "Agreement_Jane.pdf",
     dateVacated: "10/06/2024",
   },
-  {
-    key: "3",
-    name: "Jake Park",
-    email: "jakepark@gmail.com",
-    idNumber: "11223344",
-    phoneNumber: "254711223344",
-    apartment: "Block D",
-    unit: "D01",
-    dateCreated: "04/04/2024",
-    status: "Vacated",
-    tenancyAgreement: "Agreement_Jake.pdf",
-    dateVacated: "12/07/2024",
-  },
-  {
-    key: "4",
-    name: "Amelia Brown",
-    email: "ameliabrown@gmail.com",
-    idNumber: "99887766",
-    phoneNumber: "254722998877",
-    apartment: "Block A",
-    unit: "A03",
-    dateCreated: "05/04/2024",
-    status: "In Residence",
-    tenancyAgreement: "Agreement_Amelia.pdf",
-  },
 ];
 
 /* -------------------- Component -------------------- */
@@ -125,90 +89,62 @@ const TenantsTable: React.FC = () => {
   const apartments: Apartmentos[] = [
     {
       name: "Apartment A",
-      units: ["Unit 1", "Unit 2"].map((u) => ({
-        id: u,
-        name: u,
-        occupied: false,
-      })),
+      units: ["Unit 1", "Unit 2"].map((u) => ({ id: u, name: u, occupied: false })),
     },
     {
       name: "Apartment B",
-      units: ["Unit 3", "Unit 4"].map((u) => ({
-        id: u,
-        name: u,
-        occupied: false,
-      })),
+      units: ["Unit 3", "Unit 4"].map((u) => ({ id: u, name: u, occupied: false })),
     },
   ];
 
   /* -------------------- Handlers -------------------- */
- const handleSubmit = (formValues: TenantFormValues) => {
-  if (formValues.status === "inResidence") {
-    const isOccupied = tenantData.some(
-      (tenant) =>
-        tenant.apartment === formValues.apartment &&
-        tenant.unit === formValues.unit &&
-        tenant.status === "In Residence" &&
-        tenant.email !== currentTenant?.email // allow editing same tenant
-    );
+  const handleSubmit = (formValues: TenantFormValues) => {
+    let tenancyFile: File | string | undefined = formValues.leaseAgreement || undefined;
 
-    if (isOccupied) {
-      Modal.error({
-        title: "Unit Already Occupied",
-        content: `The unit ${formValues.unit} in ${formValues.apartment} is already occupied by another tenant.`,
-      });
-      return; // stop submit
+    if (currentTenant) {
+      // Editing
+      setTenantData((prev) =>
+        prev.map((tenant) =>
+          tenant.email === currentTenant.email
+            ? {
+                ...tenant,
+                name: formValues.fullName,
+                email: formValues.email,
+                idNumber: formValues.idNumber,
+                phoneNumber: formValues.phoneNumber,
+                apartment: formValues.apartment,
+                unit: formValues.unit,
+                status: formValues.status === "inResidence" ? "In Residence" : "Vacated",
+                tenancyAgreement: tenancyFile,
+                dateVacated:
+                  formValues.status === "vacated" ? formValues.dateVacated : undefined,
+              }
+            : tenant
+        )
+      );
+    } else {
+      // Adding
+      const newTenant: Tenant = {
+        key: String(Date.now()),
+        name: formValues.fullName,
+        email: formValues.email,
+        idNumber: formValues.idNumber,
+        phoneNumber: formValues.phoneNumber,
+        apartment: formValues.apartment,
+        unit: formValues.unit,
+        status: formValues.status === "inResidence" ? "In Residence" : "Vacated",
+        dateCreated: new Date().toLocaleDateString(),
+        tenancyAgreement: tenancyFile,
+        dateVacated:
+          formValues.status === "vacated" ? formValues.dateVacated : undefined,
+      };
+
+      setTenantData((prev) => [...prev, newTenant]);
     }
-  }
 
-  if (currentTenant) {
-    // Edit existing tenant
-    setTenantData((prev) =>
-      prev.map((tenant) =>
-        tenant.email === currentTenant.email
-          ? {
-              ...tenant,
-              name: formValues.fullName,
-              email: formValues.email,
-              idNumber: formValues.idNumber,
-              phoneNumber: formValues.phoneNumber,
-              apartment: formValues.apartment,
-              unit: formValues.unit,
-              status:
-                formValues.status === "inResidence" ? "In Residence" : "Vacated",
-              tenancyAgreement: formValues.tenancyAgreement,
-              dateVacated:
-                formValues.status === "vacated" ? formValues.dateVacated : undefined,
-            }
-          : tenant
-      )
-    );
-  } else {
-    // Add new tenant
-    const newTenant: Tenant = {
-      key: String(Date.now()),
-      name: formValues.fullName,
-      email: formValues.email,
-      idNumber: formValues.idNumber,
-      phoneNumber: formValues.phoneNumber,
-      apartment: formValues.apartment,
-      unit: formValues.unit,
-      status:
-        formValues.status === "inResidence" ? "In Residence" : "Vacated",
-      dateCreated: new Date().toLocaleDateString(),
-      tenancyAgreement: formValues.tenancyAgreement || undefined,
-      dateVacated:
-        formValues.status === "vacated" ? formValues.dateVacated : undefined,
-    };
-
-    setTenantData((prev) => [...prev, newTenant]);
-  }
-
-  setIsModalVisible(false);
-  setCurrentTenant(null);
-  setFileList([]);
-};
-
+    setIsModalVisible(false);
+    setCurrentTenant(null);
+  };
 
   const showModal = (tenant: Tenant | null = null) => {
     if (tenant) {
@@ -220,17 +156,24 @@ const TenantsTable: React.FC = () => {
         apartment: tenant.apartment,
         unit: tenant.unit,
         status: tenant.status === "In Residence" ? "inResidence" : "vacated",
-        tenancyAgreement: tenant.tenancyAgreement,
         dateVacated: tenant.dateVacated,
+        leaseAgreement: tenant.tenancyAgreement instanceof File ? tenant.tenancyAgreement : null,
       });
+
       setFileList(
         tenant.tenancyAgreement
           ? [
               {
                 uid: "-1",
-                name: tenant.tenancyAgreement,
+                name:
+                  tenant.tenancyAgreement instanceof File
+                    ? tenant.tenancyAgreement.name
+                    : tenant.tenancyAgreement,
                 status: "done",
-                url: `/agreements/${tenant.tenancyAgreement}`,
+                url:
+                  tenant.tenancyAgreement instanceof File
+                    ? URL.createObjectURL(tenant.tenancyAgreement)
+                    : `/agreements/${tenant.tenancyAgreement}`,
               },
             ]
           : []
@@ -271,31 +214,53 @@ const TenantsTable: React.FC = () => {
 
   /* -------------------- Columns -------------------- */
   const columns = [
-    { title: "Name", dataIndex: "name", key: "name", ellipsis: true, sorter: (a: Tenant, b: Tenant) => a.name.localeCompare(b.name) },
+    { title: "Name", dataIndex: "name", key: "name", ellipsis: true },
     { title: "Email", dataIndex: "email", key: "email", ellipsis: true },
     { title: "Phone", dataIndex: "phoneNumber", key: "phoneNumber", ellipsis: true },
     { title: "Apartment", dataIndex: "apartment", key: "apartment" },
     { title: "Unit", dataIndex: "unit", key: "unit" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
-    {
-      title: "Tenancy Agreement",
-      dataIndex: "tenancyAgreement",
-      key: "tenancyAgreement",
-      render: (text: string) =>
-        text ? (
-          <a href={`/leasing-agreement/${text}`} target="_blank" rel="noopener noreferrer">
-            <FileTextOutlined /> {text}
-          </a>
-        ) : (
-          "N/A"
-        ),
-    },
+
+   {
+  title: "Tenancy Agreement",
+  dataIndex: "tenancyAgreement",
+  key: "tenancyAgreement",
+  render: (agreement: File | string | undefined) => {
+    if (!agreement) return "N/A";
+
+    // Case 1: New File upload
+    if (agreement instanceof File) {
+      const url = URL.createObjectURL(agreement);
+      return (
+        <a
+          href={url}
+          download={agreement.name}
+          onClick={() => setTimeout(() => URL.revokeObjectURL(url), 1000)}
+        >
+          {agreement.name}
+        </a>
+      );
+    }
+
+    // Case 2: Existing string (filename)
+    const fileName = agreement.split("/").pop() || agreement;
+    return (
+      <a href={`/agreements/${agreement}`} download={fileName}>
+        {fileName}
+      </a>
+    );
+  },
+},
+
+
     { title: "Date Vacated", dataIndex: "dateVacated", key: "dateVacated", render: (date: string) => date || "—" },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => <Badge color={status === "In Residence" ? "green" : "orange"} text={status} />,
+      render: (status: string) => (
+        <Badge color={status === "In Residence" ? "green" : "orange"} text={status} />
+      ),
     },
     {
       title: "Actions",
@@ -314,7 +279,7 @@ const TenantsTable: React.FC = () => {
     <div className="tenants-container">
       <div className="page-header">
         <h2>Tenants</h2>
-       <div className="filters-inline">
+        <div className="filters-inline">
           <SearchInput
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}

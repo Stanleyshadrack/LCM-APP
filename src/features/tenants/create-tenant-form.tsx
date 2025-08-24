@@ -3,7 +3,7 @@ import "./add-tenants.css";
 
 interface Unit {
   name: string;
-  occupied: boolean; // ✅ mark if already occupied
+  occupied: boolean;
 }
 
 interface Apartment {
@@ -13,7 +13,7 @@ interface Apartment {
 
 interface CreateTenantFormProps {
   title: string;
-  apartments: Apartment[]; // ✅ dynamic apartment list
+  apartments: Apartment[];
   initialValues?: {
     fullName: string;
     email: string;
@@ -23,6 +23,7 @@ interface CreateTenantFormProps {
     unit: string;
     status: "inResidence" | "vacated";
     dateVacated?: string;
+    leaseAgreement?: File | null; // ✅ uploaded file
   } | null;
   onCancel: () => void;
   onSubmit: (formData: {
@@ -34,6 +35,7 @@ interface CreateTenantFormProps {
     unit: string;
     status: "inResidence" | "vacated";
     dateVacated?: string;
+    leaseAgreement?: File | null; // ✅ uploaded file
   }) => void;
 }
 
@@ -53,15 +55,14 @@ const CreateTenantForm = ({
     unit: "",
     status: "inResidence" as "inResidence" | "vacated",
     dateVacated: "",
+    leaseAgreement: null as File | null, // ✅ new field
   });
 
   const [availableUnits, setAvailableUnits] = useState<Unit[]>([]);
 
-  // Populate initialValues if editing
   useEffect(() => {
     if (initialValues) {
       setFormData((prev) => ({ ...prev, ...initialValues }));
-      // Preload available units for the selected apartment
       const selectedApartment = apartments.find(
         (apt) => apt.name === initialValues.apartment
       );
@@ -71,7 +72,6 @@ const CreateTenantForm = ({
     }
   }, [initialValues, apartments]);
 
-  // Update available units when apartment changes
   useEffect(() => {
     if (formData.apartment) {
       const selectedApartment = apartments.find(
@@ -79,7 +79,7 @@ const CreateTenantForm = ({
       );
       if (selectedApartment) {
         setAvailableUnits(selectedApartment.units);
-        setFormData((prev) => ({ ...prev, unit: "" })); // reset unit when apartment changes
+        setFormData((prev) => ({ ...prev, unit: "" }));
       }
     }
   }, [formData.apartment, apartments]);
@@ -87,8 +87,12 @@ const CreateTenantForm = ({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, files } = e.target as HTMLInputElement;
+    if (name === "leaseAgreement" && files) {
+      setFormData((prev) => ({ ...prev, leaseAgreement: files[0] })); // ✅ store file
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +118,7 @@ const CreateTenantForm = ({
       unit: "",
       status: "inResidence",
       dateVacated: "",
+      leaseAgreement: null,
     });
     setAvailableUnits([]);
   };
@@ -265,6 +270,32 @@ const CreateTenantForm = ({
         </div>
       )}
 
+     {/* Lease Agreement */}
+<div className="form-group">
+  <label>Lease Agreement</label>
+  <div className="file-upload-wrapper">
+    <label htmlFor="leaseAgreement" className="file-upload-label">
+      Upload File
+    </label>
+    <input
+      type="file"
+      id="leaseAgreement"
+      name="leaseAgreement"
+      accept=".pdf,.doc,.docx"
+      onChange={handleChange}
+      className="file-upload-input"
+    />
+    {formData.leaseAgreement && (
+      <span className="file-upload-name">
+        {formData.leaseAgreement.name}
+      </span>
+    )}
+  </div>
+</div>
+
+
+
+      {/* Buttons */}
       <div className="form-buttons">
         <button type="button" className="cancel-button" onClick={onCancel}>
           Cancel
