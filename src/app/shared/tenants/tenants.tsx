@@ -50,8 +50,8 @@ const initialData: Tenant[] = [
     email: "johndoe@gmail.com",
     idNumber: "12345678",
     phoneNumber: "254742792965",
-    apartment: "Block B",
-    unit: "B02",
+    apartment: "Apartment B",
+    unit: "unit 3",
     dateCreated: "02/04/2024",
     status: "In Residence",
     tenancyAgreement: "Agreement_John.pdf",
@@ -62,8 +62,8 @@ const initialData: Tenant[] = [
     email: "janesmith@gmail.com",
     idNumber: "87654321",
     phoneNumber: "254700123456",
-    apartment: "Block C",
-    unit: "C01",
+    apartment: "Apartment B",
+    unit: "unit 3",
     dateCreated: "03/04/2024",
     status: "Vacated",
     tenancyAgreement: "Agreement_Jane.pdf",
@@ -76,6 +76,10 @@ const TenantsTable: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "in" | "vacated">("all");
   const [tenantData, setTenantData] = useState<Tenant[]>(initialData);
+  const [apartmentFilter, setApartmentFilter] = useState<string>("all");
+  const [unitFilter, setUnitFilter] = useState<string>("all");
+  const [selectedFilter, setSelectedFilter] = useState<string>("all:all");
+
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentTenant, setCurrentTenant] = useState<TenantFormValues | null>(null);
@@ -87,15 +91,15 @@ const TenantsTable: React.FC = () => {
 
   /* -------------------- Apartments -------------------- */
   const apartments: Apartmentos[] = [
-    {
-      name: "Apartment A",
-      units: ["Unit 1", "Unit 2"].map((u) => ({ id: u, name: u, occupied: false })),
-    },
-    {
-      name: "Apartment B",
-      units: ["Unit 3", "Unit 4"].map((u) => ({ id: u, name: u, occupied: false })),
-    },
-  ];
+  {
+    name: "Apartment A",
+    units: ["Unit 1", "Unit 2"].map((u) => ({ id: u, name: u, occupied: false })),
+  },
+  {
+    name: "Apartment B",
+    units: ["Unit 3", "Unit 4"].map((u) => ({ id: u, name: u, occupied: false })),
+  },
+];
 
   /* -------------------- Handlers -------------------- */
   const handleSubmit = (formValues: TenantFormValues) => {
@@ -147,48 +151,36 @@ const TenantsTable: React.FC = () => {
   };
 
   const showModal = (tenant: Tenant | null = null) => {
-    if (tenant) {
-      setCurrentTenant({
-        fullName: tenant.name,
-        email: tenant.email,
-        idNumber: tenant.idNumber,
-        phoneNumber: tenant.phoneNumber,
-        apartment: tenant.apartment,
-        unit: tenant.unit,
-        status: tenant.status === "In Residence" ? "inResidence" : "vacated",
-        dateVacated: tenant.dateVacated,
-        leaseAgreement: tenant.tenancyAgreement instanceof File ? tenant.tenancyAgreement : null,
-      });
+  if (tenant) {
+    setCurrentTenant({
+      fullName: tenant.name,
+      email: tenant.email,
+      idNumber: tenant.idNumber,
+      phoneNumber: tenant.phoneNumber,
+      apartment: tenant.apartment,
+      unit: tenant.unit,
+      status: tenant.status === "In Residence" ? "inResidence" : "vacated",
+      dateVacated: tenant.dateVacated,
+      leaseAgreement: tenant.tenancyAgreement instanceof File ? tenant.tenancyAgreement : null,
+    });
+  } else {
+    setCurrentTenant(null);
+  }
 
-      setFileList(
-        tenant.tenancyAgreement
-          ? [
-              {
-                uid: "-1",
-                name:
-                  tenant.tenancyAgreement instanceof File
-                    ? tenant.tenancyAgreement.name
-                    : tenant.tenancyAgreement,
-                status: "done",
-                url:
-                  tenant.tenancyAgreement instanceof File
-                    ? URL.createObjectURL(tenant.tenancyAgreement)
-                    : `/agreements/${tenant.tenancyAgreement}`,
-              },
-            ]
-          : []
-      );
-    } else {
-      setCurrentTenant(null);
-      setFileList([]);
-    }
-    setIsModalVisible(true);
-  };
+  setIsModalVisible(true);
+};
+
 
   const handleCancel = () => {
     setIsModalVisible(false);
     setFileList([]);
   };
+
+  const handleDeleteModalCancel = () => {
+  setDeleteModalOpen(false);
+  setTenantToDelete(null);
+};
+
 
   const handleDeleteClick = (tenant: Tenant) => {
     setTenantToDelete(tenant);
@@ -203,14 +195,64 @@ const TenantsTable: React.FC = () => {
   };
 
   /* -------------------- Filters -------------------- */
-  const filteredData = tenantData.filter((item) => {
-    const searchMatch = item.name.toLowerCase().includes(searchText.toLowerCase());
-    const statusMatch =
-      statusFilter === "all" ||
-      (statusFilter === "in" && item.status === "In Residence") ||
-      (statusFilter === "vacated" && item.status === "Vacated");
-    return searchMatch && statusMatch;
-  });
+const filteredData = tenantData.filter((item) => {
+  // Search filter
+  const searchMatch = item.name.toLowerCase().includes(searchText.toLowerCase());
+
+  // Unified filter
+  if (selectedFilter === "all:all") return searchMatch;
+
+  const [type, value] = selectedFilter.split(":");
+
+  let filterMatch = true;
+  switch (type) {
+    case "status":
+      filterMatch = value === "in" ? item.status === "In Residence" : item.status === "Vacated";
+      break;
+    case "apartment":
+      filterMatch = item.apartment === value;
+      break;
+    case "unit":
+      filterMatch = item.unit === value;
+      break;
+  }
+
+  return searchMatch && filterMatch;
+});
+
+const apartmentsWithOccupancy = apartments.map((apt) => ({
+  ...apt,
+  units: apt.units.map((unit) => ({
+    ...unit,
+    occupied: tenantData.some(
+      (tenant) =>
+        tenant.apartment === apt.name &&
+        tenant.unit === unit.name &&
+        tenant.status === "In Residence"
+    ),
+  })),
+}));
+
+
+
+
+
+const filterOptions = [
+  { label: "All Tenants", value: "all:all" },
+
+  // Status
+  { label: "In Residence", value: "status:in" },
+  { label: "Vacated", value: "status:vacated" },
+
+  // Apartments
+  ...apartments.map((apt) => ({ label: apt.name, value: `apartment:${apt.name}` })),
+
+  // Units
+  ...apartments.flatMap((apt) =>
+    apt.units.map((unit) => ({ label: `${unit.name} (${apt.name})`, value: `unit:${unit.name}` }))
+  ),
+];
+
 
   /* -------------------- Columns -------------------- */
   const columns = [
@@ -280,22 +322,29 @@ const TenantsTable: React.FC = () => {
       <div className="page-header">
         <h2>Tenants</h2>
         <div className="filters-inline">
-          <SearchInput
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            placeholder="Search tenants..."
-          />
-          <Select
-            value={statusFilter}
-            onChange={(val) => setStatusFilter(val)}
-            style={{ minWidth: 140 }}
-          >
-            <Option value="all">All</Option>
-            <Option value="in">In Residence</Option>
-            <Option value="vacated">Vacated</Option>
-          </Select>
-          <AddTenantButton onClick={() => showModal()} label="+ Add Tenant" />
-        </div>
+  <SearchInput
+    value={searchText}
+    onChange={(e) => setSearchText(e.target.value)}
+    placeholder="Search tenants..."
+  />
+  
+ <Select
+  value={selectedFilter}
+  onChange={(val) => setSelectedFilter(val)}
+  style={{ minWidth: 200 }}
+  placeholder="Filter tenants"
+>
+  {filterOptions.map((opt) => (
+    <Option key={opt.value} value={opt.value}>
+      {opt.label}
+    </Option>
+  ))}
+</Select>
+
+
+  <AddTenantButton onClick={() => showModal()} label="+ Add Tenant" />
+</div>
+
       </div>
 
       <Table
@@ -320,7 +369,8 @@ const TenantsTable: React.FC = () => {
           initialValues={currentTenant}
           onCancel={handleCancel}
           onSubmit={handleSubmit}
-          apartments={apartments}
+          apartments={apartmentsWithOccupancy }
+          
         />
       </Modal>
 
@@ -330,7 +380,7 @@ const TenantsTable: React.FC = () => {
           open={deleteModalOpen}
           tenantName={tenantToDelete.name}
           onDelete={handleDeleteTenant}
-          onCancel={handleCancel}
+          onCancel={handleDeleteModalCancel}
           onArchive={() => {
             console.log("Archive logic can go here");
             setDeleteModalOpen(false);
