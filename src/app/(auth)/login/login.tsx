@@ -58,8 +58,8 @@ const LoginPage: React.FC = () => {
 
       setTimeout(() => {
         router.push(`/${role}/dashboard`);
-      }, 1000);
-    }, 1000);
+      }, 100);
+    }, 100);
   };
 
   return (
@@ -134,7 +134,6 @@ const LoginPage: React.FC = () => {
 
           <button type="submit">Log In</button>
         </form>
-
         <div className="register">
           <span>Don't have an account?</span>
           <span
