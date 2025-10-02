@@ -14,7 +14,9 @@ interface Apartment {
 interface CreateTenantFormProps {
   title: string;
   apartments: Apartment[];
+  tenantId?:string;
   initialValues?: {
+    key?:string;
     fullName: string;
     email: string;
     idNumber: string;
@@ -27,6 +29,7 @@ interface CreateTenantFormProps {
   } | null;
   onCancel: () => void;
   onSubmit: (formData: {
+    key?:string;
     fullName: string;
     email: string;
     idNumber: string;
@@ -45,6 +48,7 @@ const CreateTenantForm = ({
   initialValues,
   onCancel,
   onSubmit,
+  tenantId
 }: CreateTenantFormProps) => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -59,6 +63,7 @@ const CreateTenantForm = ({
   });
 
   const [availableUnits, setAvailableUnits] = useState<Unit[]>([]);
+  console.log("shhhdhdhhd ",initialValues);
 
   useEffect(() => {
     if (initialValues) {
@@ -126,7 +131,7 @@ const CreateTenantForm = ({
   return (
     <form className="form-container" onSubmit={handleSubmit}>
       <h2 className="form-title">{title}</h2>
-
+      the updarte{initialValues?.key}
       {/* Full name */}
       <div className="form-group">
         <label>Full Name</label>

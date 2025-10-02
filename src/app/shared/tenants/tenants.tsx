@@ -12,24 +12,18 @@ import SearchInput from "@/app/lcmapplication/protected/widgets/search/SearchInp
 import { Apartmentos } from "@/app/lcmapplication/types/invoice";
 
 import "./tenants.css";
+import { addTenantsService } from "@/apiActions/tenantsApis/services/add.tenants.service";
+import { Tenant } from "@/apiActions/tenantsApis/dto/tenant.dto";
+import { useRouter } from "next/navigation";
+import { updatedTenantService } from "@/apiActions/tenantsApis/services/update.tenant.service";
+import { deleteTenantService } from "@/apiActions/tenantsApis/services/delete.tenant.service";
 
 const { Option } = Select;
 
-interface Tenant {
-  key: string;
-  name: string;
-  email: string;
-  idNumber: string;
-  phoneNumber: string;
-  apartment: string;
-  unit: string;
-  dateCreated: string;
-  status: "In Residence" | "Vacated";
-  tenancyAgreement?: File | string;
-  dateVacated?: string;
-}
+
 
 interface TenantFormValues {
+  key?:string,
   fullName: string;
   email: string;
   idNumber: string;
@@ -41,23 +35,27 @@ interface TenantFormValues {
   leaseAgreement?: File | null;
 }
 
-const initialData: Tenant[] = [
-  {
-    key: "1",
-    name: "John Doe",
-    email: "johndoe@gmail.com",
-    idNumber: "12345678",
-    phoneNumber: "254742792965",
-    apartment: "Apartment B",
-    unit: "unit c",
-    dateCreated: "02/04/2024",
-    status: "In Residence",
-    tenancyAgreement: "Agreement_John.pdf",
-  },
-];
+// const initialData: Tenant[] = [
+//   {
+//     key: "1",
+//     name: "John Doe",
+//     email: "johndoe@gmail.com",
+//     idNumber: "12345678",
+//     phoneNumber: "254742792965",
+//     apartment: "Apartment B",
+//     unit: "unit c",
+//     dateCreated: "02/04/2024",
+//     status: "In Residence",
+//     tenancyAgreement: "Agreement_John.pdf",
+//   },
+// ];
 
-const TenantsTable: React.FC = () => {
-  const [tenantData, setTenantData] = useState<Tenant[]>(initialData);
+interface Props{
+  tenantsData:Tenant[];
+}
+
+const TenantsTable: React.FC<Props> = ({tenantsData}) => {
+  // const [tenantData, setTenantData] = useState<Tenant[]>(initialData);
   const [searchText, setSearchText] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all:all");
 
@@ -65,6 +63,7 @@ const TenantsTable: React.FC = () => {
   const [currentTenant, setCurrentTenant] = useState<TenantFormValues | null>(
     null
   );
+  const router = useRouter();
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [tenantToDelete, setTenantToDelete] = useState<Tenant | null>(null);
@@ -95,7 +94,7 @@ const TenantsTable: React.FC = () => {
         ...apt,
         units: apt.units.map((unit) => ({
           ...unit,
-          occupied: tenantData.some(
+          occupied: tenantsData.some(
             (t) =>
               t.apartment === apt.name &&
               t.unit === unit.name &&
@@ -103,14 +102,14 @@ const TenantsTable: React.FC = () => {
           ),
         })),
       })),
-    [tenantData]
+    [tenantsData]
   );
 
- const handleSubmit = (formValues: TenantFormValues) => {
+ const handleSubmit = async (formValues: TenantFormValues) => {
   const tenancyFile = formValues.leaseAgreement || undefined;
 
   // Check if the unit is already occupied
-  const isOccupied = tenantData.some(
+  const isOccupied = tenantsData.some(
     (t) =>
       t.apartment === formValues.apartment &&
       t.unit === formValues.unit &&
@@ -128,32 +127,35 @@ const TenantsTable: React.FC = () => {
     return;
   }
 
+
   if (currentTenant) {
     // Editing
-    setTenantData((prev) =>
-      prev.map((t) =>
-        t.email === currentTenant.email
-          ? {
-              ...t,
-              name: formValues.fullName,
-              email: formValues.email,
-              idNumber: formValues.idNumber,
-              phoneNumber: formValues.phoneNumber,
-              apartment: formValues.apartment,
-              unit: formValues.unit,
-              status:
-                formValues.status === "inResidence"
-                  ? "In Residence"
-                  : "Vacated",
-              tenancyAgreement: tenancyFile,
-              dateVacated:
-                formValues.status === "vacated"
-                  ? formValues.dateVacated
-                  : undefined,
-            }
-          : t
-      )
-    );
+    // setTenantData((prev) =>
+    //   prev.map((t) =>
+    //     t.email === currentTenant.email
+    //       ? {
+    //           ...t,
+    //           name: formValues.fullName,
+    //           email: formValues.email,
+    //           idNumber: formValues.idNumber,
+    //           phoneNumber: formValues.phoneNumber,
+    //           apartment: formValues.apartment,
+    //           unit: formValues.unit,
+    //           status:
+    //             formValues.status === "inResidence"
+    //               ? "In Residence"
+    //               : "Vacated",
+    //           tenancyAgreement: tenancyFile,
+    //           dateVacated:
+    //             formValues.status === "vacated"
+    //               ? formValues.dateVacated
+    //               : undefined,
+    //         }
+    //       : t
+    //   )
+    // );
+     await updatedTenantService(formValues, formValues.key!)
+     router.refresh();
     
      notification.success({
       message: "Tenant Updated",
@@ -163,24 +165,27 @@ const TenantsTable: React.FC = () => {
     });
   } else {
     // Adding
-    setTenantData((prev) => [
-      ...prev,
-      {
-        key: String(Date.now()),
-        name: formValues.fullName,
-        email: formValues.email,
-        idNumber: formValues.idNumber,
-        phoneNumber: formValues.phoneNumber,
-        apartment: formValues.apartment,
-        unit: formValues.unit,
-        status:
-          formValues.status === "inResidence" ? "In Residence" : "Vacated",
-        dateCreated: new Date().toLocaleDateString(),
-        tenancyAgreement: tenancyFile,
-        dateVacated:
-          formValues.status === "vacated" ? formValues.dateVacated : undefined,
-      },
-    ]);
+    // setTenantData((prev) => [
+    //   ...prev,
+    //   {
+    //     key: String(Date.now()),
+    //     name: formValues.fullName,
+    //     email: formValues.email,
+    //     idNumber: formValues.idNumber,
+    //     phoneNumber: formValues.phoneNumber,
+    //     apartment: formValues.apartment,
+    //     unit: formValues.unit,
+    //     status:
+    //       formValues.status === "inResidence" ? "In Residence" : "Vacated",
+    //     dateCreated: new Date().toLocaleDateString(),
+    //     tenancyAgreement: tenancyFile,
+    //     dateVacated:
+    //       formValues.status === "vacated" ? formValues.dateVacated : undefined,
+    //   },
+    // ])
+        await addTenantsService( formValues)
+        router.refresh()
+
 
      notification.success({
       message: "",
@@ -198,6 +203,7 @@ const TenantsTable: React.FC = () => {
   const showModal = (tenant?: Tenant) => {
     if (tenant) {
       setCurrentTenant({
+        key:tenant.key,
         fullName: tenant.name,
         email: tenant.email,
         idNumber: tenant.idNumber,
@@ -217,14 +223,16 @@ const TenantsTable: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleDeleteTenant = () => {
+  const handleDeleteTenant = async () => {
     if (tenantToDelete)
-      setTenantData((prev) => prev.filter((t) => t.key !== tenantToDelete.key));
+      // setTenantData((prev) => prev.filter((t) => t.key !== tenantToDelete.key));
+    await deleteTenantService(tenantToDelete.key!);
+    router.refresh();
     setDeleteModalOpen(false);
     setTenantToDelete(null);
   };
 
-  const filteredData = tenantData.filter((t) => {
+  const filteredData = tenantsData.filter((t) => {
     const searchMatch = t.name.toLowerCase().includes(searchText.toLowerCase());
     if (selectedFilter === "all:all") return searchMatch;
 
@@ -404,6 +412,7 @@ const TenantsTable: React.FC = () => {
           onCancel={() => setIsModalVisible(false)}
           onSubmit={handleSubmit}
           apartments={apartmentsWithOccupancy}
+          tenantId={currentTenant?.key!}
         />
       </Modal>
 
