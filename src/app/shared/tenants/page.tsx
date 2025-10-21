@@ -1,5 +1,5 @@
 
-import { fetchTenantsSevice } from "@/apiActions/tenantsApis/services/fetchTenant.service";
+import { fetchTenantsSevice } from "@/apiActions/tenantsApis/services/tenants/fetchTenant.service";
 import TenantsTable from "./tenants";
 
 

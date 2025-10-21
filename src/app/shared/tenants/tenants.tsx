@@ -3,6 +3,8 @@
 import React, { useState, useMemo } from "react";
 import { Table, Button, Badge, Space, Modal, Select, notification } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
+import type { ColumnsType } from "antd/es/table";
 import type { UploadFile } from "antd/es/upload/interface";
 
 import CreateTenantForm from "@/features/tenants/create-tenant-form";
@@ -10,20 +12,17 @@ import DeleteTenantModal from "@/app/lcmapplication/protected/modals/delete-tena
 import AddTenantButton from "@/app/lcmapplication/protected/widgets/addButton/AddTenantButton";
 import SearchInput from "@/app/lcmapplication/protected/widgets/search/SearchInput";
 import { Apartmentos } from "@/app/lcmapplication/types/invoice";
+import { addTenantsService } from "@/apiActions/tenantsApis/services/tenants/add.tenants.service";
+import { deleteTenantService } from "@/apiActions/tenantsApis/services/tenants/delete.tenant.service";
+import { Tenant } from "@/apiActions/tenantsApis/dto/tenant.dto";
 
 import "./tenants.css";
-import { addTenantsService } from "@/apiActions/tenantsApis/services/add.tenants.service";
-import { Tenant } from "@/apiActions/tenantsApis/dto/tenant.dto";
-import { useRouter } from "next/navigation";
-import { updatedTenantService } from "@/apiActions/tenantsApis/services/update.tenant.service";
-import { deleteTenantService } from "@/apiActions/tenantsApis/services/delete.tenant.service";
+import { updatedTenantService } from "@/apiActions/tenantsApis/services/tenants/update.tenant.service";
 
 const { Option } = Select;
 
-
-
 interface TenantFormValues {
-  key?:string,
+  key?: string;
   fullName: string;
   email: string;
   idNumber: string;
@@ -35,215 +34,141 @@ interface TenantFormValues {
   leaseAgreement?: File | null;
 }
 
-// const initialData: Tenant[] = [
-//   {
-//     key: "1",
-//     name: "John Doe",
-//     email: "johndoe@gmail.com",
-//     idNumber: "12345678",
-//     phoneNumber: "254742792965",
-//     apartment: "Apartment B",
-//     unit: "unit c",
-//     dateCreated: "02/04/2024",
-//     status: "In Residence",
-//     tenancyAgreement: "Agreement_John.pdf",
-//   },
-// ];
-
-interface Props{
-  tenantsData:Tenant[];
+interface Props {
+  tenantsData: Tenant[];
 }
 
-const TenantsTable: React.FC<Props> = ({tenantsData}) => {
-  // const [tenantData, setTenantData] = useState<Tenant[]>(initialData);
+const baseApartments: Apartmentos[] = [
+  {
+    name: "Apartment A",
+    units: ["Unit 1", "Unit 2"].map((u) => ({ id: u, name: u, occupied: false })),
+  },
+  {
+    name: "Apartment B",
+    units: ["Unit 3", "Unit 4"].map((u) => ({ id: u, name: u, occupied: false })),
+  },
+];
+
+const TenantsTable: React.FC<Props> = ({ tenantsData }) => {
   const [searchText, setSearchText] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all:all");
-
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentTenant, setCurrentTenant] = useState<TenantFormValues | null>(
-    null
-  );
-  const router = useRouter();
-
+  const [currentTenant, setCurrentTenant] = useState<TenantFormValues | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [tenantToDelete, setTenantToDelete] = useState<Tenant | null>(null);
+  const router = useRouter();
 
-  const apartments: Apartmentos[] = [
-    {
-      name: "Apartment A",
-      units: ["Unit 1", "Unit 2"].map((u) => ({
-        id: u,
-        name: u,
-        occupied: false,
-      })),
-    },
-    {
-      name: "Apartment B",
-      units: ["Unit 3", "Unit 4"].map((u) => ({
-        id: u,
-        name: u,
-        occupied: false,
-      })),
-    },
-  ];
-
-  // Mark units as occupied
+  // Compute unit occupancy dynamically
   const apartmentsWithOccupancy = useMemo(
     () =>
-      apartments.map((apt) => ({
+      baseApartments.map((apt) => ({
         ...apt,
         units: apt.units.map((unit) => ({
           ...unit,
           occupied: tenantsData.some(
-            (t) =>
-              t.apartment === apt.name &&
-              t.unit === unit.name &&
-              t.status === "In Residence"
+            (t) => t.apartment === apt.name && t.unit === unit.name && t.status === "In Residence"
           ),
         })),
       })),
     [tenantsData]
   );
 
- const handleSubmit = async (formValues: TenantFormValues) => {
-  const tenancyFile = formValues.leaseAgreement || undefined;
+  const handleSubmit = async (formValues: TenantFormValues) => {
+    const isOccupied = tenantsData.some(
+      (t) =>
+        t.apartment === formValues.apartment &&
+        t.unit === formValues.unit &&
+        t.status === "In Residence" &&
+        (!currentTenant || t.email !== currentTenant.email)
+    );
 
-  // Check if the unit is already occupied
-  const isOccupied = tenantsData.some(
-    (t) =>
-      t.apartment === formValues.apartment &&
-      t.unit === formValues.unit &&
-      t.status === "In Residence" &&
-      (!currentTenant || t.email !== currentTenant.email) // ignore current tenant if editing
-  );
-
-  if (isOccupied) {
-    notification.error({
-      message: "Unit Occupied",
-      description: "This unit is already occupied by another tenant.",
-      placement: "topRight",
-      duration: 3,
-    });
-    return;
-  }
-
-
-  if (currentTenant) {
-    // Editing
-    // setTenantData((prev) =>
-    //   prev.map((t) =>
-    //     t.email === currentTenant.email
-    //       ? {
-    //           ...t,
-    //           name: formValues.fullName,
-    //           email: formValues.email,
-    //           idNumber: formValues.idNumber,
-    //           phoneNumber: formValues.phoneNumber,
-    //           apartment: formValues.apartment,
-    //           unit: formValues.unit,
-    //           status:
-    //             formValues.status === "inResidence"
-    //               ? "In Residence"
-    //               : "Vacated",
-    //           tenancyAgreement: tenancyFile,
-    //           dateVacated:
-    //             formValues.status === "vacated"
-    //               ? formValues.dateVacated
-    //               : undefined,
-    //         }
-    //       : t
-    //   )
-    // );
-     await updatedTenantService(formValues, formValues.key!)
-     router.refresh();
-    
-     notification.success({
-      message: "Tenant Updated",
-      description: `${formValues.fullName} was updated successfully.`,
-      placement: "topRight",
-      duration: 3,
-    });
-  } else {
-    // Adding
-    // setTenantData((prev) => [
-    //   ...prev,
-    //   {
-    //     key: String(Date.now()),
-    //     name: formValues.fullName,
-    //     email: formValues.email,
-    //     idNumber: formValues.idNumber,
-    //     phoneNumber: formValues.phoneNumber,
-    //     apartment: formValues.apartment,
-    //     unit: formValues.unit,
-    //     status:
-    //       formValues.status === "inResidence" ? "In Residence" : "Vacated",
-    //     dateCreated: new Date().toLocaleDateString(),
-    //     tenancyAgreement: tenancyFile,
-    //     dateVacated:
-    //       formValues.status === "vacated" ? formValues.dateVacated : undefined,
-    //   },
-    // ])
-        await addTenantsService( formValues)
-        router.refresh()
-
-
-     notification.success({
-      message: "",
-      description: `${formValues.fullName} was added successfully.`,
-      placement: "topRight",
-      duration: 1.5,
-    });
-  }
-
-  setIsModalVisible(false);
-  setCurrentTenant(null);
-};
-
-
-  const showModal = (tenant?: Tenant) => {
-    if (tenant) {
-      setCurrentTenant({
-        key:tenant.key,
-        fullName: tenant.name,
-        email: tenant.email,
-        idNumber: tenant.idNumber,
-        phoneNumber: tenant.phoneNumber,
-        apartment: tenant.apartment,
-        unit: tenant.unit,
-        status: tenant.status === "In Residence" ? "inResidence" : "vacated",
-        dateVacated: tenant.dateVacated,
-        leaseAgreement:
-          tenant.tenancyAgreement instanceof File
-            ? tenant.tenancyAgreement
-            : null,
+    if (isOccupied) {
+      notification.error({
+        message: "Unit Occupied",
+        description: "This unit is already occupied by another tenant.",
+        placement: "topRight",
       });
-    } else {
-      setCurrentTenant(null);
+      return;
     }
+
+    try {
+      if (currentTenant) {
+        await updatedTenantService(formValues, formValues.key!);
+        notification.success({
+          message: "Tenant Updated",
+          description: `${formValues.fullName} was updated successfully.`,
+          placement: "topRight",
+        });
+      } else {
+        await addTenantsService(formValues);
+        notification.success({
+          message: "Tenant Added",
+          description: `${formValues.fullName} was added successfully.`,
+          placement: "topRight",
+        });
+      }
+
+      router.refresh();
+      setIsModalVisible(false);
+      setCurrentTenant(null);
+    } catch (error) {
+      notification.error({
+        message: "Action Failed",
+        description: "Something went wrong while saving the tenant.",
+      });
+    }
+  };
+
+  const openTenantModal = (tenant?: Tenant) => {
+    setCurrentTenant(
+      tenant
+        ? {
+            key: tenant.key,
+            fullName: tenant.name,
+            email: tenant.email,
+            idNumber: tenant.idNumber,
+            phoneNumber: tenant.phoneNumber,
+            apartment: tenant.apartment,
+            unit: tenant.unit,
+            status: tenant.status === "In Residence" ? "inResidence" : "vacated",
+            dateVacated: tenant.dateVacated,
+            leaseAgreement: tenant.tenancyAgreement instanceof File ? tenant.tenancyAgreement : null,
+          }
+        : null
+    );
     setIsModalVisible(true);
   };
 
-  const handleDeleteTenant = async () => {
-    if (tenantToDelete)
-      // setTenantData((prev) => prev.filter((t) => t.key !== tenantToDelete.key));
-    await deleteTenantService(tenantToDelete.key!);
-    router.refresh();
-    setDeleteModalOpen(false);
-    setTenantToDelete(null);
+  const confirmDeleteTenant = async () => {
+    if (!tenantToDelete) return;
+    try {
+      await deleteTenantService(tenantToDelete.key!);
+      router.refresh();
+      notification.success({
+        message: "Tenant Deleted",
+        description: `${tenantToDelete.name} was deleted successfully.`,
+        placement: "topRight",
+      });
+    } catch {
+      notification.error({
+        message: "Delete Failed",
+        description: "Unable to delete tenant. Please try again.",
+      });
+    } finally {
+      setDeleteModalOpen(false);
+      setTenantToDelete(null);
+    }
   };
 
   const filteredData = tenantsData.filter((t) => {
-    const searchMatch = t.name.toLowerCase().includes(searchText.toLowerCase());
-    if (selectedFilter === "all:all") return searchMatch;
+    const matchesSearch = t.name.toLowerCase().includes(searchText.toLowerCase());
+    if (selectedFilter === "all:all") return matchesSearch;
 
     const [type, value] = selectedFilter.split(":");
     if (type === "status")
-      return (
-        searchMatch &&
-        (value === "in" ? t.status === "In Residence" : t.status === "Vacated")
-      );
-    if (type === "apartment") return searchMatch && t.apartment === value;
-    if (type === "unit") return searchMatch && t.unit === value;
+      return matchesSearch && (value === "in" ? t.status === "In Residence" : t.status === "Vacated");
+    if (type === "apartment") return matchesSearch && t.apartment === value;
+    if (type === "unit") return matchesSearch && t.unit === value;
     return true;
   });
 
@@ -251,27 +176,16 @@ const TenantsTable: React.FC<Props> = ({tenantsData}) => {
     { label: "All Tenants", value: "all:all" },
     { label: "In Residence", value: "status:in" },
     { label: "Vacated", value: "status:vacated" },
-    ...apartments.map((apt) => ({
-      label: apt.name,
-      value: `apartment:${apt.name}`,
-    })),
-    ...apartments.flatMap((apt) =>
-      apt.units.map((u) => ({
-        label: `${u.name} (${apt.name})`,
-        value: `unit:${u.name}`,
-      }))
+    ...baseApartments.map((apt) => ({ label: apt.name, value: `apartment:${apt.name}` })),
+    ...baseApartments.flatMap((apt) =>
+      apt.units.map((u) => ({ label: `${u.name} (${apt.name})`, value: `unit:${u.name}` }))
     ),
   ];
 
-  const columns = [
+  const columns: ColumnsType<Tenant> = [
     { title: "Name", dataIndex: "name", key: "name", ellipsis: true },
     { title: "Email", dataIndex: "email", key: "email", ellipsis: true },
-    {
-      title: "Phone",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
-      ellipsis: true,
-    },
+    { title: "Phone", dataIndex: "phoneNumber", key: "phoneNumber", ellipsis: true },
     { title: "Apartment", dataIndex: "apartment", key: "apartment" },
     { title: "Unit", dataIndex: "unit", key: "unit" },
     { title: "Date Created", dataIndex: "dateCreated", key: "dateCreated" },
@@ -284,72 +198,33 @@ const TenantsTable: React.FC<Props> = ({tenantsData}) => {
         if (agreement instanceof File) {
           const url = URL.createObjectURL(agreement);
           return (
-            <a
-              href={url}
-              download={agreement.name}
-              onClick={() => setTimeout(() => URL.revokeObjectURL(url), 1000)}
-            >
+            <a href={url} download={agreement.name} onClick={() => setTimeout(() => URL.revokeObjectURL(url), 1000)}>
               {agreement.name}
             </a>
           );
         }
         const fileName = agreement.split("/").pop() || agreement;
-        return (
-          <a href={`/agreements/${agreement}`} download={fileName}>
-            {fileName}
-          </a>
-        );
+        return <a href={`/agreements/${agreement}`} download={fileName}>{fileName}</a>;
       },
     },
     {
       title: "Date Vacated",
       dataIndex: "dateVacated",
       key: "dateVacated",
-      render: (d: any) => d || "—",
+      render: (d) => d || "—",
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (
-        s:
-          | string
-          | number
-          | bigint
-          | boolean
-          | React.ReactElement<
-              unknown,
-              string | React.JSXElementConstructor<any>
-            >
-          | Iterable<React.ReactNode>
-          | Promise<
-              | string
-              | number
-              | bigint
-              | boolean
-              | React.ReactPortal
-              | React.ReactElement<
-                  unknown,
-                  string | React.JSXElementConstructor<any>
-                >
-              | Iterable<React.ReactNode>
-              | null
-              | undefined
-            >
-          | null
-          | undefined
-      ) => <Badge color={s === "In Residence" ? "green" : "orange"} text={s} />,
+      render: (status) => <Badge color={status === "In Residence" ? "green" : "orange"} text={status} />,
     },
     {
       title: "Actions",
       key: "action",
-      render: (_: any, record: Tenant) => (
+      render: (_, record) => (
         <Space>
-          <Button
-            icon={<EditOutlined />}
-            type="link"
-            onClick={() => showModal(record)}
-          />
+          <Button icon={<EditOutlined />} type="link" onClick={() => openTenantModal(record)} />
           <Button
             icon={<DeleteOutlined />}
             type="link"
@@ -369,24 +244,15 @@ const TenantsTable: React.FC<Props> = ({tenantsData}) => {
       <div className="page-header">
         <h2>Tenants</h2>
         <div className="filters-inline">
-          <SearchInput
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            placeholder="Search tenants..."
-          />
-          <Select
-            value={selectedFilter}
-            onChange={setSelectedFilter}
-            style={{ minWidth: 200 }}
-            placeholder="Filter tenants"
-          >
+          <SearchInput value={searchText} onChange={(e) => setSearchText(e.target.value)} placeholder="Search tenants..." />
+          <Select value={selectedFilter} onChange={setSelectedFilter} style={{ minWidth: 200 }} placeholder="Filter tenants">
             {filterOptions.map((opt) => (
               <Option key={opt.value} value={opt.value}>
                 {opt.label}
               </Option>
             ))}
           </Select>
-          <AddTenantButton onClick={() => showModal()} label="+ Add Tenant" />
+          <AddTenantButton onClick={() => openTenantModal()} label="+ Add Tenant" />
         </div>
       </div>
 
@@ -398,14 +264,7 @@ const TenantsTable: React.FC<Props> = ({tenantsData}) => {
         rowClassName={() => "custom-table-row"}
       />
 
-      <Modal
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        destroyOnClose
-        width="fit-content"
-        style={{ maxWidth: "90%" }}
-      >
+      <Modal open={isModalVisible} onCancel={() => setIsModalVisible(false)} footer={null} destroyOnClose width="fit-content">
         <CreateTenantForm
           title={currentTenant ? "Edit Tenant" : "Add Tenant"}
           initialValues={currentTenant}
@@ -420,7 +279,7 @@ const TenantsTable: React.FC<Props> = ({tenantsData}) => {
         <DeleteTenantModal
           open={deleteModalOpen}
           tenantName={tenantToDelete.name}
-          onDelete={handleDeleteTenant}
+          onDelete={confirmDeleteTenant}
           onCancel={() => {
             setDeleteModalOpen(false);
             setTenantToDelete(null);

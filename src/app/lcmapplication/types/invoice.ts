@@ -103,7 +103,7 @@ export interface Apartment {
   id: number;
   title: string;
   unitTypes: string[];
-  units: ApartmentUnits[];
+  units?: ApartmentUnits[];
   status: ApartmentStatus;
  address?: string;
   imageUrl?: string | null;

@@ -28,3 +28,5 @@ export interface TenantAPiResponse {
   dateUpdated: string | null;
   dateVacated: string | null;
 }
+
+

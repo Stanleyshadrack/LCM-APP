@@ -7,7 +7,7 @@ import "./ApartmentCard.css";
 
 interface ApartmentCardProps {
   title: string;
-  units: ApartmentUnits[];
+  units: string[];
   status: ApartmentStatus;
   address: string;
   isList?: boolean;
@@ -47,11 +47,10 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
     setFileList(newFileList);
   };
 
-  // Get unique unit types for preview
-  const uniqueUnitTypes = Array.from(new Set(units.map((u) => u.unitType)));
-  const visibleUnitTypes = uniqueUnitTypes.slice(0, 2).join(", ");
-  const remainingCount = uniqueUnitTypes.length - 2;
-  const unitIdsTooltip = units.map((u) => u.unit).join(", ");
+  
+  const unitIdsTooltip = units.join(", ");
+  const remainingCount = units.length - 2;
+
 
   return (
     <div className={`apartment-card ${statusColorMap[status]} ${isList ? "list-view" : ""}`}>
@@ -66,7 +65,7 @@ const ApartmentCard: React.FC<ApartmentCardProps> = ({
 
       <div className="apartment-details">
         <span title={unitIdsTooltip}>
-          {visibleUnitTypes}
+          {unitIdsTooltip}
           {remainingCount > 0 && ` ...`}
         </span>
 

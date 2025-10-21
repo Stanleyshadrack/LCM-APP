@@ -28,8 +28,17 @@ import SearchInput from "@/app/lcmapplication/protected/widgets/search/SearchInp
 import { Apartment, ApartmentStatus } from "@/app/lcmapplication/types/invoice";
 import { ColumnsType } from "antd/es/table";
 import ApartmentDetails from "@/app/lcmapplication/protected/modals/apartment-details/view-apartment";
+import { addApartmentsService } from "@/apiActions/tenantsApis/services/apartments/add.apartment.service";
+import { useRouter } from "next/navigation";
+import { Router } from "lucide-react";
 
-const Apartments = () => {
+
+
+
+interface props{
+  apartments:Apartment[]
+}
+const Apartments = ({apartments}:props) => {
   const [hasMounted, setHasMounted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,47 +55,12 @@ const Apartments = () => {
     setHasMounted(true);
   }, []);
 
-const [apartments, setApartments] = useState<Apartment[]>([
-  {
-    id: 1,
-    title: "Green Heights",
-    units: [
-      { unit: "B01", unitType: "1BR", status: "Occupied" },
-      { unit: "B02", unitType: "2BR", status: "Vacated" },
-      { unit: "B03", unitType: "Studio", status: "Occupied" },
-    ],
-    unitTypes: ["1BR","2BR","Studio"],
-    status: ApartmentStatus.Letting,
-    address: "Kilimani, Nairobi",
-  },
-  {
-    id: 2,
-    title: "Silver Towers",
-    units: [
-      { unit: "C01", unitType: "2BR", status: "Occupied" },
-      { unit: "C02", unitType: "3BR", status: "Vacated" },
-    ],
-    unitTypes: ["2BR","3BR"],
-    status: ApartmentStatus.UnderConstruction,
-    address: "Westlands, Nairobi",
-  },
-  {
-    id: 3,
-    title: "Sunset Apartments",
-    units: [
-      { unit: "D01", unitType: "Studio", status: "Vacated" },
-      { unit: "D02", unitType: "1BR", status: "Occupied" },
-    ],
-    unitTypes: ["Studio","1BR"],
-    status: ApartmentStatus.Letting,
-    address: "Kilimani, Nairobi",
-  },
-  // ...continue for the rest
-]);
+const router= useRouter()
 
 
 
- const handleAddApartment = (data: {
+
+ const handleAddApartment = async (data: {
   name: string;
   unitType: string[];
   status: ApartmentStatus;
@@ -101,19 +75,7 @@ const [apartments, setApartments] = useState<Apartment[]>([
     }));
 
   if (editMode && editingApartment) {
-    setApartments((prev) =>
-      prev.map((a) =>
-        a.id === editingApartment.id
-          ? {
-              ...a,
-              title: data.name,
-              unitTypes: data.unitType,
-              units: createUnits(data.unitType),
-              status: data.status,
-            }
-          : a
-      )
-    );
+  
     notification.success({
       message: "Apartment Updated",
       description: `${data.name} was updated successfully.`,
@@ -121,17 +83,13 @@ const [apartments, setApartments] = useState<Apartment[]>([
     });
   } else {
     const newId = Math.max(0, ...apartments.map((a) => a.id)) + 1;
-    setApartments((prev) => [
-      ...prev,
-      {
-        id: newId,
-        title: data.name,
-        unitTypes: data.unitType,
-        units: createUnits(data.unitType),
-        status: data.status,
-        address: data.location,
-      },
-    ]);
+  
+router.refresh()
+
+    await addApartmentsService(data);
+
+    
+
     notification.success({
       message: "Apartment Added",
       description: `${data.name} was added successfully.`,
@@ -165,7 +123,7 @@ const [apartments, setApartments] = useState<Apartment[]>([
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: number) => setApartments((prev) => prev.filter((a) => a.id !== id));
+  const handleDelete = (id: number) => {}
 
   const columns: ColumnsType<Apartment> = [
     {
@@ -264,7 +222,7 @@ const [apartments, setApartments] = useState<Apartment[]>([
             <ApartmentCard
               key={apt.id}
               title={apt.title}
-              units={apt.units}
+              units={apt.unitTypes!}
               status={apt.status}
               address={apt.address || "Unknown"}
               actions={
@@ -277,8 +235,6 @@ const [apartments, setApartments] = useState<Apartment[]>([
                       aria-label={`View details for ${apt.title}`}
                     />
                   </Tooltip>
-
-                 
 
                 </div>
               }

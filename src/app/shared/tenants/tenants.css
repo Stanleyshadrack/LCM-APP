@@ -1,3 +1,4 @@
+/* ---------- Container ---------- */
 .tenants-container {
   display: flex;
   flex-direction: column;
@@ -23,6 +24,7 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
+  color: #1f2937;
 }
 
 .page-actions {
@@ -40,7 +42,6 @@
   gap: 12px;
   width: 100%;
   margin-bottom: 20px;
-
   background: #fff;
   padding: 12px 16px;
   border-radius: 8px;
@@ -51,8 +52,7 @@
 .search-input {
   min-width: 200px;
   border-radius: 6px;
-  /* background should usually be white for inputs */
-  background-color: #fff; 
+  background-color: #fff;
 }
 
 .add-tenant-button {
@@ -71,11 +71,37 @@
 
 /* ---------- Table ---------- */
 .ant-table {
-  background: #fff;
   border-radius: 12px;
-  overflow: auto;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
+.ant-table-thead > tr > th {
+  background-color: #f5f7fa !important;
+  color: #1f3b73;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px !important;
+}
+
+.ant-table-tbody > tr > td {
+  font-size: 14px;
+  color: #374151;
+  padding: 10px 12px !important;
+  vertical-align: middle;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: #f9fafb !important;
+}
+
+.custom-table-row:hover {
+  background-color: #f0f7ff !important;
+}
+
+/* ---------- Links ---------- */
 .tenancy-link {
   display: inline-flex;
   align-items: center;
@@ -83,7 +109,7 @@
   font-weight: 500;
   text-decoration: none;
   transition: all 0.2s ease;
-  max-width: 180px; /* limit width */
+  max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -93,16 +119,50 @@
   text-decoration: underline;
 }
 
-
-.ant-table-thead > tr > th {
-  background-color: #f0f5ff;
-  font-size: 14px;
-  font-weight: 600;
-  color: #1f3b73;
+/* ---------- Status Tag ---------- */
+.status-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: #374151;
 }
 
-.custom-table-row:hover {
-  background-color: #f0f7ff !important;
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #f59e0b; /* orange indicator for inResidence */
+}
+
+/* ---------- Actions ---------- */
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-actions svg {
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.table-actions svg:hover {
+  transform: scale(1.1);
+}
+
+/* ---------- Pagination ---------- */
+.ant-pagination {
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+
+.ant-pagination-item-active {
+  border-color: #1677ff !important;
+}
+
+.ant-pagination-item-active a {
+  color: #1677ff !important;
 }
 
 /* ---------- Responsive ---------- */
@@ -122,5 +182,14 @@
   .add-tenant-button,
   .ant-select {
     width: 100%;
+  }
+
+  .filters-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ant-table {
+    font-size: 13px;
   }
 }

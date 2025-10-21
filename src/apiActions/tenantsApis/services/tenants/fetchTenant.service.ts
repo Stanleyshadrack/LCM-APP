@@ -1,5 +1,5 @@
 import { apiRequest } from "@/apiActions/reusableActios/fetchAction";
-import { Tenant, TenantAPiResponse } from "../dto/tenant.dto";
+import { Tenant, TenantAPiResponse } from "../../dto/tenant.dto";
 
 export const fetchTenantsSevice = async ():Promise<Tenant[]> => {
   const tenants:TenantAPiResponse[] = await apiRequest<undefined, any[]>({
