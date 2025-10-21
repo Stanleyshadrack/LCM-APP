@@ -1,5 +1,6 @@
 import { apiRequest } from "@/apiActions/reusableActios/fetchAction";
-import { createRequest } from "../meta.payload.wrapper";
+import { createRequest } from "../../meta.payload.wrapper";
+
 
 export const updatedTenantService = async (tenantData: any, tenantId:string) => {
   // 1. Build the payload

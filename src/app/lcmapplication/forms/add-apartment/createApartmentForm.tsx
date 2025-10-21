@@ -174,9 +174,10 @@ const CreateApartmentForm: React.FC<CreateApartmentFormProps> = ({ onSubmit, def
           {errors.waterUnitCost && <span className="error-text">{errors.waterUnitCost}</span>}
         </label>
 
-        <button type="submit" className="submit-button">
-          {defaultValues ? 'Save Changes' : 'Create Apartment'}
-        </button>
+     <button type="submit" className="submit-button">
+  {defaultValues ? 'Save Changes' : 'Create Apartment'}
+</button>
+
       </form>
 
       {!defaultValues && submitted && (

@@ -31,6 +31,9 @@ import ApartmentDetails from "@/app/lcmapplication/protected/modals/apartment-de
 import { addApartmentsService } from "@/apiActions/tenantsApis/services/apartments/add.apartment.service";
 import { useRouter } from "next/navigation";
 import { Router } from "lucide-react";
+import { deleteApartmentService } from "@/apiActions/tenantsApis/services/apartments/delete.apartment,service";
+import { updatedApartmentService } from "@/apiActions/tenantsApis/services/apartments/update.apartment.service";
+import { ApartmentFormData } from "@/apiActions/tenantsApis/dto/Apartment.dto";
 
 
 
@@ -38,7 +41,8 @@ import { Router } from "lucide-react";
 interface props{
   apartments:Apartment[]
 }
-const Apartments = ({apartments}:props) => {
+const Apartments: React.FC<props> = ({ apartments }) => {
+
   const [hasMounted, setHasMounted] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,36 +64,20 @@ const router= useRouter()
 
 
 
- const handleAddApartment = async (data: {
-  name: string;
-  unitType: string[];
-  status: ApartmentStatus;
-  location: string;
-  waterUnitCost: number;
-}) => {
-  const createUnits = (types: string[]) =>
-    types.map((type, index) => ({
-      unit: `${type}-${index + 1}`, // generate a simple unit ID
-      unitType: type,
-      status: "Vacated", // default status
-    }));
-
+const handleAddApartment = async (data: ApartmentFormData) => {
   if (editMode && editingApartment) {
-  
+    await updatedApartmentService(data, editingApartment.id);
+
+    router.refresh();
     notification.success({
       message: "Apartment Updated",
       description: `${data.name} was updated successfully.`,
       placement: "topRight",
     });
   } else {
-    const newId = Math.max(0, ...apartments.map((a) => a.id)) + 1;
-  
-router.refresh()
-
     await addApartmentsService(data);
 
-    
-
+    router.refresh();
     notification.success({
       message: "Apartment Added",
       description: `${data.name} was added successfully.`,
@@ -101,6 +89,7 @@ router.refresh()
   setEditMode(false);
   setEditingApartment(null);
 };
+
 
 
   const filteredApartments = apartments.filter((apt) =>
@@ -117,13 +106,34 @@ router.refresh()
     setIsViewModalOpen(true);
   };
 
-  const handleEdit = (record: Apartment) => {
-    setEditMode(true);
-    setEditingApartment(record);
-    setIsModalOpen(true);
-  };
+const handleEdit = (record: Apartment) => {
+  setEditMode(true);
+  setEditingApartment(record);
+  setIsModalOpen(true);
+};
 
-  const handleDelete = (id: number) => {}
+
+ 
+const handleDelete = async (id: number, name?: string) => {
+  try {
+    await deleteApartmentService(id);
+    router.refresh();
+    notification.success({
+      message: "Apartment Deleted",
+      description: `${name || "Apartment"} was deleted successfully.`,
+      placement: "topRight",
+    });
+  } catch (error) {
+    notification.error({
+      message: "Delete Failed",
+      description: "Unable to delete Apartment. Please try again.",
+    });
+  }
+};
+
+
+
+
 
   const columns: ColumnsType<Apartment> = [
     {
@@ -134,7 +144,7 @@ router.refresh()
       render: (text) => <span><HomeOutlined style={{ marginRight: 8, color: "#1890ff" }} />{text}</span>
     },
     {
-      title: "Units",
+      title: "Unit Types",
       dataIndex: "unitTypes",
       key: "unitTypes",
       sorter: (a, b) => a.unitTypes.length - b.unitTypes.length,
@@ -169,13 +179,14 @@ router.refresh()
           </Tooltip>
           <Tooltip title="Delete">
             <Popconfirm
-              title="Are you sure you want to delete this apartment?"
-              onConfirm={() => handleDelete(record.id)}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button type="link" danger icon={<DeleteOutlined />} />
-            </Popconfirm>
+  title="Are you sure you want to delete this apartment?"
+  onConfirm={() => handleDelete(record.id, record.title)}
+  okText="Yes"
+  cancelText="No"
+>
+  <Button type="link" danger icon={<DeleteOutlined />} />
+</Popconfirm>
+
           </Tooltip>
         </Space>
       ),
@@ -225,43 +236,84 @@ router.refresh()
               units={apt.unitTypes!}
               status={apt.status}
               address={apt.address || "Unknown"}
-              actions={
-                <div className="apartment-card-actions">
-                  <Tooltip title="View Details">
-                    <Button
-                      type="link"
-                      icon={<EyeOutlined />}
-                      onClick={() => { setViewingApartment({ ...apt, address: apt.address || "Unknown" }); setIsViewModalOpen(true); }}
-                      aria-label={`View details for ${apt.title}`}
-                    />
-                  </Tooltip>
+             actions={
+  <div className="apartment-card-actions" style={{ display: "flex", gap: 8 }}>
+    <Tooltip title="View Details">
+      <Button
+        type="link"
+        icon={<EyeOutlined />}
+        onClick={() => {
+          setViewingApartment({ ...apt, address: apt.address || "Unknown" });
+          setIsViewModalOpen(true);
+        }}
+        aria-label={`View details for ${apt.title}`}
+      />
+    </Tooltip>
 
-                </div>
-              }
+    <Tooltip title="Edit Apartment">
+      <Button
+        type="link"
+        icon={<EditOutlined />}
+        onClick={() => handleEdit(apt)}
+        aria-label={`Edit ${apt.title}`}
+      />
+    </Tooltip>
+
+    <Tooltip title="Delete Apartment">
+      <Popconfirm
+        title="Are you sure you want to delete this apartment?"
+        onConfirm={() => handleDelete(apt.id, apt.title)}
+        okText="Yes"
+        cancelText="No"
+      >
+        <Button
+          type="link"
+          danger
+          icon={<DeleteOutlined />}
+          aria-label={`Delete ${apt.title}`}
+        />
+      </Popconfirm>
+    </Tooltip>
+  </div>
+}
+
+
+            
+              
             />
           ))}
         </div>
       )}
 
-      <Modal
-        open={isModalOpen}
-        onCancel={() => { setIsModalOpen(false); setEditMode(false); setEditingApartment(null); }}
-        footer={null}
-        destroyOnClose
-      >
-        {hasMounted && (
-          <CreateApartmentForm
-            onSubmit={handleAddApartment}
-            defaultValues={editingApartment ? {
-              name: editingApartment.title,
-              unitType: editingApartment.unitTypes,
-              status: editingApartment.status,
-              location: editingApartment.address || "Unknown",
-              waterUnitCost: 250,
-            } : undefined}
-          />
-        )}
-      </Modal>
+     <Modal
+  title={editMode ? "Edit Apartment" : "Add Apartment"}
+  open={isModalOpen}
+  onCancel={() => {
+    setIsModalOpen(false);
+    setEditMode(false);
+    setEditingApartment(null);
+  }}
+  footer={null}
+  destroyOnClose
+>
+  {hasMounted && (
+<CreateApartmentForm
+  onSubmit={handleAddApartment}
+  defaultValues={
+    editingApartment
+      ? {
+          name: editingApartment.title,
+          unitType: editingApartment.unitTypes,
+          status: editingApartment.status,
+          location: editingApartment.address || "Unknown",
+          waterUnitCost: editingApartment.waterUnitCost ?? 0,
+        }
+      : undefined
+  }
+/>
+
+  )}
+</Modal>
 
       <Modal
         open={isViewModalOpen}

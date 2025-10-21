@@ -1,5 +1,3 @@
-
-
 import { fetchApartmentService } from "@/apiActions/tenantsApis/services/apartments/fetch.apartment.service";
 import Apartments from "./apartments";
 

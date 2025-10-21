@@ -107,6 +107,7 @@ export interface Apartment {
   status: ApartmentStatus;
  address?: string;
   imageUrl?: string | null;
+  waterUnitCost?: number;
 }
 
 
