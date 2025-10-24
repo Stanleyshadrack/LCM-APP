@@ -1,21 +1,13 @@
+"use client";
+
 import React, { useState } from "react";
-import { Form, Input, InputNumber, Button, Select, DatePicker } from "antd";
+import { Form, Input, InputNumber, Button, Select, DatePicker, message } from "antd";
+import { useStore } from "@/app/lcmapplication/store/useStore";
+import { v4 as uuidv4 } from "uuid";
+import dayjs from "dayjs";
 import "./addPayments.css";
 
 const { Option } = Select;
-
-interface AddPaymentFormProps {
-  onSuccess: (payment: {
-    unitId: string;
-    apartment: string;
-    paidAmount: string;
-    phoneNumber: string;
-    refCode: string;
-    dateTime: string;
-    arrears: "Owed" | "Not owed";
-    paymentMode: "M-Pesa" | "Bank" | "Cash";
-  }) => void;
-}
 
 const apartmentUnits: Record<string, string[]> = {
   "Bima Heights": ["A01", "A02", "A03", "A04"],
@@ -25,9 +17,14 @@ const apartmentUnits: Record<string, string[]> = {
   "Lakeview Residency": ["LV1", "LV2", "LV3", "LV4"],
 };
 
-const AddPaymentForm: React.FC<AddPaymentFormProps> = ({ onSuccess }) => {
+interface AddPaymentFormProps {
+  closeModal?: () => void; // Optional callback to close the parent modal
+}
+
+const AddPaymentForm: React.FC<AddPaymentFormProps> = ({ closeModal }) => {
   const [form] = Form.useForm();
   const [unitOptions, setUnitOptions] = useState<string[]>([]);
+  const addPayment = useStore((state) => state.addPayment);
 
   const onApartmentChange = (value: string) => {
     form.setFieldsValue({ unitId: undefined });
@@ -35,9 +32,10 @@ const AddPaymentForm: React.FC<AddPaymentFormProps> = ({ onSuccess }) => {
   };
 
   const onFinish = (values: any) => {
-    const paymentData = {
-      unitId: values.unitId,
+    const newPayment = {
+      key: uuidv4(),
       apartment: values.apartment,
+      unitId: values.unitId,
       paidAmount: `KES ${values.amount}`,
       phoneNumber: values.phone,
       refCode: values.refCode,
@@ -45,9 +43,13 @@ const AddPaymentForm: React.FC<AddPaymentFormProps> = ({ onSuccess }) => {
       arrears: values.arrears,
       paymentMode: values.paymentMode,
     };
-    onSuccess(paymentData);
+
+    addPayment(newPayment);
+    message.success("Payment added successfully!");
     form.resetFields();
     setUnitOptions([]);
+
+    if (closeModal) closeModal(); // Close modal after adding payment
   };
 
   return (

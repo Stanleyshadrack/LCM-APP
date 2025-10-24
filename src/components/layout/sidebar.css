@@ -16,6 +16,7 @@
   box-sizing: border-box;
   z-index: 1001;
   transition: transform 0.3s ease;
+  overflow-y: auto; /* ✅ ensures content scrolls if taller than screen */
 }
 
 .sidebar.hidden {
@@ -52,6 +53,7 @@
   flex-direction: column;
   gap: 20px;
   padding-left: 10px;
+  flex-grow: 1; /* ✅ helps links fill available space */
 }
 
 .nav-links a {
@@ -61,6 +63,7 @@
   padding: 10px 15px;
   border-radius: 6px;
   transition: background-color 0.2s ease;
+  word-break: break-word; /* ✅ prevent text overflow */
 }
 
 .nav-links a.active,
@@ -95,24 +98,23 @@
   pointer-events: none;
 }
 
-/* Mobile adjustments */
+/* 📱 Mobile screens */
 @media (max-width: 768px) {
   .sidebar {
-    width: 100%;
-    height: calc(100vh - var(--topbar-height));
-    top: var(--topbar-height);
-    position: fixed;
-    z-index: 1001;
-    border-bottom: 1px solid #ccc;
+    width: 100%;        /* ✅ take full width on small screens */
+    max-width: none;    /* remove max width restriction */
+    height: 100vh;      /* ✅ cover full screen */
+    top: 0;             /* start from very top */
+    border-right: none;
     transform: translateX(-100%);
   }
 
   .sidebar.show {
-    transform: translateX(0%);
+    transform: translateX(0);
   }
 
-  .sidebar.hidden {
-    transform: translateX(-100%);
+  .sidebar-overlay {
+    top: 0;  /* ✅ cover entire screen */
+    height: 100vh;
   }
-
 }

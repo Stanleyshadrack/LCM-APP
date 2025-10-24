@@ -146,9 +146,32 @@ const BalanceAndPayments = () => {
             <h3 className={styles.dueDate}>5th July, 2025</h3>
           </div>
         </div>
-        <Button type="primary" size="large" className={styles.payButton}>
-          Make Payment
-        </Button>
+        <Button
+  type="primary"
+  size="large"
+  className={styles.payButton}
+  onClick={() =>
+    Modal.info({
+      title: "Pay with M-Pesa",
+      content: (
+        <div>
+          <p><strong>Paybill Number:</strong> 522522</p>
+          <p><strong>Account Number:</strong> 167247</p>
+          <p><strong>Amount:</strong> KES {displayedAmount.toLocaleString()}</p>
+          <p>1. Go to your M-Pesa Menu.</p>
+          <p>2. Select <em>Lipa na M-Pesa</em> → <em>Paybill</em>.</p>
+          <p>3. Enter Business Number <strong>522522</strong>.</p>
+          <p>4. Enter Account Number <strong>167247</strong>.</p>
+          <p>5. Enter the amount and confirm with your PIN.</p>
+        </div>
+      ),
+      okText: "Done",
+    })
+  }
+>
+  Make Payment
+</Button>
+
       </div>
 
       <div className={styles.progressSection}>

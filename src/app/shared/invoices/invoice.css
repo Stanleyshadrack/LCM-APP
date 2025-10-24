@@ -5,7 +5,7 @@
   width: 100%;
   margin-top: 55px;
   padding: 16px;
-  overflow-y: hidden;
+  overflow-x: hidden;
   box-sizing: border-box;
   background-color: #f6f8fa;
 }
@@ -14,8 +14,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 16px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
   gap: 12px;
 }
 
@@ -28,12 +28,20 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
+  width: 100%;
   gap: 12px;
+  margin-bottom: 16px;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .monthly-summary {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 16px;
   font-weight: 600;
 }
@@ -48,14 +56,28 @@
   background-color: #ffe5e5 !important;
 }
 
+.status-tag {
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
 
 .status-tag.overdue {
   background-color: #fff1f0;
   color: #cf1322;
   border: 1px solid #ffa39e;
-  font-weight: 600;
 }
 
+.status-tag.sent {
+  background-color: #e0f7e9;
+  color: #2e7d32;
+}
+
+.status-tag.pending {
+  background-color: #ffe0e0;
+  color: #d32f2f;
+}
 
 .add-tenant-button {
   background-color: #42a5f5;
@@ -69,47 +91,6 @@
   background-color: #1e88e5;
   border-color: #1e88e5;
 }
-----------------------------------
-.page-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background-color: #1e88e5;
-}
-
-.search-input {
-  width: 220px;
-  border-radius: 6px;
-}
-
-.add-tenant-button {
-  background-color: #42A5F5;
-  border-color: #42A5F5;
-  border-radius: 6px;
-  font-weight: 600;
-}
-
-.add-tenant-button:hover {
-  background-color: #1e88e5;
-  border-color: #1e88e5;
-}
-------------------------------------
-
-.status-tag {
-  border-radius: 12px;
-  padding: 4px 12px;
-  font-weight: 600;
-}
-
-.status-tag.sent {
-  background-color: #e0f7e9;
-  color: #2e7d32;
-}
-
-.status-tag.pending {
-  background-color: #ffe0e0;
-  color: #d32f2f;
-}
 
 .view-invoice-button {
   color: #45a9ea;
@@ -118,24 +99,48 @@
   border: 1px solid #b7b7b7;
   border-radius: 12px;
   padding: 4px 12px;
+  white-space: nowrap;
 }
-
-.ant-tag-red {
-  font-weight: bold;
-}
-
 
 .view-invoice-button:hover {
   color: #1e88e5;
 }
+
+.send-invoice-button {
+  background-color: #4caf50;
+  border-color: #4caf50;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
+.send-invoice-button:hover {
+  background-color: #388e3c;
+  border-color: #388e3c;
+}
+
 
 .invoices-table .ant-table-thead > tr > th {
   background: #f5f5f5;
   font-weight: 600;
 }
 
-/* Mobile-specific responsiveness */
+/* ✅ Ensure words fit properly in cells */
+.invoices-table .ant-table-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+/* Allow wrapping on smaller screens */
 @media (max-width: 768px) {
+  .invoices-table .ant-table-cell {
+    white-space: normal;
+    word-break: break-word;
+  }
+
   .page-header {
     flex-direction: column;
     align-items: flex-start;

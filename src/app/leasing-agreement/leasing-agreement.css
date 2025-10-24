@@ -1,0 +1,68 @@
+.agreement-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 40px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  font-family: "Segoe UI", Roboto, sans-serif;
+  line-height: 1.7;
+  color: #333;
+}
+
+.agreement-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 20px;
+}
+
+.agreement-intro {
+  font-size: 15px;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+section {
+  margin-bottom: 24px;
+}
+
+section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 4px;
+}
+
+section p, section li {
+  font-size: 15px;
+  margin: 6px 0;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+.signature-section {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.signature-section div {
+  text-align: center;
+  flex: 1;
+}
+
+.witnesses {
+  margin-top: 20px;
+}
+
+.witnesses h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}

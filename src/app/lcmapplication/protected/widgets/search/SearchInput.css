@@ -8,13 +8,25 @@
     height: 100%;
     border: 1px solid #ccc;
     outline: none;
-    background-color: white;
+      background-color: white !important; 
+  color: black;
   }
   
   .search-input:focus {
     border-color: #1e88e5;
-    box-shadow: 0 0 0 1px #1e88e5;
+    background-color: white !important; 
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
   }
+
+
+  .searchInput {
+
+}
+
+.searchInput:focus {
+ /* optional focus ring */
+}
   
   @media (max-width: 480px) {
     .search-input {

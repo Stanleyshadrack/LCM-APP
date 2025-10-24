@@ -1,15 +1,18 @@
 import React, { useState } from "react";
-import { Button, Modal, Tooltip, Tag } from "antd";
-import ApartmentDetails from "../../modals/apartment-details/view-apartment";
-import { ApartmentStatus } from "@/app/lcmapplication/types/invoice";
+import { Tag, Upload, Image } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import type { UploadFile } from "antd/es/upload/interface";
+import { ApartmentStatus, ApartmentUnits } from "@/app/lcmapplication/types/invoice";
 import "./ApartmentCard.css";
 
 interface ApartmentCardProps {
   title: string;
-  unitTypes: string[];
+  units: string[];
   status: ApartmentStatus;
   address: string;
   isList?: boolean;
+  actions?: React.ReactNode;
+  imageUrl?: string; // ✅ new optional prop for preset image
 }
 
 const statusColorMap: Record<ApartmentStatus, string> = {
@@ -26,74 +29,72 @@ const statusTagColor: Record<ApartmentStatus, string> = {
 
 const ApartmentCard: React.FC<ApartmentCardProps> = ({
   title,
-  unitTypes,
+  units,
   status,
   address,
   isList = false,
+  actions,
+  imageUrl,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  // Local state for uploaded image
+  const [fileList, setFileList] = useState<UploadFile[]>(
+    imageUrl
+      ? [{ uid: "-1", name: "apartment.png", status: "done", url: imageUrl }]
+      : []
+  );
 
-  const visibleTypes = unitTypes.slice(0, 2).join(", ");
-  const remainingCount = unitTypes.length - 2;
+  const handleChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
+    setFileList(newFileList);
+  };
+
+  
+  const unitIdsTooltip = units.join(", ");
+  const remainingCount = units.length - 2;
+
 
   return (
-    <>
-      <div className={`apartment-card ${statusColorMap[status]} ${isList ? "list-view" : ""}`}>
-        <div className="card-header">
-          <h3 className="apartment-title">{title}</h3>
-          {isList && (
-            <Tag color={statusTagColor[status]} className="status-badge">
-              {status}
-            </Tag>
-          )}
-        </div>
-
-        <div className="apartment-details">
-          <Tooltip
-            title={unitTypes.length > 2 ? unitTypes.join(", ") : undefined}
-            placement="topLeft"
-          >
-            <span>
-              {visibleTypes}
-              {remainingCount > 0 && ` ...`}
-            </span>
-          </Tooltip>
-          <span className="unit-count-badge">{unitTypes.length} Units</span>
-        </div>
-
-        <div className="card-footer">
-          {!isList && (
-            <Tag color={statusTagColor[status]} className="status-badge">
-              {status}
-            </Tag>
-          )}
-          <Button
-            type="link"
-            onClick={() => setIsModalVisible(true)}
-            className="view-details-button"
-            aria-label={`View details for ${title}`}
-          >
-            View Details
-          </Button>
-        </div>
+    <div className={`apartment-card ${statusColorMap[status]} ${isList ? "list-view" : ""}`}>
+      <div className="card-header">
+        <h3 className="apartment-title">{title}</h3>
+        {isList && (
+          <Tag color={statusTagColor[status]} className="status-badge">
+            {status}
+          </Tag>
+        )}
       </div>
 
-      <Modal
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width="fit-content"
-        centered
-        destroyOnClose
-        closeIcon={null}
-      >
-        <ApartmentDetails
-          apartmentName={title}
-          unitTypes={unitTypes}
-          address={address}
-        />
-      </Modal>
-    </>
+      <div className="apartment-details">
+        <span title={unitIdsTooltip}>
+          {unitIdsTooltip}
+          {remainingCount > 0 && ` ...`}
+        </span>
+
+        {/* ✅ Replace unit count with Upload */}
+        <Upload
+          listType="picture-card"
+          fileList={fileList}
+          onChange={handleChange}
+          beforeUpload={() => false} // prevent auto upload
+          maxCount={1}
+        >
+          {fileList.length >= 1 ? null : (
+            <div>
+              <PlusOutlined />
+              <div style={{ marginTop: 8 }}>Upload</div>
+            </div>
+          )}
+        </Upload>
+      </div>
+
+      <div className="card-footer">
+        {!isList && (
+          <Tag color={statusTagColor[status]} className="status-badge">
+            {status}
+          </Tag>
+        )}
+        {actions}
+      </div>
+    </div>
   );
 };
 

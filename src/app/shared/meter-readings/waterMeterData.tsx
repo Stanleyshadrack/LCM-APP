@@ -1,157 +1,82 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Table, Input, DatePicker, Typography, Select } from "antd";
 import dayjs from "dayjs";
+import { useStore, StoreState  } from "@/app/lcmapplication/store/useStore"; // centralized store
 import "./waterMeterData.css";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-interface Payment {
-  key: string;
-  unitId: string;
-  apartment: string;
-  CurrentReading: string;
-  PreviousReading: string;
-  Consumption: string;
-  TotalAmount: string;
-  dateTime: string; // Format: "DD/MM/YYYY HH:mm"
-}
-
 const WaterMetersPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [dateFilter, setDateFilter] = useState<dayjs.Dayjs | null>(null);
+  const {
+    waterMeters,
+    fetchWaterMeters,
+    searchTerm,
+    setSearchTerm,
+    monthFilter,
+    setMonthFilter,
+  } = useStore((state: StoreState) => state);
+
   const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
 
-  const payments: Payment[] = [
-    {
-      key: "1",
-      unitId: "A01",
-      apartment: "Bima Heights",
-      CurrentReading: "8",
-      PreviousReading: "7",
-      Consumption: "1000",
-      TotalAmount: "2000",
-      dateTime: "02/04/2024 10:30",
-    },
-    {
-      key: "2",
-      unitId: "A01",
-      apartment: "Bima Heights",
-      CurrentReading: "9",
-      PreviousReading: "8",
-      Consumption: "1000",
-      TotalAmount: "2000",
-      dateTime: "02/05/2024 10:30",
-    },
-    {
-      key: "3",
-      unitId: "A02",
-      apartment: "Wima Heights",
-      CurrentReading: "10",
-      PreviousReading: "8",
-      Consumption: "2000",
-      TotalAmount: "4000",
-      dateTime: "02/05/2025 14:45",
-    },
+  // 🟢 Fetch dummy data once on mount
+  useEffect(() => {
+    fetchWaterMeters();
+  }, [fetchWaterMeters]);
 
-     {
-      key: "4",
-      unitId: "A02",
-      apartment: "Wima Heights",
-      CurrentReading: "10",
-      PreviousReading: "8",
-      Consumption: "2000",
-      TotalAmount: "4000",
-      dateTime: "02/05/2025 14:45",
-    },
-     {
-      key: "5",
-      unitId: "A03",
-      apartment: "Wima Heights",
-      CurrentReading: "10",
-      PreviousReading: "8",
-      Consumption: "2000",
-      TotalAmount: "4000",
-      dateTime: "02/05/2025 14:45",
-    },
-     {
-      key: "6",
-      unitId: "B02",
-      apartment: "Wima Heights",
-      CurrentReading: "10",
-      PreviousReading: "8",
-      Consumption: "2000",
-      TotalAmount: "4000",
-      dateTime: "02/05/2025 14:45",
-    },
-  ];
-
-  const filteredPayments = payments.filter((payment) => {
+  // 🔍 Filtering logic
+  const filteredMeters = waterMeters.filter((m) => {
     const matchesSearch =
-      payment.apartment.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.unitId.toLowerCase().includes(searchTerm.toLowerCase());
+      m.apartment.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.unitId.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesDate = dateFilter
-      ? dayjs(payment.dateTime, "DD/MM/YYYY HH:mm").isSame(dateFilter, "month")
+    const matchesDate = monthFilter
+      ? dayjs(m.dateTime, "DD/MM/YYYY HH:mm").isSame(monthFilter, "month")
       : true;
 
     const matchesUnit =
-      selectedUnits.length === 0 || selectedUnits.includes(payment.unitId);
+      selectedUnits.length === 0 || selectedUnits.includes(m.unitId);
 
     return matchesSearch && matchesDate && matchesUnit;
   });
 
+  // 📊 Totals
   const totalStats = useMemo(() => {
-    const totalConsumption = filteredPayments.reduce(
+    const totalConsumption = filteredMeters.reduce(
       (sum, p) => sum + parseFloat(p.Consumption || "0"),
       0
     );
-    const totalAmount = filteredPayments.reduce(
+    const totalAmount = filteredMeters.reduce(
       (sum, p) => sum + parseFloat(p.TotalAmount || "0"),
       0
     );
     return { totalConsumption, totalAmount };
-  }, [filteredPayments]);
+  }, [filteredMeters]);
 
+  // 📋 Table columns
   const columns = [
     { title: "Unit Id", dataIndex: "unitId", key: "unitId" },
     { title: "Apartment", dataIndex: "apartment", key: "apartment" },
-    {
-      title: "Current Reading",
-      dataIndex: "CurrentReading",
-      key: "CurrentReading",
-    },
-    {
-      title: "Previous Reading",
-      dataIndex: "PreviousReading",
-      key: "PreviousReading",
-    },
-    {
-      title: "Consumption (units)",
-      dataIndex: "Consumption",
-      key: "Consumption",
-    },
+    { title: "Current Reading", dataIndex: "CurrentReading", key: "CurrentReading" },
+    { title: "Previous Reading", dataIndex: "PreviousReading", key: "PreviousReading" },
+    { title: "Consumption (units)", dataIndex: "Consumption", key: "Consumption" },
     {
       title: "Total Amount (KES)",
       dataIndex: "TotalAmount",
       key: "TotalAmount",
       render: (amount: string) => `KES ${parseFloat(amount).toLocaleString()}`,
     },
-    {
-      title: "Date/Time",
-      dataIndex: "dateTime",
-      key: "dateTime",
-    },
+    { title: "Date/Time", dataIndex: "dateTime", key: "dateTime" },
     {
       title: "Month",
       key: "month",
-      render: (_: any, record: Payment) =>
+      render: (_: any, record: any) =>
         dayjs(record.dateTime, "DD/MM/YYYY HH:mm").format("MMMM YYYY"),
     },
   ];
 
-  const unitOptions = Array.from(new Set(payments.map((p) => p.unitId)));
+  const unitOptions = Array.from(new Set(waterMeters.map((p) => p.unitId)));
 
   return (
     <div className="payments-page">
@@ -168,7 +93,7 @@ const WaterMetersPage = () => {
             picker="month"
             format="MMMM YYYY"
             placeholder="Filter by month"
-            onChange={(date) => setDateFilter(date)}
+            onChange={(date) => setMonthFilter(date)}
             className="search-input"
           />
           <Select
@@ -192,13 +117,14 @@ const WaterMetersPage = () => {
           Total Consumption: <strong>{totalStats.totalConsumption}</strong> units
         </div>
         <div>
-          Total Amount: <strong>KES {totalStats.totalAmount.toLocaleString()}</strong>
+          Total Amount:{" "}
+          <strong>KES {totalStats.totalAmount.toLocaleString()}</strong>
         </div>
       </div>
 
       <Table
         columns={columns}
-        dataSource={filteredPayments}
+        dataSource={filteredMeters}
         pagination={{ pageSize: 8 }}
         className="payments-table"
         rowKey="key"

@@ -1,6 +1,7 @@
+// app/lcmapplication/protected/pages/invoices.tsx
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Table,
   Tag,
@@ -12,72 +13,39 @@ import {
   Input,
   Badge,
 } from "antd";
-import type { SortOrder } from "antd/es/table/interface";
 import dayjs, { Dayjs } from "dayjs";
-import "./invoice.css";
+import { useStore } from "@/app/lcmapplication/store/useStore";
 import InvoicePage from "@/app/lcmapplication/protected/modals/view-invoice/view-invoice";
 import Invoice from "@/app/lcmapplication/types/invoice";
+import "./invoice.css";
+import { parseKES, formatKES } from "@/components/currency/currency";
 
 const Invoices: React.FC = () => {
+  const invoices = useStore((state) => state.invoices);
+  const updateInvoice = useStore((state) => state.updateInvoice);
+  const fetchInvoices = useStore((state) => state.fetchInvoices);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-  const [globalDueDate, setGlobalDueDate] = useState<string | null>(null);
+  const [selectedInvoiceKey, setSelectedInvoiceKey] = useState<string | null>(null);
   const [viewLastMonth, setViewLastMonth] = useState(false);
   const [monthFilter, setMonthFilter] = useState<Dayjs | null>(null);
   const [showSummary, setShowSummary] = useState(true);
   const [showOnlyOverpaid, setShowOnlyOverpaid] = useState(false);
 
-  const parseKES = (val: string): number =>
-    parseInt(val.replace(/[^\d]/g, ""), 10) || 0;
+  useEffect(() => {
+    fetchInvoices();
+  }, [fetchInvoices]);
 
-  const formatKES = (amount: number): string =>
-    `KES ${amount.toLocaleString()}`;
-
-  const invoices: Invoice[] = [
-    {
-      key: "1",
-      unitId: "A01",
-      apartment: "Bima Heights",
-      rentAmount: "KES 8,000",
-      waterBill: "KES 500",
-      amountPaid: "KES 11,000", // overpaid 500
-      amountPaidLastMonth: "KES 3,000",
-      arrears: "KES 2,000",
-      balanceDue: "KES 0",
-      phoneNumber: "254742792965",
-      date: "2025-07-02",
-      dueDate: globalDueDate || "2025-07-10",
-      status: "CLEARED",
-      currentReading: "",
-      previousReading: ""
-    },
-    {
-      key: "2",
-      unitId: "A02",
-      apartment: "LCM Apartments",
-      rentAmount: "KES 8,000",
-      waterBill: "KES 200",
-      amountPaid: "KES 7,000",
-      amountPaidLastMonth: "KES 8,200",
-      arrears: "KES 0",
-      balanceDue: "KES 0",
-      phoneNumber: "254742792965",
-      date: "2025-06-02",
-      dueDate: globalDueDate || "2025-06-10",
-      status: "PENDING",
-      currentReading: "",
-      previousReading: ""
-    },
-  ];
+  const selectedInvoice = useMemo(
+    () => invoices.find((inv) => inv.key === selectedInvoiceKey),
+    [invoices, selectedInvoiceKey]
+  );
 
   const getTotalPayable = (invoice: Invoice) =>
-    parseKES(invoice.rentAmount) +
-    parseKES(invoice.waterBill) +
-    parseKES(invoice.arrears);
+    parseKES(invoice.rentAmount) + parseKES(invoice.waterBill) + parseKES(invoice.arrears);
 
-  const getBalanceDue = (invoice: Invoice) =>
-    getTotalPayable(invoice) - parseKES(invoice.amountPaid);
+  const getBalanceDue = (invoice: Invoice) => getTotalPayable(invoice) - parseKES(invoice.amountPaid);
 
   const getOverpaidAmount = (invoice: Invoice) => {
     const extra = parseKES(invoice.amountPaid) - getTotalPayable(invoice);
@@ -90,44 +58,23 @@ const Invoices: React.FC = () => {
     return balance > 0 && due < new Date() ? "OVERDUE" : invoice.status;
   };
 
-const openModal = (invoice: Invoice) => {
-  const computedStatus = getComputedStatus(invoice);
-  const totalPayable = getTotalPayable(invoice);
-  const balanceDue = Math.max(0, getBalanceDue(invoice));
-  const totalPaid = parseKES(invoice.amountPaid);
-  const overpaid = getOverpaidAmount(invoice);
-
-  setSelectedInvoice({
-    ...invoice,
-    totalPayable: totalPayable.toString(),
-    balanceDue: balanceDue.toString(),
-    totalPaid: totalPaid.toString(),
-    overpaid: overpaid.toString(),
-    status: computedStatus,
-  });
-  setIsModalVisible(true);
-};
-
-
+  const openModal = (invoiceKey: string) => {
+    setSelectedInvoiceKey(invoiceKey);
+    setIsModalVisible(true);
+  };
 
   const handleDueDateChange = (date: Dayjs | null, record: Invoice) => {
     if (record.key && date) {
-      record.dueDate = date.format("YYYY-MM-DD");
+      updateInvoice(record.key, { dueDate: date.format("YYYY-MM-DD") });
     }
   };
 
-  const paidLastMonthLabel = (() => {
-    if (invoices.length === 0) return "Paid Last Month";
-    const d = new Date(invoices[0].date);
-    d.setMonth(d.getMonth() - 1);
-    return `Paid in ${d.toLocaleString("en-US", { month: "short" }).toUpperCase()}`;
-  })();
-
   const filteredInvoices = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
     return invoices.filter((i) => {
       const matchesSearch =
-        i.apartment.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        i.unitId.toLowerCase().includes(searchTerm.toLowerCase());
+        i.apartment.toLowerCase().includes(normalizedSearch) ||
+        i.unitId.toLowerCase().includes(normalizedSearch);
 
       const invoiceMonth = dayjs(i.date);
       const selectedMonth = viewLastMonth
@@ -204,25 +151,11 @@ const openModal = (invoice: Invoice) => {
       },
     },
     {
-      title: paidLastMonthLabel,
-      dataIndex: "amountPaidLastMonth",
-      key: "amountPaidLastMonth",
-      render: (value: string) => {
-        const amount = parseKES(value);
-        const color = amount > 0 ? "green" : "red";
-        return <Tag color={color}>{value}</Tag>;
-      },
-    },
-    {
       title: "Balance Due",
       key: "balanceDue",
       render: (_: any, record: Invoice) => {
         const balance = getBalanceDue(record);
-        return (
-          <Tag color={balance <= 0 ? "green" : "red"}>
-            {formatKES(balance > 0 ? balance : 0)}
-          </Tag>
-        );
+        return <Tag color={balance <= 0 ? "green" : "red"}>{formatKES(balance > 0 ? balance : 0)}</Tag>;
       },
     },
     {
@@ -230,7 +163,7 @@ const openModal = (invoice: Invoice) => {
       key: "dueDate",
       render: (_: any, record: Invoice) => (
         <DatePicker
-          defaultValue={dayjs(record.dueDate)}
+          value={record.dueDate ? dayjs(record.dueDate) : undefined}
           format="DD MMM YYYY"
           onChange={(date) => handleDueDateChange(date, record)}
         />
@@ -241,20 +174,33 @@ const openModal = (invoice: Invoice) => {
       key: "status",
       render: (_: any, record: Invoice) => {
         const status = getComputedStatus(record);
-        const color =
-          status === "OVERDUE" ? "red" : status === "PENDING" ? "orange" : "green";
+        const color = status === "OVERDUE" ? "red" : status === "PENDING" ? "orange" : "green";
         return <Tag color={color}>{status}</Tag>;
       },
     },
-    {
-      title: "Action",
-      key: "action",
-      render: (_: any, record: Invoice) => (
-        <Button type="link" onClick={() => openModal(record)}>
-          Generate Invoice
-        </Button>
-      ),
-    },
+
+  {
+  title: "Action",
+  key: "action",
+  render: (_: any, record: Invoice) => (
+    <div style={{ display: "flex", gap: 8 }}>
+      <Button type="link" onClick={() => openModal(record.key)}>
+        View Invoice
+      </Button>
+      <Button
+        type="primary"
+        onClick={() => {
+          // TODO: implement send action here
+          console.log("Send invoice:", record.key);
+        }}
+        
+      >
+        Send
+      </Button>
+    </div>
+  ),
+}
+
   ];
 
   return (
@@ -269,15 +215,9 @@ const openModal = (invoice: Invoice) => {
             style={{ width: 200 }}
           />
           <DatePicker
-            onChange={(date) =>
-              setGlobalDueDate(date?.format("YYYY-MM-DD") || null)
-            }
-            placeholder="Set Global Due Date"
-          />
-          <DatePicker
             picker="month"
             value={monthFilter}
-            onChange={(val) => setMonthFilter(val)}
+            onChange={setMonthFilter}
             placeholder="Filter Month"
           />
           <Switch
@@ -310,15 +250,12 @@ const openModal = (invoice: Invoice) => {
         </div>
       )}
 
-
       <Table
         columns={columns}
         dataSource={filteredInvoices}
         pagination={{ pageSize: 8 }}
         rowKey="key"
-        rowClassName={(record: Invoice) =>
-          getComputedStatus(record) === "OVERDUE" ? "overdue-row" : ""
-        }
+        rowClassName={(record: Invoice) => (getComputedStatus(record) === "OVERDUE" ? "overdue-row" : "")}
         locale={{ emptyText: "No invoices found." }}
       />
 

@@ -3,24 +3,44 @@
 import RoleBasedLayout from "@/components/layout/RoleBasedLayout";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
+import "../(auth)/login/login.css";
 
-const publicRoutes = ["/", "/login", "/signup", "/account-type", "/forgot-password"];
+const publicRoutes = [
+  "/",
+  "/login",
+  "/signup",
+  "/account-type",
+  "/forgot-password",
+  "/terms",
+  "/privacy",
+  "/leasing-agreement"
+];
 
-export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
+export default function ClientLayoutWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const { user, loading } = useAuth();
   const isPublicRoute = publicRoutes.includes(pathname);
 
-  // Wait for auth status before rendering anything
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading-overlay">
+        <img
+          src="/lcmicon.SVG"
+          alt="LCM Logo"
+          className="lcm-loader spin"
+        />
+        <p className="loading-text">Please wait...</p>
+      </div>
+    );
   }
 
-  // Public pages: don't require authentication
   if (isPublicRoute) {
     return <>{children}</>;
   }
 
-  // Protected pages: only render after loading and when user exists
   return <RoleBasedLayout>{children}</RoleBasedLayout>;
 }

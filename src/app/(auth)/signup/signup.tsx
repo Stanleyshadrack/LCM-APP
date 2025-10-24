@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import "./signup.css";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/footer/Footer";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -162,7 +163,9 @@ const Register = () => {
             Log In
           </span>
         </div>
+        <Footer />
       </div>
+       
     </div>
   );
 };

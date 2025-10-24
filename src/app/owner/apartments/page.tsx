@@ -1,9 +1,10 @@
-"use client";
-
+import { fetchApartmentService } from "@/apiActions/tenantsApis/services/apartments/fetch.apartment.service";
 import Apartments from "./apartments";
 
 
 
-export default function ApartmentsPage() {
-  return <Apartments />;
+export default async function ApartmentsPage() {
+
+  const apartments = await fetchApartmentService()
+  return <Apartments apartments={apartments} />;
 }

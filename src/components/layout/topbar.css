@@ -196,22 +196,21 @@
 @media (max-width: 768px) {
   .topbar {
     left: 0 !important;
-    padding: 0 12px;
     width: 100%;
+    padding: 0 16px;
+    z-index: 1100; /* stay above sidebar overlay */
   }
 
   .mobile-menu-toggle {
-    display: block;
+    display: block; /* show burger/close button */
   }
 
-  .user-meta-dropdown .dropdown-icon {
-    display: none;
+  .toggle-button {
+    display: none; /* hide desktop toggle */
   }
 
-  .topbar-right {
-    display: flex !important; /* <-- always show profile */
-    align-items: center;
-    gap: 10px;
+  .user-meta-dropdown {
+    gap: 4px;
   }
 
   .username {
@@ -222,3 +221,4 @@
     font-size: 0.75rem;
   }
 }
+
