@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dropdown,
   Menu,
@@ -8,9 +8,12 @@ import {
   message,
   Button,
   Tag,
+  Space,
+  Table,
   Form,
   Input,
   Select,
+  Tooltip,
 } from "antd";
 import {
   HomeOutlined,
@@ -22,35 +25,36 @@ import {
 } from "@ant-design/icons";
 
 import "./view-apartment.css";
+import { addUnitsService } from "@/apiActions/tenantsApis/services/units/add.unit.service";
+import { ApartmentUnits } from "@/app/lcmapplication/types/invoice";
+import { fetchUnitSevice } from "@/apiActions/tenantsApis/services/units/fetchUnits.service";
+import { updatedUnitService } from "@/apiActions/tenantsApis/services/units/update.uint.service";
+import { useRouter } from "next/navigation";
+
 
 const { Option } = Select;
+
 
 interface ApartmentDetailsProps {
   apartmentName: string;
   unitTypes: string[];
   address: string;
-  
+  apartmentId: String;
 }
 
 const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
   apartmentName,
   unitTypes,
   address,
+  apartmentId,
 }) => {
-  const [units, setUnits] = useState<
-    { unit: string; bedroom: string; status: string }[]
-  >([]);
-
+  const [units, setUnits] = useState<ApartmentUnits[]>([]);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [editingUnit, setEditingUnit] = useState<null | {
-    unit: string;
-    bedroom: string;
-    status: string;
-  }>(null);
+  const [editingUnit, setEditingUnit] = useState<ApartmentUnits | null>(null);
 
   const unitsPerPage = 10;
   const totalPages = Math.ceil(units.length / unitsPerPage);
@@ -59,6 +63,90 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
     currentPage * unitsPerPage
   );
 
+
+
+  const router= useRouter()
+
+useEffect( ()=>{
+  
+  const response = async ()=>{
+    const data = await fetchUnitSevice(apartmentId.toString());
+    setUnits(data);
+  }
+  response();
+
+}, [apartmentId])
+
+console.log(units)
+
+  const columns = [
+  {
+    title: "Unit Code",
+    dataIndex: "unitCode",
+    key: "unitCode",
+  },
+  {
+    title: "Type",
+    dataIndex: "unitType",
+    key: "unitType",
+  },
+  {
+    title: "Floor",
+    dataIndex: "floor",
+    key: "floor",
+    render: (floor: string) => floor || "-",
+  },
+  {
+    title: "Rent (KSh)",
+    dataIndex: "monthlyRent",
+    key: "monthlyRent",
+    render: (rent: string) => rent || "-",
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (status: string) => (
+      <Tag color={status === "OCCUPIED" ? "green" : status === "VACANT" ? "orange" : "blue"}>
+        {status}
+      </Tag>
+    ),
+  },
+  {
+    title: "Created",
+    dataIndex: "createdAt",
+    key: "createdAt",
+    render: (date: string) => (date ? new Date(date).toLocaleDateString() : "-"),
+  },
+  {
+    title: "Updated",
+    dataIndex: "updatedAt",
+    key: "updatedAt",
+    render: (date: string) => (date ? new Date(date).toLocaleDateString() : "-"),
+  },
+  {
+    title: "Actions",
+    key: "actions",
+    render: (_: any, unit: ApartmentUnits) => (
+      <Space>
+        <Tooltip title="Edit">
+          <Button type="link" icon={<EditOutlined />} onClick={() => openEditModal(unit)} />
+        </Tooltip>
+        <Tooltip title="Delete">
+          <Button
+            type="link"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDeleteUnit(unit.unitCode)}
+          />
+        </Tooltip>
+      </Space>
+    ),
+  },
+];
+
+
+  // --- Image Menu ---
   const handleMenuClick = ({ key }: { key: string }) => {
     if (key === "view" && imageUrl) setIsImageModalVisible(true);
     else if (key === "upload" || key === "edit")
@@ -81,26 +169,55 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
     }
   };
 
+  // --- Unit CRUD ---
   const openAddUnitModal = () => setIsAddModalVisible(true);
-  const openEditModal = (unitData: typeof units[0]) => {
-    setEditingUnit(unitData);
+  const openEditModal = (unit: ApartmentUnits) => {
+    setEditingUnit(unit);
     setIsEditModalVisible(true);
+    
   };
 
-  const onAddUnitFinish = (values: typeof units[0]) => {
-    setUnits([...units, values]);
-    message.success(`Unit ${values.unit} added`);
+  const handleDeleteUnit = (unitCode: string) => {
+    setUnits((prev) => prev.filter((u) => u.unitCode !== unitCode));
+    message.success(`Unit ${unitCode} deleted`);
+  };
+
+  const onAddUnitFinish = async (values: ApartmentUnits) => {
+    const data ={
+      ...values,
+      apartmentId:Number(apartmentId)
+    }
+    await addUnitsService(data)
+
+    router.refresh()
+  
+    message.success(`Unit ${values.unitCode} added`);
     setIsAddModalVisible(false);
-    setCurrentPage(totalPages + 1); // Go to last page
+    setCurrentPage(totalPages + 1);
   };
 
-  const onEditUnitFinish = (values: { bedroom: string; status: string }) => {
+
+
+  const onEditUnitFinish = async (values: Partial<ApartmentUnits>) => {
+
+     const data ={
+      ...values,
+      apartmentId:Number(apartmentId)
+    }
+
+    
     if (!editingUnit) return;
-    setUnits((prev) =>
-      prev.map((u) => (u.unit === editingUnit.unit ? { ...u, ...values } : u))
-    );
-    message.success(`Unit ${editingUnit.unit} updated`);
+
+
+   await updatedUnitService(data, editingUnit.id!)
+
+ 
+
+    
+    message.success(`Unit ${editingUnit.unitCode} updated`);
     setIsEditModalVisible(false);
+
+     router.refresh();
   };
 
   const menu = (
@@ -157,87 +274,11 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
         </div>
       </div>
 
-      <div className="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Unit</th>
-              <th>Unit Type</th>
-              <th>Status</th>
-              <th>Edit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentUnits.map((item, index) => (
-              <tr key={index}>
-                <td>{item.unit}</td>
-                <td>{item.bedroom}</td>
-                <td>
-                  <Tag color={item.status === "Occupied" ? "green" : "orange"}>
-                    {item.status}
-                  </Tag>
-                </td>
-                <td>
-                  <Button
-                    type="link"
-                    size="small"
-                    onClick={() => openEditModal(item)}
-                    style={{
-                      padding: 0,
-                      fontWeight: "bold",
-                      fontSize: 12,
-                      color: "#1890ff",
-                      textDecoration: "underline",
-                    }}
-                  >
-                    Edit
-                  </Button>
-                </td>
-              </tr>
-            ))}
-            <tr className="total-row">
-              <td colSpan={3}>Total Units</td>
-              <td className="total-count">{units.length}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  
 
-      <div className="pagination-controls">
-        <button onClick={() => setCurrentPage((p) => p - 1)} disabled={currentPage === 1}>
-          Previous
-        </button>
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i + 1}
-            onClick={() => setCurrentPage(i + 1)}
-            className={`pagination-btn ${currentPage === i + 1 ? "active" : ""}`}
-          >
-            {i + 1}
-          </button>
-        ))}
-        <button onClick={() => setCurrentPage((p) => p + 1)} disabled={currentPage === totalPages}>
-          Next
-        </button>
-      </div>
 
-      <footer className="modal-footer">
-        <p>
-          www.website.com &nbsp; | &nbsp; +91 00000 00000 &nbsp; | &nbsp;
-          hello@email.com
-        </p>
-      </footer>
 
-      {/* Modals: Image, Add, Edit */}
-      <Modal
-        title="Apartment Image"
-        open={isImageModalVisible}
-        footer={null}
-        onCancel={() => setIsImageModalVisible(false)}
-      >
-        <img src={imageUrl!} alt="Apartment" style={{ width: "100%" }} />
-      </Modal>
-
+      {/* === Modals === */}
       <Modal
         title="Add New Unit"
         open={isAddModalVisible}
@@ -246,58 +287,42 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
         destroyOnClose
       >
         <Form layout="vertical" onFinish={onAddUnitFinish}>
-          <Form.Item
-            label="Unit Name"
-            name="unit"
-            rules={[
-              { required: true, message: "Please input the unit name!" },
-              {
-                validator: (_, value) => {
-                  if (!value) return Promise.resolve();
-                  const exists = units.some((u) => u.unit.toLowerCase() === value.toLowerCase());
-                  return exists
-                    ? Promise.reject(new Error("This Unit ID already exists!"))
-                    : Promise.resolve();
-                },
-              },
-            ]}
-          >
+          <Form.Item label="Unit Code" name="unitCode" rules={[{ required: true }]}>
             <Input placeholder="e.g. B01" />
           </Form.Item>
 
-          <Form.Item
-            label="Unit Type"
-            name="bedroom"
-            rules={[{ required: true, message: "Please select unit type!" }]}
-          >
+          <Form.Item label="Unit Type" name="unitType" rules={[{ required: true }]}>
             <Select placeholder="Select unit type">
               <Option value="Studio">Studio</Option>
               <Option value="1 Bedroom">1 Bedroom</Option>
-              <Option value="2 Bedrooms">2 Bedrooms</Option>
+              <Option value="2 Bedroom">2 Bedroom</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item
-            label="Status"
-            name="status"
-            rules={[{ required: true, message: "Please select status!" }]}
-          >
+          <Form.Item label="Floor" name="floor">
+            <Input placeholder="e.g. 2nd Floor" />
+          </Form.Item>
+
+          <Form.Item label="Monthly Rent (KSh)" name="monthlyRent">
+            <Input placeholder="e.g. 40000" />
+          </Form.Item>
+
+          <Form.Item label="Status" name="status" rules={[{ required: true }]}>
             <Select placeholder="Select status">
-              <Option value="Occupied">Occupied</Option>
-              <Option value="Vacated">Vacated</Option>
+              <Option value="OCCUPIED">Occupied</Option>
+              <Option value="VACANT">Vacant</Option>
+              <Option value="UNDER_MAINTENANCE">Under Maintenance</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Add Unit
-            </Button>
-          </Form.Item>
+          <Button type="primary" htmlType="submit" block>
+            Add Unit
+          </Button>
         </Form>
       </Modal>
 
       <Modal
-        title={`Edit Unit ${editingUnit?.unit}`}
+        title={`Edit Unit ${editingUnit?.unitCode}`}
         open={isEditModalVisible}
         onCancel={() => setIsEditModalVisible(false)}
         footer={null}
@@ -306,41 +331,64 @@ const ApartmentDetails: React.FC<ApartmentDetailsProps> = ({
         <Form
           layout="vertical"
           onFinish={onEditUnitFinish}
-          initialValues={{
-            bedroom: editingUnit?.bedroom,
-            status: editingUnit?.status,
-          }}
+          initialValues={editingUnit || {}}
         >
-          <Form.Item
-            label="Unit Type"
-            name="bedroom"
-            rules={[{ required: true, message: "Please select unit type!" }]}
-          >
+             <Form.Item label="Unit Code" name="unitCode" rules={[{ required: true }]}>
+            <Input placeholder="e.g. B01" />
+          </Form.Item>
+          
+          <Form.Item label="Unit Type" name="unitType">
             <Select>
               <Option value="Studio">Studio</Option>
               <Option value="1 Bedroom">1 Bedroom</Option>
-              <Option value="2 Bedrooms">2 Bedrooms</Option>
+              <Option value="2 Bedroom">2 Bedroom</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item
-            label="Status"
-            name="status"
-            rules={[{ required: true, message: "Please select status!" }]}
-          >
+          <Form.Item label="Floor" name="floor">
+            <Input />
+          </Form.Item>
+
+          <Form.Item label="Monthly Rent (KSh)" name="monthlyRent">
+            <Input />
+          </Form.Item>
+
+          <Form.Item label="Status" name="status">
             <Select>
-              <Option value="Occupied">Occupied</Option>
-              <Option value="Vacated">Vacated</Option>
+              <Option value="OCCUPIED">OCCUPIED</Option>
+              <Option value="VACANT">Vacant</Option>
+              <Option value="UNDER_MAINTENANCE">Under Maintenance</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Save Changes
-            </Button>
-          </Form.Item>
+          <Button type="primary" htmlType="submit" block>
+            Save Changes
+          </Button>
         </Form>
       </Modal>
+
+          {/* === Units Table === */}
+     <div className="table-wrapper">
+  <Table
+    dataSource={units}
+    columns={columns}
+    rowKey="unitCode"
+    pagination={{
+      current: currentPage,
+      pageSize: 10,
+      total: units.length,
+      onChange: (page) => setCurrentPage(page),
+    }}
+    summary={() => (
+      <Table.Summary.Row>
+        <Table.Summary.Cell index={0} colSpan={7}>
+          Total Units
+        </Table.Summary.Cell>
+        <Table.Summary.Cell index={1}>{units.length}</Table.Summary.Cell>
+      </Table.Summary.Row>
+    )}
+  />
+</div>
     </div>
   );
 };

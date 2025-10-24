@@ -327,8 +327,8 @@ const handleDelete = async (id: number, name?: string) => {
           <ApartmentDetails
             apartmentName={viewingApartment.title}
             unitTypes={viewingApartment.unitTypes}
-            address={viewingApartment.address || "Unknown"}
-          />
+            address={viewingApartment.address || "Unknown"} 
+            apartmentId={String(viewingApartment.id)}          />
         )}
       </Modal>
     </div>

@@ -91,12 +91,29 @@ export enum ApartmentStatus {
   SoldOut = "Sold out",
 }
 
+export enum UnitStatus {
+  Available = "AVAILABLE",
+  Occupied = "OCCUPIED",
+  Reserved = "RESERVED",
+  UnderMaintenance = "UNDER_MAINTENANCE",
+  Inactive = "INACTIVE",
+  Vacated = "VACATED",
+}
+
+
 
 
 export interface ApartmentUnits {
-  unit: string;     // unit identifier like "B01"
-  unitType: string; // "1BR", "Studio", etc.
-  status: string;   
+  id: number;
+  apartmentId: number;
+  unitCode: string;
+  unitType: string;
+  status: UnitStatus;
+  floor?: string;
+  monthlyRent?: string;
+  createdAt: string;
+  updatedAt?: string | null;
+   unitRent: string;
 }
 
 export interface Apartment {
